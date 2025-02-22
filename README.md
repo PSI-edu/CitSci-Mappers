@@ -50,6 +50,19 @@ Setup the app to run on your system
 Just want to see the app? Not interested in anything else? Have at it with npm!
 ``` npm install ```
 
+# Production Environment
+clone the git repo to somewhere that isn't your web directory (I used ~), then cd into the repo, build 
+everything, and then copy the dist contents to your web directory
+```
+cd ~
+git clone https://github.com/PSI-edu/CitSci-Mappers.git
+cd CitSci-Mappers
+npm install
+npm run build
+
+```
+
+
 # Extras
 ### Image creation
 To create the favicon and navbar icon

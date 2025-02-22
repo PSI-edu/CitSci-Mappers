@@ -1,8 +1,8 @@
 <template>
   <div class="mobile-nav-bar__tabs">
-    <MobileNavBarTab path="/profile" label="Profile" />
     <template v-if="isAuthenticated">
       <MobileNavBarTab path="/protected" label="Protected" />
+      <MobileNavBarTab path="/profile" label="Profile" />
     </template>
   </div>
 </template>

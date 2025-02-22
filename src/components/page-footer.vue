@@ -45,7 +45,7 @@ import PageFooterHyperlink from "@/components/page-footer-hyperlink.vue";
 
 const resourceList = [
   {
-    path: "/data-policy",
+    path: "/data",
     label: "Data",
   },
   {
