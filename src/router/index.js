@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import CallbackPage from "@/pages/callback-page.vue";
 
 const NotFoundPage = () => import("@/pages/not-found-page.vue");
+const ConsentPage = () => import("@/pages/consent-page.vue");
 const ProfilePage = () => import("@/pages/profile-page.vue");
 const ProtectedPage = () => import("@/pages/protected-page.vue");
 const DataPage = () => import("@/pages/data-page.vue");
@@ -15,6 +16,11 @@ const routes = [
     path: "/",
     name: "home",
     component: HomePage,
+  },
+  {
+    path: "/consent",
+    name: "consent",
+    component: ConsentPage,
   },
   {
     path: "/profile",

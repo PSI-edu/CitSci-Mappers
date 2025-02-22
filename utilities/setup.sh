@@ -7,8 +7,15 @@ sudo apt update
 sudo apt -y install apache2
 sudo apt -y install certbot python3-certbot-apache
 # add ServerName and edit ServerAlias in file below
+# also add beneath DocumentRoot
+# <Directory /var/www/html>
+#    Options Indexes FollowSymLinks
+#    AllowOverride All
+#    Require all granted
+# </Directory>
 sudo vi /etc/apache2/sites-available/000-default.conf
 sudo apache2ctl configtest
+sudo apache2ctl restart
 sudo certbot --apache
 sudo apt -y install php libapache2-mod-php php-mysql
 sudo apt install git

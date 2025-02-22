@@ -45,10 +45,36 @@ Setup the app to run on your system
 - go to your application's Settings tab (Applications->Applications->Click application name->Settings)
 - open .env and copy in the values from auth0 for Domain, ClientID, Client Secret
 
+# API setup with MariaDB
+You need to edit the settings.php file for the api
+```
+cd api
+cp settings-example.php settings.php
+vi settings.php
+```
+
 # Development Environment
 
 Just want to see the app? Not interested in anything else? Have at it with npm!
-``` npm install ```
+
+` npm install `
+
+` npm run dev `
+
+But now you don't have a funcitoning API...
+
+You do need the api if you want to do anything other than UX/UI work. This
+means you need the api
+directory to be accessible. One option is to point a virtual host at the 
+api directory, and then put that URL in the .env file. Another option is Docker 
+and put the docker container url (http://localhost:8081 by default) in .env
+
+` docker-compose build --no-cache `
+
+` docker-compose up --no-build `
+
+With docker, it is running a build of the app, so you'll need to rerun that container to see changes made in vue.
+One frankenstein solution is to use npm run dev for the vue app and docker for everything else. 
 
 # Production Environment
 clone the git repo to somewhere that isn't your web directory (I used ~), then cd into the repo, build 
@@ -59,8 +85,11 @@ git clone https://github.com/PSI-edu/CitSci-Mappers.git
 cd CitSci-Mappers
 npm install
 npm run build
-
+sudo cp .htaccess /var/www/html
+sudo cp dist/* /var/www/html
+sudo cp api/* /var/www/html
 ```
+
 
 
 # Extras
