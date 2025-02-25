@@ -94,6 +94,9 @@ Setup the app to run on your system
 - go to your application's Settings tab (Applications->Applications->Click application name->Settings)
 - open .env and copy in the values from auth0 for Domain, ClientID, Client Secret
 
+TODO https://auth0.com/docs/customize/actions/explore-triggers/signup-and-login-triggers/login-trigger/redirect-with-actions
+
+
 # API setup with MariaDB
 You need to edit the settings.php file for the api
 ```

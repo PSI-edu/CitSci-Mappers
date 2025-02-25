@@ -1,6 +1,5 @@
 CREATE TABLE `users` (
               `id` int AUTO_INCREMENT PRIMARY KEY,
-              `auth0_id` varchar(255) UNIQUE,
               `username` varchar(255) UNIQUE,
               `first_name` varchar(100),
               `last_name` varchar(100),

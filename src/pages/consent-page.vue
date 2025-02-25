@@ -3,7 +3,7 @@
     <div class="content-layout">
       <h1 id="page-title" class="content__title">Informed Consent & GDPR Disclosures</h1>
       <div class="content__body">
-        <form id="consentForm" action="/consent" method="POST" @submit.prevent="addEmail">
+        <form id="consentForm" action="/consent" method="POST" @submit="addEmail">
           <p>Do you consent?</p>
           <input type="checkbox" name="confirm" value="yes" required>
           <br>
