@@ -21,6 +21,15 @@ This software is designed to run on a standard LINUX server running an Apache wi
 MariaDB/MySQL, and PHP. You will also need a development environment that also has NodeJS + npm
 installed or the ability to build NodeJS + npm on your production environment.
 
+You shouldn't use the root db user with the application. You will need to set up 
+a project database and user.
+```
+CREATE DATABASE 'mappers_db';
+CREATE USER 'mappers_user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVLEGES ON mappers_db.* to 'mappers_db'@'localhost';
+FLUSH PRIVILEGES;
+```
+
 Need help getting setup? We
 recommend the DigitalOcean [LAMP Stack on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-lamp-stack-on-ubuntu),
 [Let's Encrypt](https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu),
@@ -39,6 +48,46 @@ Create a new application
 - vue
 - Social Connections (pick at will)
 - Enable users to enter a user ID & Password (They will get grouchy if you don't do this)
+
+Create a new action so each user gets written into the database
+- In auth0 go to Actions->Triggers and select post-login
+- Click [+] to add a new action from scratch
+- Give the action a name (We used "Consent Check"), and use the default runtime "Node 22"
+- On the new screen, click the blue "Add Secret" button, and enter
+      - Key: CONSENT_FORM_URL
+  - Value: https://your.url/consent 
+  - Replace everything in the code window with the software below
+```
+exports.onExecutePostLogin = async (event, api) => {
+  const { consentGiven } = event.user.user_metadata || {};
+  // redirect to consent form if user has not yet consented
+  if (!consentGiven && api.redirect.canRedirect()) {
+    const options = {
+        query: {
+          email: event.user.email,
+        },
+      };
+    api.redirect.sendUserTo(event.secrets.CONSENT_FORM_URL, options);
+  }
+};
+
+exports.onContinuePostLogin = async (event, api) => {
+    if (event.request.body.confirm === "yes") {
+      api.user.setUserMetadata("consentGiven", true);
+      api.user.setUserMetadata("consentTimestamp", Date.now());
+    return;
+  } else {
+    return api.access.deny("User did not consent");
+  }
+};
+```
+  - click "Save Draft" and "Deploy" 
+  - Go back to Actions -> Post Login. 
+  - Click "Custom" and drag your action into the workflow
+  - CLick Apply
+
+NOTE: YOU WILL NEED TO DO THIS SEPARATELY FOR BOTH YOUR DEV ENVIRONMENT AND YOUR 
+PRODUCTION ENVIRONMENT AND BOTH WILL NEED TO BE TIED TO A DIFFERENT ACCOUNT
 
 Setup the app to run on your system
 - copy .env.example to .env
@@ -77,7 +126,15 @@ With docker, it is running a build of the app, so you'll need to rerun that cont
 One frankenstein solution is to use npm run dev for the vue app and docker for everything else. 
 
 # Production Environment
-clone the git repo to somewhere that isn't your web directory (I used ~), then cd into the repo, build 
+Setup your database and database user
+
+```
+CREATE DATABASE 'mappers_db';
+CREATE USER 'mappers_user'@'%' IDENTIFIED BY 'password';
+GRANT ALL ON mappers_db.* to 'mappers_db'@'%';
+```
+
+Clone the git repo to somewhere that isn't your web directory (I used ~), then cd into the repo, build 
 everything, and then copy the dist contents to your web directory
 ```
 cd ~
@@ -89,8 +146,6 @@ sudo cp .htaccess /var/www/html
 sudo cp dist/* /var/www/html
 sudo cp api/* /var/www/html
 ```
-
-
 
 # Extras
 ### Image creation

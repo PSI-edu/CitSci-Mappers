@@ -18,6 +18,7 @@ sudo apache2ctl configtest
 sudo apache2ctl restart
 sudo certbot --apache
 sudo apt -y install php libapache2-mod-php php-mysql
+sudo apt install mysql-client-core-8.0
 sudo apt install git
 sudo apt -y install nodejs
 sudo apt -y install npm
