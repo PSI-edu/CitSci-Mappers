@@ -3,6 +3,7 @@
     <template v-if="isAuthenticated">
       <NavBarTab path="/protected" label="Protected" />
       <NavBarTab path="/profile" label="Profile" />
+      <NavBarTab path="/mars-mosaic" label="Mars Mosaics" />
     </template>
   </div>
 </template>

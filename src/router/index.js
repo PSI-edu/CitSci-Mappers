@@ -10,6 +10,8 @@ const ProtectedPage = () => import("@/pages/protected-page.vue");
 const DataPage = () => import("@/pages/data-page.vue");
 const PrivacyPage = () => import("@/pages/privacy.vue");
 const TeamPage = () => import("@/pages/team.vue");
+const ScratchPage = () => import("@/pages/scratch-page.vue");
+const MarsMosaicPage = () => import("@/pages/mars-mosaic-page.vue");
 
 const routes = [
   {
@@ -48,6 +50,17 @@ const routes = [
     path: "/team",
     name: "team",
     component: TeamPage,
+  },
+  {
+    path: "/scratch",
+    name: "scratch",
+    component: ScratchPage,
+  },
+  {
+    path: "/mars-mosaic",
+    name: "mars-mosaic",
+    component: MarsMosaicPage,
+    beforeEnter: authGuard,
   },
   {
     path: "/callback",

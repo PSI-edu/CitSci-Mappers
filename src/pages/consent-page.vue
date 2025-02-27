@@ -45,7 +45,9 @@ export default {
 
       axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-new.php', { email: email })
           .then(response => {
+            localStorage.setItem('userID', response.data);
             console.log('Success:', response.data);
+
           })
           .catch(error => {
             console.error('Error:', error);

@@ -35,8 +35,26 @@
 import CodeSnippet from "@/components/code-snippet.vue";
 import PageLayout from "@/components/page-layout.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
 
 const { user } = useAuth0();
 
 const code = user ? JSON.stringify(user.value, null, 2) : "";
+
+console.log(user.value.email);
+
+onMounted(async () => {
+  try {
+    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+      email: user.value.email
+    });
+    console.log(response);
+    localStorage.setItem('id',response.data);
+    localStorage.setItem('email',user.value.email);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 </script>

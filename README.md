@@ -86,6 +86,13 @@ exports.onContinuePostLogin = async (event, api) => {
   - Click "Custom" and drag your action into the workflow
   - CLick Apply
 
+Finally, set it up so that if people use multiple methods to login, the accounts are
+linked using their email
+- Click on Extensions
+- Search on "link"
+- install Auth0 Account Link
+  - You will want to format this to match the rest of your styling
+
 NOTE: YOU WILL NEED TO DO THIS SEPARATELY FOR BOTH YOUR DEV ENVIRONMENT AND YOUR 
 PRODUCTION ENVIRONMENT AND BOTH WILL NEED TO BE TIED TO A DIFFERENT ACCOUNT
 

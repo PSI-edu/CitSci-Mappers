@@ -19,7 +19,7 @@ body {
 }
 
 body {
-  background-color: var(--black);
+  background-color: var(--light-aluminium);
 
   color: var(--white);
   font-family: var(--font-primary);
