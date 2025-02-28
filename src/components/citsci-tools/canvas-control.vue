@@ -1,5 +1,5 @@
 <template>
-    <canvas ref="canvas__map" id="canvas__map" width="450" height="450" @click="drawRectangle"></canvas>
+    <canvas ref="canvas__control" id="canvas__control" width="450" height="450" @click="drawRectangle"></canvas>
     <div id="citsci-title"></div>
 </template>
 
@@ -11,7 +11,7 @@ const props = defineProps({
   imageName: String,
 });
 
-const canvas__map = ref(null);
+const canvas__control = ref(null);
 
 onMounted(() => {
   loadImage();
@@ -22,9 +22,9 @@ watch(() => props.imageName, () => {
 });
 
 const loadImage = () => {
-  if (!props.imageName || !canvas__map.value) return;
+  if (!props.imageName || !canvas__control.value) return;
 
-  const canvas = canvas__map.value;
+  const canvas = canvas__control.value;
   const ctx = canvas.getContext('2d');
   const image = new Image();
 
@@ -40,8 +40,6 @@ const loadImage = () => {
 
   image.src = props.imageName; // Assuming imageName is the correct path/URL
 };
-
-console.log("here " + props.imageName);
 
 </script>
 

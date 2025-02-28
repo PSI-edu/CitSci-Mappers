@@ -7,13 +7,13 @@ services:
       - "8081:80" #maps port 8081 on host to port 80 in the container
     volumes:
       - ./api:/var/www/html
-  app:
-    build:
-      context: .
-      dockerfile: .docker/vue-app/Dockerfile
-    container_name: vue-app
-    ports:
-      - "8080:8080"
+#  app:
+#    build:
+#      context: .
+#      dockerfile: .docker/vue-app/Dockerfile
+#    container_name: vue-app
+#    ports:
+#      - "8080:8080"
   db:
     image: mariadb:latest
     container_name: mariadb-compose

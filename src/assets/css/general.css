@@ -19,7 +19,7 @@ body {
 }
 
 body {
-  background-color: var(--light-aluminium);
+  background-color: var(--black);
 
   color: var(--white);
   font-family: var(--font-primary);
@@ -84,7 +84,7 @@ p {
 }
 
 strong {
-  font-weight: 500;
+  font-weight: 800;
 }
 
 small {

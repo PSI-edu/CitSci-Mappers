@@ -56,9 +56,7 @@ for ($x = 0; $x < $width - $overlap; $x += $stampSize - $overlap) {
         imagedestroy($im);
 
         // write each sub-image to the file
-        fwrite($file, $rootFilename . "_$x-$y.png\n");
-
-
+        fwrite($file, $rootFilename . "_$x-$y.png\t$x\t$y\n");
     }
 }
 fclose($file);

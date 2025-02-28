@@ -1,6 +1,16 @@
 # Use a base image that already has Apache and PHP
 FROM php:8.2.27-apache
 
+# Install GD library and its dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # IF RUNNING STATIC
 # Copy your application code into the container
 COPY ./api/ /var/www/html/

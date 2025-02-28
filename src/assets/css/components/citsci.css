@@ -1,6 +1,6 @@
 #citsci-main-panel {
     position: relative;
-    width: 800px;
+    width: 950px;
     height: 600px;
     border-radius: 5px;
     margin: 10px auto;
@@ -53,7 +53,13 @@
     color: var(--white);
 }
 
-#canvas__map {
+#citsci-mapping-panel {
+    position: relative;
+    width: 475px;
+    float: left;
+}
+
+#canvas__map, #canvas__compare {
     position: relative;
     float: left;
     height: 450px;
@@ -61,4 +67,40 @@
     border-radius: 5px;
     margin: 10px 0 10px 10px;
     background: var(--dark-aluminium);
+}
+
+#canvas__control {
+    position: relative;
+    float: right;
+    height: 450px;
+    width: 450px;
+    border-radius: 5px;
+    margin: 10px 10px 10px 10px;
+    background: var(--dark-aluminium);
+}
+
+#compare-buttons-panel {
+    color: var(--dark-aluminium);
+    float: left;
+    width: 100%;
+    margin-left: 10px;
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 2.4rem;
+}
+
+.compare-column {
+    position: relative;
+    float: left;
+    width: 220px;
+    border-radius: 5px;
+    margin-right: 10px;
+    padding: 10px 0;
+    background-color: var(--dark-aluminium);
+    color: var(--white);
+}
+
+.compare-column p {
+    text-align: center;
+    margin: 0 0 11.5px 0;
 }

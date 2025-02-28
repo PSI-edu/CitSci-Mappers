@@ -9,6 +9,8 @@ CREATE TABLE `images` (
       `count` int(10) NOT NULL DEFAULT '0',
       `done` tinyint(1) NOT NULL DEFAULT '0',
       `sun_angle` double(8,2) DEFAULT NULL,
+      `x` int(10) unsigned DEFAULT NULL,
+      `y` int(10) unsigned DEFAULT NULL,
       `details` text COLLATE utf8_unicode_ci,
       `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
       `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -3,9 +3,14 @@
     <div class="content-layout">
       <div id="citsci-main-panel">
         <CanvasMap
-            :imageUrl="imageUrl" v-if="imageUrl"
+            :control-name="controlUrl" v-if="controlUrl"
+            :diff-name="diffUrl"
+            :image-name="imageUrl"
         />
         <img v-else src="/src/assets/images/loading.png" alt="Loading">
+        <CanvasControl
+            :image-name="imageUrl" v-if="imageUrl"
+        />
       </div>
     </div>
   </PageLayout>
@@ -13,7 +18,8 @@
 
 <script setup>
 import PageLayout from "@/components/page-layout.vue";
-import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
+import CanvasMap from "@/components/citsci-tools/canvas-compare.vue";
+import CanvasControl from "@/components/citsci-tools/canvas-control.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
@@ -21,6 +27,8 @@ import axios from 'axios';
 const { user } = useAuth0();
 
 const imageUrl = ref(null);
+const controlUrl = ref(null);
+const diffUrl = ref(null);
 
 onMounted(async () => {
 
@@ -42,7 +50,10 @@ onMounted(async () => {
       user_id: localStorage.getItem('id')
     });
     console.log(response.data);
-    const imageUrl = response.data.file_location;
+    controlUrl.value = response.data.file_location;
+    imageUrl.value = controlUrl.value.replace('controlled', 'uncontrolled');
+    diffUrl.value = controlUrl.value.replace('controlled', 'difference');
+    console.log(imageUrl.value);
   } catch (error) {
     console.log(error);
   }

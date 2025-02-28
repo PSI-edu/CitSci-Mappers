@@ -12,6 +12,7 @@ const PrivacyPage = () => import("@/pages/privacy.vue");
 const TeamPage = () => import("@/pages/team.vue");
 const ScratchPage = () => import("@/pages/scratch-page.vue");
 const MarsMosaicPage = () => import("@/pages/mars-mosaic-page.vue");
+const MasterImagePage = () => import("@/pages/master-image-page.vue");
 
 const routes = [
   {
@@ -60,6 +61,12 @@ const routes = [
     path: "/mars-mosaic",
     name: "mars-mosaic",
     component: MarsMosaicPage,
+    beforeEnter: authGuard,
+  },
+  {
+    path: "/master-image",
+    name: "master-image",
+    component: MasterImagePage,
     beforeEnter: authGuard,
   },
   {
