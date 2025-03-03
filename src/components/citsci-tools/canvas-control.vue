@@ -1,6 +1,16 @@
 <template>
-    <canvas ref="canvas__control" id="canvas__control" width="450" height="450" @click="drawRectangle"></canvas>
-    <div id="citsci-title"></div>
+  <div id="control_panel">
+      <canvas ref="canvas__control" id="canvas__control" width="450" height="450" @click="drawRectangle"></canvas>
+      <div id="control-instructions">
+        <p>Which describes the image above?</p>
+      </div>
+    <div id="control-buttons">
+        <button class="control-button" @click="submitSharper">Sharper</button>
+        <button class="control-button" @click="submitFuzzier">Fuzzier</button>
+        <button class="control-button" @click="submitSame">The Same <small>(may be offset)</small></button>
+        <button class="control-button-oops" @click="submitBlack">No idea - it's mostly black</button>
+    </div>
+  </div>
 </template>
 
 
@@ -40,6 +50,40 @@ const loadImage = () => {
 
   image.src = props.imageName; // Assuming imageName is the correct path/URL
 };
+
+// If someone clicks the submitSharper button, send the response to the server and get a new image
+const submitSharper = () => {
+  console.log("Sharper");
+  // Send the response to the server
+  // Get a new image
+  // Load the new image
+};
+
+// If someone clicks the submitFuzzier button, send the response to the server and get a new image
+const submitFuzzier = () => {
+  console.log("Fuzzier");
+  // Send the response to the server
+  // Get a new image
+  // Load the new image
+};
+
+// If someone clicks the submitSame button, send the response to the server and get a new image
+const submitSame = () => {
+  console.log("The Same");
+  // Send the response to the server
+  // Get a new image
+  // Load the new image
+};
+
+// If someone clicks the submitBlack button, send the response to the server and get a new image
+const submitBlack = () => {
+  console.log("No idea - it's mostly black");
+  // Send the response to the server
+  // Get a new image
+  // Load the new image
+};
+
+
 
 </script>
 
