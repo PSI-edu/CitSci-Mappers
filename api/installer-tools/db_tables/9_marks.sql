@@ -6,8 +6,8 @@ CREATE TABLE `marks` (
      `image_user_id` int(10) unsigned NOT NULL,
      `machine_mark_id` int(10) unsigned DEFAULT NULL,
      `shared_mark_id` int(10) unsigned DEFAULT NULL,
-     `x` double(8,2) NOT NULL,
-     `y` double(8,2) NOT NULL,
+     `x` double(8,2) DEFAULT NULL,
+     `y` double(8,2) DEFAULT NULL,
      `diameter` double(8,2) DEFAULT NULL,
      `submit_time` int(10) unsigned DEFAULT NULL,
      `confirmed` tinyint(1) DEFAULT NULL,
@@ -23,11 +23,5 @@ CREATE TABLE `marks` (
      KEY `marks_machine_mark_id_foreign` (`machine_mark_id`),
      KEY `marks_shared_mark_id_foreign` (`shared_mark_id`),
      KEY `marks_user_id_foreign` (`user_id`),
-     KEY `marks_image_id_foreign` (`image_id`),
-     CONSTRAINT `marks_application_id_foreign` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`),
-     CONSTRAINT `marks_image_id_foreign` FOREIGN KEY (`image_id`) REFERENCES `images` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-     CONSTRAINT `marks_image_user_id_foreign` FOREIGN KEY (`image_user_id`) REFERENCES `image_users` (`id`),
-     CONSTRAINT `marks_machine_mark_id_foreign` FOREIGN KEY (`machine_mark_id`) REFERENCES `marks` (`id`),
-     CONSTRAINT `marks_shared_mark_id_foreign` FOREIGN KEY (`shared_mark_id`) REFERENCES `shared_marks` (`id`),
-     CONSTRAINT `marks_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+     KEY `marks_image_id_foreign` (`image_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

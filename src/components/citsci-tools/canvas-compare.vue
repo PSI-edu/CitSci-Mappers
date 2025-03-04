@@ -1,21 +1,21 @@
 <template>
-  <div id="citsci-mapping-panel">
+
       <canvas ref="canvas__compare" id="canvas__compare" width="450" height="450" @click="drawRectangle"></canvas>
       <div id="compare-buttons-panel">
         <div class="compare-column">
-          <p><small>Shown</small></p>
+          <p><small>Shown above</small></p>
           <p id="shown"><strong>Control Image</strong></p>
         </div>
         <div class="compare-column">
             <input type="radio" id="control" name="compare" value="control" @click="loadControl()" checked>
             <label for="control">Control </label><br/>
             <input type="radio" id="diff" name="diff" value="difference" @click="loadDiff()" >
-            <label for="diff">Difference </label><br/>
+            <label for="diff">Difference</label><br/>
             <input type="radio" id="blink" name="blink" value="blink" @click="loadBlink()" >
             <label for="blink">Blink Control & Test for 5sec</label><br/>
         </div>
       </div>
-  </div>
+
 </template>
 
 <script setup>
