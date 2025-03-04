@@ -13,6 +13,5 @@ CREATE TABLE `shared_marks` (
         `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `application_id` int(10) unsigned NOT NULL,
         PRIMARY KEY (`id`),
-        KEY `shared_marks_image_id_foreign` (`image_id`),
-        CONSTRAINT `shared_marks_image_id_foreign` FOREIGN KEY (`image_id`) REFERENCES `images` (`id`) ON DELETE CASCADE
+        KEY `shared_marks_image_id_foreign` (`image_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

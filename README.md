@@ -36,6 +36,17 @@ recommend the DigitalOcean [LAMP Stack on Ubuntu](https://www.digitalocean.com/c
 and [NodeJS](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-22-04) tutorials.
 There is an example script of everything we did to setup our server in the utilities folder.
 
+You will also need the GD library installed for PHP. 
+```
+sudo apt-get update && sudo apt-get install -y \
+    php-gd \
+    libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libfreetype6-dev
+```
+
+
 ### Option 2: Docker (Good for development, not recommended for production)
 You'll need the docker desktop and docker cli tools installed.
 

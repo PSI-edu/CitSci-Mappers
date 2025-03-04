@@ -1,7 +1,7 @@
 CREATE TABLE `users` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `username` varchar(255) UNIQUE,
-              `first_name` varchar(100),
+              `publishable_name` varchar(255),
               `last_name` varchar(100),
               `public_name` tinyint(1) NOT NULL DEFAULT '0',
               `email` varchar(255) UNIQUE NOT NULL,
