@@ -1,7 +1,6 @@
 .mobile-nav-bar__container {
   position: fixed;
   display: none;
-
   justify-content: center;
   flex-shrink: 0;
   width: 100%;
@@ -9,8 +8,7 @@
   box-shadow: rgb(90 95 102) 0-1.5px 0 inset;
 
   z-index: 300;
-
-  background-color: var(--black);
+  background-color: var(--blue);
 }
 
 .mobile-nav-bar {
@@ -32,7 +30,8 @@
   flex: 1;
   display: flex;
   align-items: center;
-
+  font-size: 2rem;
+  font-weight: bold;
   height: 100%;
 
   /* responsive */
@@ -114,6 +113,7 @@
 
 .mobile-nav-bar__icon {
   display: none;
+  font-size: 3.2rem;
 }
 
 .mobile-nav-bar__buttons {

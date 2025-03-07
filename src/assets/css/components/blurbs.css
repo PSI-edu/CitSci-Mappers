@@ -1,0 +1,44 @@
+#blurbs {
+    width: 100%;
+    margin-bottom: 4rem;
+}
+
+.blurb {
+    position: relative;
+    float: left;
+    width:33%;
+}
+
+.blurb-header {
+    display: flex;
+    align-items: center;
+    margin: 0 2em 1rem 2em;
+}
+
+.blurb-icon {
+    height: 80px!important;
+    width: 80px!important;
+    border-radius: 40px;
+    background-color: var(--green);
+}
+
+.blurb-icon img {
+    width:100%;
+}
+
+.blurb-title {
+    width: 70%;
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0 0 1rem 2rem;
+}
+
+@media only screen and (max-width: 540px) {
+    .blurb {
+        width: 100%;
+        height: 12rem;
+    }
+    .blurb-description {
+        display: none;
+    }
+}

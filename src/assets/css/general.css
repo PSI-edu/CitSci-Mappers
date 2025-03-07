@@ -80,7 +80,8 @@ h6 {
 }
 
 p {
-  margin: 0 0 1.6rem;
+  margin: 0 0 0.4rem;
+  font-size: 1.6rem;
 }
 
 strong {
@@ -144,6 +145,10 @@ code {
 #root {
   height: 100%;
   width: 100%;
+}
+
+.clear {
+  clear: both;
 }
 
 @media only screen and (max-width: 640px) {
