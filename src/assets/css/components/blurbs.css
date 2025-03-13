@@ -19,7 +19,6 @@
     height: 80px!important;
     width: 80px!important;
     border-radius: 40px;
-    background-color: var(--green);
 }
 
 .blurb-icon img {
@@ -31,6 +30,11 @@
     font-size: 3rem;
     font-weight: 800;
     margin: 0 0 1rem 2rem;
+}
+
+.blurb-description {
+    padding: 0 8rem;
+    text-align: center;
 }
 
 @media only screen and (max-width: 540px) {
