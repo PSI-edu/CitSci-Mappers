@@ -1,0 +1,8 @@
+{
+   "name": "computer-readable-name",
+   "title": "Human-readable Name",
+   "description": "Sentence long description",
+   "background_url": "https://example.com/background.png",
+   "icon_url": "https://example.com/icon.png",
+   "scistarter_project_id": -1
+}

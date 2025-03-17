@@ -26,55 +26,49 @@ foreach (glob($dir . '/*.sql') as $filename) {
 }
 
 echo "Tables created successfully<br>";
-// Insert into the applications table a default application 0
-$id = 0;
-$name = "default";
-$title = "Looking Ahead";
-$description = "New projects are under development. Stay tuned.";
 
-$stmt = $conn->prepare("INSERT INTO applications (id, name, title, description) VALUES (?, ?, ?, ?)");
 
-// Bind parameters
-$stmt->bind_param("isss", $id, $name, $title, $description);
+// Get all the application jsons and insert them into the database
+$dir = "applications";
 
-// Execute the statement
-if ($stmt->execute()) {
-    echo "Default app record created successfully";
-} else {
-    echo "Error: " . $stmt->error;
+foreach (glob($dir . '/*.json') as $filename) {
+    $fileContents = file_get_contents($filename);
+
+    if ($fileContents === false) {
+        echo "Error reading file: " . $filename . "<br>";
+        continue; // Skip to the next file.
+    }
+
+    $jsonData = json_decode($fileContents, true); // true for associative array
+
+    if ($jsonData === null && json_last_error() !== JSON_ERROR_NONE) {
+        echo "Error decoding JSON in file: " . $filename . "<br>";
+        echo "JSON Error: " . json_last_error_msg() . "<br>";
+        continue; // Skip to the next file.
+    }
+
+    // Process the JSON data here.
+    $name = $jsonData['name'];
+    $title = $jsonData['title'];
+    $description = $jsonData['description'];
+    $background_url = $jsonData['background_url'];
+    $icon_url = $jsonData['icon_url'];
+
+    // Prepare the SQL statement
+    $stmt = $conn->prepare("INSERT INTO applications (name, title, description, background_url, icon_url) VALUES (?, ?, ?, ?, ?)");
+    // Bind parameters
+    $stmt->bind_param("sssss", $name, $title, $description, $background_url, $icon_url);
+    // Execute the statement
+    if ($stmt->execute()) {
+        echo "App record created successfully from " . $filename . "<br>";
+    } else {
+        echo "Error: " . $stmt->error . "<br>";
+    }
+
+    // Close the statement
+    $stmt->close();
 }
+echo "App records created successfully<br>";
 
-//Insert the Mars Mosaic Project
-$id = 1;
-$name = "mars-mosaic";
-$title = "Mars Mosaic";
-$description = "Let's verify new algorithms make better Mars mosaics.";
-
-$stmt->bind_param("isss", $id, $name, $title, $description);
-
-// Execute the statement
-if ($stmt->execute()) {
-    echo "Mars Mosaic App created successfully";
-} else {
-    echo "Error: " . $stmt->error;
-}
-
-// Insert into the applications table Moon Mappers
-$id = 2;
-$name = "moon-mappers";
-$title = "Moon Mappers";
-$description = "Help us map out ancient geologies on the Moon.";
-
-$stmt = $conn->prepare("INSERT INTO applications (id, name, title, description) VALUES (?, ?, ?, ?)");
-
-// Bind parameters
-$stmt->bind_param("isss", $id, $name, $title, $description);
-
-// Execute the statement
-if ($stmt->execute()) {
-    echo "Default app record created successfully";
-} else {
-    echo "Error: " . $stmt->error;
-}
-
+echo "Installation completed successfully<br>";
 $conn->close();

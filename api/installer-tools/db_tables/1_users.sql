@@ -12,8 +12,7 @@ CREATE TABLE `users` (
      `scistarter_profile_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
      `public_name` tinyint(1) NOT NULL DEFAULT '0',
  PRIMARY KEY (`id`),
- UNIQUE KEY `users_name_unique` (`name`),
+ UNIQUE KEY `users_name_unique` (`username`),
      KEY `emails_on_users` (`email`),
-     KEY `users_email_index` (`email`),
-     KEY `users_remember_token_index` (`remember_token`)
+     KEY `users_email_index` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

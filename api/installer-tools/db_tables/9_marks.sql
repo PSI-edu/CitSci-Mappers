@@ -23,5 +23,5 @@ PRIMARY KEY (`id`),
          KEY `marks_machine_mark_id_foreign` (`machine_mark_id`),
          KEY `marks_shared_mark_id_foreign` (`shared_mark_id`),
          KEY `marks_user_id_foreign` (`user_id`),
-         KEY `marks_image_id_foreign` (`image_id`),
+         KEY `marks_image_id_foreign` (`image_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

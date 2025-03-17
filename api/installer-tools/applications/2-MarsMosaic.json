@@ -1,0 +1,8 @@
+{
+    "name": "mars-mosaics",
+    "title": "Mars Mosaics",
+    "description": "Let's verify new algorithms make better Mars mosaics.",
+    "background_url": "",
+    "icon_url": "https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/Mars.png",
+    "scistarter_project_id": -1
+}
