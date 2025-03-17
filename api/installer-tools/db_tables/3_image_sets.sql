@@ -13,7 +13,7 @@ CREATE TABLE `image_sets` (
       `details` text COLLATE utf8_unicode_ci,
       `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
       `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (`id`),
-      UNIQUE KEY `image_sets_name_unique` (`name`),
-      KEY `image_sets_application_id_foreign` (`application_id`)
+PRIMARY KEY (`id`),
+UNIQUE KEY `image_sets_name_unique` (`name`),
+      KEY `image_sets_application_id_foreign` (`application_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

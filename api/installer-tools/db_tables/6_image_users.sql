@@ -8,8 +8,7 @@ CREATE TABLE `image_users` (
        `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
        `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
        `details` text COLLATE utf8_unicode_ci COMMENT '(DC2Type:json)',
-       `validated_center` tinyint(1) DEFAULT NULL,
-       PRIMARY KEY (`id`),
+PRIMARY KEY (`id`),
        KEY `image_users_user_id_foreign` (`user_id`),
        KEY `image_users_image_id_foreign` (`image_id`),
        KEY `image_users_application_id_foreign` (`application_id`)
