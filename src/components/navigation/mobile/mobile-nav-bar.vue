@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-nav-bar__container">
     <nav class="mobile-nav-bar">
-      <MobileNavBarBrand />
+      <MobileNavBarBrand :title="title" />
       <MobileMenuToggleButton />
       <div
         v-if="mobileMenuStore.isMobileMenuOpen()"
@@ -27,6 +27,12 @@ const router = useRouter();
 router.afterEach(() => {
   if (mobileMenuStore.isMobileMenuOpen()) {
     mobileMenuStore.closeMobileMenu();
+  }
+});
+
+const props = defineProps({
+  title: {
+    type: String
   }
 });
 </script>

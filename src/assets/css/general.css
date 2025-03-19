@@ -47,7 +47,7 @@ h3,
 h4,
 h5 {
   margin-top: 0.5rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 h6 {
@@ -80,6 +80,10 @@ h6 {
 }
 
 p {
+  margin: 0 0 0.8rem;
+  font-size: 1.6rem;
+}
+li {
   margin: 0 0 0.4rem;
   font-size: 1.6rem;
 }
@@ -149,6 +153,41 @@ code {
 
 .clear {
   clear: both;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+    float: right;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.icon {
+  width: 8rem;
+  height: 8rem;
+  float: left;
+  margin-right: 1rem;
+}
+
+.icon-div {
+  width: 10%;
+  float: left;
+  height:12rem;
+}
+.text-blurb {
+  min-height:12rem;
+  float:left;
+  margin-bottom: 1rem;
+  width: 90%;
 }
 
 @media only screen and (max-width: 640px) {

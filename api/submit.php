@@ -40,6 +40,25 @@ if ($data !== null &&
         $stmt->close();
         // get the user image id
         $last_id = $conn->insert_id;
+
+        //increment the image count
+        $sql = "UPDATE images SET count = count + 1 WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $image_id);
+        if (!$stmt->execute()) {
+            die("Error: " . $sql . "<br>" . $conn->error);
+        }
+        $stmt->close();
+
+        // if the count is greater than 10, set the image to done
+        $sql = "UPDATE images SET done = 1 WHERE id = ? AND count > 10";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $image_id);
+        if (!$stmt->execute()) {
+            die("Error: " . $sql . "<br>" . $conn->error);
+        }
+        $stmt->close();
+
     } else {
         die("Error:User ID or Image ID not set");
     }
@@ -47,7 +66,7 @@ if ($data !== null &&
 // check what the app_id is and then call a related routine
 if ($data !== null && $data['app_id'] !== null && isset($data['app_id'])) {
     $app_id = clean_inputs($data["app_id"]);
-    if ($app_id == 1) {
+    if ($app_id == 2) {
         // Mars Mosaic App
         submit_mars_mosaic($data, $last_id);
     }

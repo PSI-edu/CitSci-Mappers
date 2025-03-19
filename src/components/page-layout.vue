@@ -1,6 +1,6 @@
 <template>
   <div class="page-layout">
-    <NavBar />
+    <NavBar :title="title"/>
     <MobileNavBar />
     <div class="page-layout__content">
       <slot />
@@ -13,4 +13,10 @@
 import NavBar from "@/components/navigation/desktop/nav-bar.vue";
 import MobileNavBar from "@/components/navigation/mobile/mobile-nav-bar.vue";
 import PageFooter from "@/components/page-footer.vue";
+
+const props = defineProps({
+  title: {
+    type: String
+  }
+});
 </script>

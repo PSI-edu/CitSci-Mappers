@@ -1,7 +1,7 @@
 <template>
 <div id="blurbs">
   <Blurb
-      title="Moon Mapper"
+      title="Lunar Melt"
       description="Help us map out ancient geologies on the Moon."
       image="https://moon-mappers.s3.us-east-2.amazonaws.com/Moon.png"
       link="moon-mapper"

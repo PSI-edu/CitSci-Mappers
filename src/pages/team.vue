@@ -7,6 +7,21 @@
           Coming Soon
         </p>
       </div>
+      <h4>Credits: Graphical Elements</h4>
+      <div class="text-blurb">
+        <ul>
+          <li>
+            <strong>Astronaut Helmet & Rocket:</strong> Austin Hinderliter
+          </li>
+          <li>
+            <strong>Planet Logos:</strong> Hexacosichoron / Noel Ruppenthal
+          </li>
+          <li>
+          <strong>All Other Icons: </strong> are Royalty Free and obtained from the
+          <a href="https://thenounproject.com/" class="underline">Noun Project</a> under an Icon Pro License.
+          </li>
+        </ul>
+      </div>
     </div>
   </PageLayout>
 </template>

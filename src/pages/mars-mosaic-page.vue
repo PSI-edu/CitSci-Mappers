@@ -1,5 +1,5 @@
 <template>
-  <PageLayout>
+  <PageLayout title=": Mars Mosaic">
     <div class="content-layout">
       <div id="citsci-main-panel">
         <div id="citsci-mapping-panel">
@@ -72,7 +72,7 @@ onMounted(async () => {
     // Now get the first image
     try {
       const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-        app_id: 1,
+        app_id: 2,
         user_id: localStorage.getItem('user_id')
       });
       controlUrl.value = response.data.file_location;
@@ -127,7 +127,7 @@ const submitBlack = () => {
 const saveResponse = async (response) => {
   try {
     const res = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", {
-      app_id: 1,
+      app_id: 2,
       user_id: localStorage.getItem('user_id'),
       image_id: localStorage.getItem('image_id'),
       response: response
@@ -143,7 +143,7 @@ const saveResponse = async (response) => {
 const getNewImage = async () => {
   try {
     const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-      app_id: 1,
+      app_id: 2,
       user_id: localStorage.getItem('user_id')
     });
     controlUrl.value = response.data.file_location;

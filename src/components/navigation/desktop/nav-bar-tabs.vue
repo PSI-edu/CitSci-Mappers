@@ -1,7 +1,7 @@
 <template>
   <div class="nav-bar__tabs">
     <template v-if="isAuthenticated">
-      <NavBarTab path="/protected" label="Protected" />
+      <NavBarTab path="/" label="Home" />
       <NavBarTab path="/profile" label="Profile" />
       <NavBarTab path="/mars-mosaic" label="Mars Mosaics" />
     </template>
