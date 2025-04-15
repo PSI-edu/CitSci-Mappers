@@ -4,6 +4,7 @@
     height: 600px;
     border-radius: 5px;
     margin: 10px auto;
+    padding: 10px;
     background-color: var(--white);
 }
 #citsci-buttons-panel {
@@ -12,7 +13,7 @@
     width: 80px;
     height: 450px;
     border-radius: 5px;
-    margin: 10px 0 10px 10px;
+    margin: 0 10px 10px 0;
     padding: 10px;
     background-color: var(--dark-aluminium);
 }
@@ -44,10 +45,9 @@
 #citsci-examples {
     position: relative;
     float: left;
-    width: 780px;
+    width: 100%;
     height: 120px;
     border-radius: 5px;
-    margin: 0 10px;
     padding: 10px;
     background: var(--dark-aluminium);
     color: var(--white);
@@ -55,7 +55,7 @@
 
 #citsci-mapping-panel {
     position: relative;
-    width: 475px;
+    width: 465px;
     float: left;
 }
 
@@ -65,8 +65,20 @@
     height: 450px;
     width: 450px;
     border-radius: 5px;
-    margin: 10px 0 10px 10px;
+    margin: 0 0 10px 0;
     background: var(--dark-aluminium);
+}
+
+#citsci-info-panel {
+    position: relative;
+    float: left;
+    height: 450px;
+    width: 220px;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 0;
+    background: var(--dark-aluminium);
+    color: var(--white);
 }
 
 #canvas__control {
@@ -83,7 +95,6 @@
     color: var(--dark-aluminium);
     float: left;
     width: 100%;
-    margin-left: 10px;
     font-weight: 500;
     font-size: 1.5rem;
     line-height: 2.4rem;
@@ -94,8 +105,8 @@
     float: left;
     width: 220px;
     border-radius: 5px;
+    padding: 10px 3px;
     margin-right: 10px;
-    padding: 10px 0;
     background-color: var(--dark-aluminium);
     color: var(--white);
 }
@@ -108,7 +119,7 @@
 #control_panel {
     border: 5px solid var(--orange);
     border-radius: 8px;
-    margin: 5px 5px 0 0;
+    margin: -5px 5px 0 0;
     width: 459px;
     height: 570px;
     float: right;

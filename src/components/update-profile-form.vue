@@ -44,7 +44,7 @@ const props = defineProps({
     required: true,
   },
   userId: {
-    type: Number,
+    type: String,
     required: true,
   },
 });
@@ -68,7 +68,7 @@ console.log(id, email)
 onMounted(async () => {
   if (!id || !email) {
     console.error('Not set.', id, email);
-    apiError.value = 'Could not load user information.';
+    apiError.value = 'Error passing user info.';
     return;
   }
 
@@ -85,7 +85,7 @@ onMounted(async () => {
       apiError.value = '';
       successMessage.value = '';
     } else {
-      apiError.value = 'Failed to fetch user information.';
+      successMessage.value = 'Welcome unnamed human - please set some values.';
       console.error('Failed to fetch user data:', response);
     }
 

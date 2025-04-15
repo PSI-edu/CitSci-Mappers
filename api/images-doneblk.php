@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 echo "Connected successfully to database: " . $db_name . " on " . $db_host . ":" . $db_port . "<br>";
 
 // Get all the images
-$sql = "SELECT id, file_location FROM images WHERE done=0 ";
+$sql = "SELECT id, file_location FROM images WHERE done=0";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {

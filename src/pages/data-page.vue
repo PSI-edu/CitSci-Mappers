@@ -30,15 +30,15 @@
         <div class="text-blurb">
           <p>
            <strong>Lunar Melt:</strong> Our science team is working to understand the geology in and around impact
-            craters with significant Lunar melt. The images come from the Lunar Reconnaissance Orbiter (LRO) and its
+            craters with significant Lunar impact melt. The images come from the Lunar Reconnaissance Orbiter (LRO) and its
             Narrow Angle Camera (NAC). You are helping us understand where the melt is and how it relates to newer
             craters, and all the faults and fractures in the area. Improved maps will allow researchers to better
             understand the where future exploration should occur, and how the Moon's crust has changed over time. This
             data may be used to train machine learning algorithms used by researchers to accelerate mapping. Initial
             research will be used by a team led by Dr. Kirby Runyon at the Planetary Science Institute. A complete
             catalogue of mapped geological features will be made available to the public, with the publishable names
-            (where permitted each volunteer)
-            of everyone who mapped each region will be associated with that regions map. If something particularly
+            (where permitted by each volunteer)
+            of everyone who mapped each region will be associated with that region's map. If something particularly
             interesting
             is found, we will reach out to you to see if you would like to be a collaborator on any resulting papers.
         </p>

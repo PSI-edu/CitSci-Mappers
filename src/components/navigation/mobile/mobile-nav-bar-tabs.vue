@@ -4,6 +4,7 @@
       <MobileNavBarTab path="/" label="Home" />
       <MobileNavBarTab path="/profile" label="Profile" />
       <MobileNavBarTab path="/mars-mosaic" label="Mars Mosaics" />
+      <MobileNavBarTab path="/lunar-melt" label="Lunar Melt" />
     </template>
   </div>
 </template>
