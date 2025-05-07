@@ -5,12 +5,13 @@
 :root {
   --white: #fff;
   --ivory: #eeead4;
-  --beige: #ddb690;
-  --orange: #b4531f;
+  --beige: #ddb690;        /* rgb(221, 182, 144); */
+  --orange: #b4531f;       /* rgb(180,  83,  31); */
   --black: #000000;
-  --yellow: #c58336;
-  --green: #6f6e2a;
-  --blue: #29336c;
+  --yellow: #c58336;       /* rgb(197, 131,  54); */
+  --green: #6f6e2a;        /* rgb(111, 110,  42); */
+  --light-green: #b2aa49;  /* rgb(178, 170,  73); */
+  --blue: #29336c;         /* rgb( 41,  51, 108); */
   --brown: #6e3b1b;
   --indigo: #635dff;
   --light-aluminium: #eaecee;

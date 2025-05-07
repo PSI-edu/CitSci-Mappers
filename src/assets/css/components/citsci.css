@@ -14,15 +14,20 @@
     height: 450px;
     border-radius: 5px;
     margin: 0 10px 10px 0;
-    padding: 10px;
+    padding: 5px;
     background-color: var(--dark-aluminium);
 }
-
-.citsci-button {
-    position: relative;
-    width: 60px;
-    height: 60px;
+#citsci-buttons-panel button {
+    width: 70px;
+    height: 70px;
     border-radius: 5px;
+}
+
+.button-not-selected {
+    background-color: var(--light-aluminium);
+}
+
+.button-selected {
     background-color: var(--aluminium);
 }
 
@@ -48,15 +53,23 @@
     width: 100%;
     height: 120px;
     border-radius: 5px;
-    padding: 10px;
+    padding: 10px 0;
     background: var(--dark-aluminium);
     color: var(--white);
 }
 
+#citsci-examples img {
+    width: 140px;
+    height: 100px;
+    border-radius: 5px;
+    margin: 0 0 0 13px !important;
+}
+
 #citsci-mapping-panel {
     position: relative;
-    width: 465px;
+    width: 450px;
     float: left;
+    margin-right: 10px
 }
 
 #canvas__map, #canvas__compare {
@@ -72,13 +85,43 @@
 #citsci-info-panel {
     position: relative;
     float: left;
-    height: 450px;
-    width: 220px;
+    height: 390px;
+    width: 380px;
     border-radius: 5px;
     padding: 10px;
     margin: 0;
     background: var(--dark-aluminium);
     color: var(--white);
+
+}
+
+#ex-canvas {
+    position: absolute;
+    top: 305px;
+    left: 10px;
+    height: 75px;
+    width: 100px;
+    border-radius: 5px;
+    margin: 0;
+    background: var(--white);
+}
+
+.submit-button {
+    padding: 2px 15px;
+    width: 380px;
+    height: 50px;
+    border: none; /* Remove default border */
+    background-color: var(--blue);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px; /* Optional: for rounded corners */
+    font-size: 3rem;
+    Margin-top: 10px;
+}
+
+.submit-button:hover {
+    background-color: var(--indigo);
 }
 
 #canvas__control {
