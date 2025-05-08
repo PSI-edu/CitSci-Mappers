@@ -34,6 +34,7 @@ const annCtx = ref(null); // Context for the annotation canvas
 const isDrawing = ref(false);
 const startPoint = ref(null);
 const currentDrawing = ref(null);
+const minsize = 25;
 
 const setDrawingMode = (newMode) => {
   isDrawing.value = false;
@@ -70,7 +71,7 @@ const handleMouseUp = (event) => {
   if (!isDrawing.value || !currentDrawing.value) return;
   isDrawing.value = false;
 
-  // Start by clering the screen
+  // Start by clearing the screen
   annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 
   // Draw the good stuff
@@ -83,12 +84,10 @@ const handleMouseUp = (event) => {
     const dx = endPoint.x - startPoint.value.x;
     const dy = endPoint.y - startPoint.value.y;
     const length = Math.sqrt(dx * dx + dy * dy);
-    if (length < 20) return; // Ignore small lines
+    if (length <= minsize) return; // Ignore small lines
   } else if (props.mode === 'circle') {
     const dx = endPoint.x - startPoint.value.x;
     const dy = endPoint.y - startPoint.value.y;
-    const radius = Math.sqrt(dx * dx + dy * dy);
-    if (radius < 10) return; // Ignore small circles
   }
 
   currentDrawing.value.data = getCurrentShapeData(endPoint.x, endPoint.y);
