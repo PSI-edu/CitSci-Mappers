@@ -40,7 +40,7 @@
           <h3>Craters, Boulders, Rocks</h3>
           <p >We are mapping geologic features related to flowing impact melt
             in the Moon's Little Lowell & Tycho craters. Long ago, the heat
-            of asteroid impacts melted the regions you're mapping. You're
+            of asteroid impacts melted the regions you're mapping. Your
             work helps us understand how the melt flowed & when it cooled. </p>
 
           <br/>
@@ -192,6 +192,8 @@ onMounted(async () => {
 
   // Draw the example marks on the canvas: a 6px circle and a 6 pixel line
   const canvasExample = exampleMarks.value;
+  canvasExample.width=100;
+  canvasExample.height=75;
   const ctxExample = canvasExample.getContext('2d');
   //
   // // Draw example circle
