@@ -132,7 +132,6 @@ const saveResponse = async (response) => {
       image_id: localStorage.getItem('image_id'),
       response: response
     });
-    console.log(res.data);
     getNewImage();
   } catch (error) {
     console.log(error);

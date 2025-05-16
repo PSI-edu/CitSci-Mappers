@@ -1,5 +1,5 @@
 <template>
-  <PageLayout title=": Lunar Melt">
+  <PageLayout title=": Lunar Melt BETA">
     <div class="content-layout">
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
@@ -112,7 +112,6 @@ const setText = (text1, text2) => {
 
 const setExamples = (tool) => {
   const prefix = "https://moon-mappers.s3.us-east-2.amazonaws.com/examples/";
-  console.log("Setting examples for tool:", tool);
   exampleImages.value = [];
   if (tool === 'line') {
     for (let i = 1; i <= 6; i++) {
@@ -150,7 +149,6 @@ const setExamples = (tool) => {
 
 const handleDraw = (drawing) => {
   drawings.value.push(drawing);
-  console.log("Current Drawings:", drawings.value);
 };
 
 const clearDrawing = (index) => {
@@ -161,31 +159,31 @@ const clearDrawing = (index) => {
 };
 
 const submitDrawings = async () => {
-  console.log("Submitting drawings");
-  // if (!localStorage.getItem('user_id') || !localStorage.getItem('image_id')) {
-  //   console.error("User ID or Image ID not found in local storage.");
-  //   return;
-  // }
-  //
-  // const payload = {
-  //   user_id: localStorage.getItem('user_id'),
-  //   image_id: localStorage.getItem('image_id'),
-  //   drawings: drawings.value.map(drawing => ({
-  //     type: drawing.type,
-  //     data: drawing.data,
-  //   })),
-  // };
-  //
-  // console.log("Submitting drawings:", payload);
-  //
-  // try {
-  //   const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit-annotations.php", payload);
-  //   console.log("Submission successful:", response.data);
-  //   // Optionally, provide user feedback here
-  // } catch (error) {
-  //   console.error("Error submitting drawings:", error);
-  //   // Optionally, provide user feedback here
-  // }
+  if (!localStorage.getItem('user_id') || !localStorage.getItem('image_id')) {
+    console.error("User ID or Image ID not found in local storage.");
+    return;
+  }
+
+  const payload = {
+    user_id: localStorage.getItem('user_id'),
+    image_id: localStorage.getItem('image_id'),
+    app_id: 3,
+    drawings: drawings.value.map(drawing => ({
+      type: drawing.type,
+      data: drawing.data,
+    })),
+  };
+
+  console.log("Submitting drawings:", payload);
+
+  try {
+    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit-annotations.php", payload);
+    console.log("Submission successful:", response.data);
+    // Optionally, provide user feedback here
+  } catch (error) {
+    console.error("Error submitting drawings:", error);
+    // Optionally, provide user feedback here
+  }
 };
 
 onMounted(async () => {

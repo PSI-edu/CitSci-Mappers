@@ -1,6 +1,6 @@
 <template>
 
-      <canvas ref="canvas__control" id="canvas__control" width="450" height="450" @click="drawRectangle"></canvas>
+      <canvas ref="canvas__control" id="canvas__control" width="450" height="450"></canvas>
 
 </template>
 
@@ -45,30 +45,6 @@ const loadImage = () => {
 
 </script>
 
-<script>
-export default {
-  methods: {
-    drawRectangle(event) {
-      const canvas = this.$refs.canvas__map;
-      const ctx = canvas.getContext('2d');
-      const boxEdge = canvas.getBoundingClientRect();
-      let mouseX = event.clientX - boxEdge.left;
-      let mouseY = event.clientY - boxEdge.top;
-      console.log("Click: " + mouseX.toString() + " " + mouseY.toString());
 
-      const rectWidth = 30;
-      const rectHeight = 30;
-
-      const x = mouseX - rectWidth / 2;
-      const y = mouseY - rectHeight / 2;
-
-      ctx.beginPath();
-      ctx.strokeStyle="red";
-      ctx.rect(x, y, rectWidth, rectHeight);
-      ctx.stroke();
-    }
-  }
-}
-</script>
 
 

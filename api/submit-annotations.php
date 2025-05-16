@@ -29,34 +29,36 @@ if ($data !== null &&
         $image_id = clean_inputs($data["image_id"]);
         $app_id = clean_inputs($data["app_id"]);
 
-        // Record that the user submitted the image
-        $sql = "INSERT INTO image_users (user_id, image_id, application_id) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iii", $user_id, $image_id, $app_id);
-        if (!$stmt->execute()) {
-            die("Error: " . $sql . "<br>" . $conn->error);
-        }
-        $stmt->close();
-        // get the user image id
-        $last_id = $conn->insert_id;
-
-        //increment the image count
-        $sql = "UPDATE images SET count = count + 1 WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $image_id);
-        if (!$stmt->execute()) {
-            die("Error: " . $sql . "<br>" . $conn->error);
-        }
-        $stmt->close();
-
-        // if the count is greater than 10, set the image to done
-        $sql = "UPDATE images SET done = 1 WHERE id = ? AND count > 10";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $image_id);
-        if (!$stmt->execute()) {
-            die("Error: " . $sql . "<br>" . $conn->error);
-        }
-        $stmt->close();
+        print_r($data);
+//
+//        // Record that the user submitted the image
+//        $sql = "INSERT INTO image_users (user_id, image_id, application_id) VALUES (?, ?, ?)";
+//        $stmt = $conn->prepare($sql);
+//        $stmt->bind_param("iii", $user_id, $image_id, $app_id);
+//        if (!$stmt->execute()) {
+//            die("Error: " . $sql . "<br>" . $conn->error);
+//        }
+//        $stmt->close();
+//        // get the user image id
+//        $last_id = $conn->insert_id;
+//
+//        //increment the image count
+//        $sql = "UPDATE images SET count = count + 1 WHERE id = ?";
+//        $stmt = $conn->prepare($sql);
+//        $stmt->bind_param("i", $image_id);
+//        if (!$stmt->execute()) {
+//            die("Error: " . $sql . "<br>" . $conn->error);
+//        }
+//        $stmt->close();
+//
+//        // if the count is greater than 10, set the image to done
+//        $sql = "UPDATE images SET done = 1 WHERE id = ? AND count > 10";
+//        $stmt = $conn->prepare($sql);
+//        $stmt->bind_param("i", $image_id);
+//        if (!$stmt->execute()) {
+//            die("Error: " . $sql . "<br>" . $conn->error);
+//        }
+//        $stmt->close();
 
     } else {
         die("Error:User ID or Image ID not set");

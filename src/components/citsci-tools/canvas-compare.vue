@@ -27,8 +27,6 @@ const props = defineProps({
   diffName: String,
 });
 
-console.log(props);
-
 // onload show imageName and then respond to radio button clicks
 const canvas__compare = ref(null);
 onMounted(() => {
