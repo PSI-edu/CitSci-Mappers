@@ -8,7 +8,7 @@ sudo apt -y install apache2
 sudo apt -y install certbot python3-certbot-apache
 # add ServerName and edit ServerAlias in file below
 # also add beneath DocumentRoot
-# Redirect / https://mappers.psi.edu
+# Redirect / https://yourserver.com/
 # <Directory /var/www/html>
 #    Options Indexes FollowSymLinks
 #    AllowOverride All

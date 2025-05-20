@@ -13,7 +13,6 @@ $id = $argv[1];
 $name = $argv[2];
 $path = $argv[4];
 
-
 global $db_host, $db_username, $db_password, $db_name, $db_port;
 require_once("../api/settings.php");
 
@@ -24,10 +23,11 @@ die("Connection failed: " . $conn->connect_error);
 }
 echo "Connected successfully to database: " . $db_name . " on " . $db_host . ":" . $db_port . "<br>";
 
+
 $sql = "INSERT INTO image_sets (name, application_id) VALUES ('$name', '$id') ";
 if ($conn->query($sql) === TRUE) {
 $set_id = $conn->insert_id;
-echo "New record created successfully with id: " . $set_id . "<br>";
+echo "New record created successfully with id: " . $set_id . "\n";
 } else {
 echo "Error: " . $sql . "<br>" . $conn->error;
 }

@@ -176,15 +176,46 @@ sudo cp api/* /var/www/html
 Got to ```http://apiendpoint.com/installer-tools/install.php```
 
 # Adding Data
-Science apps require the following 
-- Images (450x450 px)
-- a text file with the following values on each line: root_image_name.png Xvalue Yvalue. The
-  X and Y values are the pixel coordinates of the top left corner of the image relative to the master image
+This software allows people to map / annotate / comment on images that are displayed within a user interface.
+It is understood these images are likely coming from something larger that we're calling a master image. Since
+our software works entirely in pixel space, the database is designed to track the following information
+- Master Images and their metadata
+- The Images the users will be shown that are chopped out of the master images and their metadata
 
-To setup a new app, 
+The Master Image should be a PNG with the stretch you want displayed on screen.
 
-TODO Make this a Admin Screen Option
+We have created tools in the utilities directory (Do not make this web accessible!!) that can be used to chop
+up your master images, and upload details into the database. These are designed to be run from the commandline, 
+and we recommend running imagechop locally and 
+sftping or otherwise uploading the produced files to your image repo through a webtool.
 
+TODO Make everything but imagechop possible through an admin interface
+
+## 1_imagechop.php
+Assumed file structure: Place the master image in ```utilities/scratch```
+Usage: ```php 1_imagechop.php <master_image.png>```
+Output (into scratch directory): 
+* 1 text file following the naming convention `masterimagename.txt` with the following columns
+  * Line 1 - Master Image Filename: the name of the master image (e.g. masterimagename.png)
+  * Line 2 thru Line N, tab separated values as follows
+    * image_name: the name of the image (e.g. masterimagename_X_Y.png)
+    * x: the x coordinate of the top left corner of the image
+    * y: the y coordinate of the top left corner of the image
+
+* N 450x450 images with 10% overlap in each direction, and the following naming convention `masterimagename_X_Y.png`
+Where X and Y are the pixel coordinates of the top left corner of the image.
+
+The images should all be archived on a server that is publicly accessible. We used AWS S3 with the following directory structure
+* ProjectName
+  * Region
+    * masterimagename.txt
+    * masterimagename
+      * masterimagename.png
+      * masterimagename_X1_Y1.png
+      * masterimagename_X2_Y2.png
+      * ...
+      * masterimagename_XN_YN.png
+  
 
 # Extras
 ### Image creation
