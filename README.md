@@ -45,7 +45,8 @@ sudo apt-get update && sudo apt-get install -y \
     libwebp-dev \
     libfreetype6-dev
 ```
-
+In the utilities directory, there is a file called setup.sh that
+can setup a generic ubuntu server.
 
 ### Option 2: Docker (Good for development, not recommended for production)
 You'll need the docker desktop and docker cli tools installed.
@@ -55,7 +56,7 @@ We are using Vue Composition API. Help setting up Auth0 comes from the [Vue.js A
 tutorial. Additional useful information here: https://developer.auth0.com/resources/guides/spa/vue/basic-authentication
 
 Create a new application
-- Single page application
+- Single-page application
 - vue
 - Social Connections (pick at will)
 - Enable users to enter a user ID & Password (They will get grouchy if you don't do this)
@@ -64,10 +65,13 @@ Create a new action so each user gets written into the database
 - In auth0 go to Actions->Triggers and select post-login
 - Click [+] to add a new action from scratch
 - Give the action a name (We used "Consent Check"), and use the default runtime "Node 22"
-- On the new screen, click the blue "Add Secret" button, and enter
-      - Key: CONSENT_FORM_URL
+- On the new screen, click the blue "Add Secret" button, and enter 
+  - Key: CONSENT_FORM_URL
   - Value: https://your.url/consent 
-  - Replace everything in the code window with the software below
+- click the blue "Add Secret" button again, and this time enter
+  - Key: PROFILE_URL
+  - Value: https://your.url/profile
+- Replace everything in the code window with the software below
 ```
 exports.onExecutePostLogin = async (event, api) => {
   const { consentGiven } = event.user.user_metadata || {};
@@ -76,6 +80,7 @@ exports.onExecutePostLogin = async (event, api) => {
     const options = {
         query: {
           email: event.user.email,
+          id: event.user_id,
         },
       };
     api.redirect.sendUserTo(event.secrets.CONSENT_FORM_URL, options);
@@ -86,6 +91,7 @@ exports.onContinuePostLogin = async (event, api) => {
     if (event.request.body.confirm === "yes") {
       api.user.setUserMetadata("consentGiven", true);
       api.user.setUserMetadata("consentTimestamp", Date.now());
+      api.redirect.sendUserTo(event.secrets.PROFILE_URL)
     return;
   } else {
     return api.access.deny("User did not consent");
@@ -107,12 +113,10 @@ linked using their email
 NOTE: YOU WILL NEED TO DO THIS SEPARATELY FOR BOTH YOUR DEV ENVIRONMENT AND YOUR 
 PRODUCTION ENVIRONMENT AND BOTH WILL NEED TO BE TIED TO A DIFFERENT ACCOUNT
 
-Setup the app to run on your system
+# Setup Vue app environment
 - copy .env.example to .env
 - go to your application's Settings tab (Applications->Applications->Click application name->Settings)
 - open .env and copy in the values from auth0 for Domain, ClientID, Client Secret
-
-TODO https://auth0.com/docs/customize/actions/explore-triggers/signup-and-login-triggers/login-trigger/redirect-with-actions
 
 
 # API setup with MariaDB
@@ -135,13 +139,13 @@ But now you don't have a funcitoning API...
 
 You do need the api if you want to do anything other than UX/UI work. This
 means you need the api
-directory to be accessible. One option is to point a virtual host at the 
-api directory, and then put that URL in the .env file. Another option is Docker 
-and put the docker container url (http://localhost:8081 by default) in .env
+directory to be accessible. 
 
-` docker-compose build --no-cache `
+**Lamp Stack Option:** Just oint a virtual host at the 
+api directory, and then put that URL in the .env file. 
 
-` docker-compose up --no-build `
+**Docker:** Put the docker container url (http://localhost:8081 by default) in .env and then start the docker containers using
+`docker-compose build --no-cache; docker-compose up --no-build`
 
 With docker, it is running a build of the app, so you'll need to rerun that container to see changes made in vue.
 One frankenstein solution is to use npm run dev for the vue app and docker for everything else. 
@@ -152,7 +156,7 @@ Setup your database and database user
 ```
 CREATE DATABASE 'mappers_db';
 CREATE USER 'mappers_user'@'%' IDENTIFIED BY 'password';
-GRANT ALL ON mappers_db.* to 'mappers_db'@'%';
+GRANT ALL ON mappers_db.* to 'mappers_user'@'%';
 ```
 
 Clone the git repo to somewhere that isn't your web directory (I used ~), then cd into the repo, build 
@@ -167,6 +171,20 @@ sudo cp .htaccess /var/www/html
 sudo cp dist/* /var/www/html
 sudo cp api/* /var/www/html
 ```
+
+# Install the database
+Got to ```http://apiendpoint.com/installer-tools/install.php```
+
+# Adding Data
+Science apps require the following 
+- Images (450x450 px)
+- a text file with the following values on each line: root_image_name.png Xvalue Yvalue. The
+  X and Y values are the pixel coordinates of the top left corner of the image relative to the master image
+
+To setup a new app, 
+
+TODO Make this a Admin Screen Option
+
 
 # Extras
 ### Image creation

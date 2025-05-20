@@ -31,7 +31,6 @@ import axios from 'axios';
 
 const { user } = useAuth0();
 
-console.log(user.value.email);
 const email = ref(null);
 const userId = ref(null);
 
@@ -40,7 +39,7 @@ onMounted(async () => {
     const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
       email: user.value.email
     });
-    console.log(response.data);
+
     userId.value = response.data;
     email.value = user.value.email;
   } catch (error) {
