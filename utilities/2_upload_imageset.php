@@ -55,4 +55,4 @@ while (($data = fgetcsv($file, 0, "\t")) !== FALSE) {
     }
 }
 $conn->close();
-echo "inserted $i images successfully.<br>";
+echo "inserted $i images successfully.\n";
