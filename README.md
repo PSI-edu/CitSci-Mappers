@@ -327,4 +327,22 @@ inkscape ./icon.svg --export-width=36 --export-filename="./nav-icon.png";
 ```
 - copy new files and archive the master image on your image server
 
+### HTACCESS Password lock
+Want to keep your site private for testing? Do it with htaccess!
+
+```
+sudo htpasswd -c /etc/apache2/.htpasswd BuildTeam
+vi ~/CitSci-Mappers/.htaccess
+```
+
+Now add the following lines at the top
+```
+AuthType Basic
+AuthName "Preview Access Only"
+AuthUserFile /etc/apache2/.htpasswd
+Require valid-user
+```
+
+You'll need to copy the .htaccess file to your web server and comment out the line to update .htaccess in your script dodist
+
 

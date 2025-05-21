@@ -27,7 +27,7 @@ echo "Connected successfully to database: " . $db_name . " on " . $db_host . ":"
 $sql = "INSERT INTO image_sets (name, application_id) VALUES ('$name', '$id') ";
 if ($conn->query($sql) === TRUE) {
     $set_id = $conn->insert_id;
-    echo "New record created successfully with id: " . $set_id . "\n";
+    echo "New image_set created successfully with id: " . $set_id . "\n";
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
