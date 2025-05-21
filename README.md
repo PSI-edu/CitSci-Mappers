@@ -305,6 +305,9 @@ Usage: ```cd utilities; php 2_upload_imageset.php app_id imageset_name <master_i
 These commands should be the same on both your dev and production servers if you put your images in a place
 both can access. To make life easier, consider putting the compands in a script file. Example provided.
 
+### 3_
+
+
 # Extras
 ### Image creation
 To create the favicon and navbar icon

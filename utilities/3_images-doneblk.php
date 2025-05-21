@@ -5,8 +5,7 @@
 
 // load in the settings
 global $db_host, $db_username, $db_password, $db_name, $db_port;
-require_once("settings.php");
-require_once("helper-functions.php");
+require_once("../api/settings.php");
 
 // Check connection
 $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
@@ -27,27 +26,27 @@ if ($result->num_rows > 0) {
         $id = $row["id"];
         $file_location = $row["file_location"];
 
-        echo "Checking image: " . $file_location . "<br>";
+        echo "Checking image: " . $file_location . "\n";
 
         if(isImageBlack($file_location)) {
-            echo "Image is black. Setting done=1<br>";
+            echo "Image is black. Setting done=1";
             $update_sql = "UPDATE images SET done = 1 WHERE id = ?";
             $stmt = $conn->prepare($update_sql);
             $stmt->bind_param("i", $id); // "i" specifies the variable type is integer
             if ($stmt->execute()) {
-                echo "Image ID " . $id . " is black and marked as done.<br>";
+                echo "Image ID " . $id . " is black and marked as done.\n";
             } else {
-                echo "Error updating record: " . $stmt->error . "<br>";
+                echo "Error updating record: " . $stmt->error . "\n";
             }
             $stmt->close();
         } else {
-            echo "Image ID " . $id . " is not black.<br>";
+            echo "Image ID " . $id . " is not black.\n";
         }
 
 
     }
 } else {
-    echo "No images found.<br>";
+    echo "No images found.\n";
 }
 $conn->close();
 
@@ -61,19 +60,25 @@ function isImageBlack($image_url) {
 
         $width = imagesx($image);
         $height = imagesy($image);
+        $tot = $width * $height;
+        $notblk = 0;
 
         for ($x = 0; $x < $width; $x++) {
             for ($y = 0; $y < $height; $y++) {
                 $rgb = imagecolorat($image, $x, $y);
 
-                if ($rgb != 0) {
-                    imagedestroy($image);
-                    return false; // Not black
+                if ($rgb != 0) { // not black
+                    $notblk++;
                 }
             }
         }
         imagedestroy($image);
-        return true; // Entirely black
+
+        if ( $notblk / $tot >= 0.5) {
+            return true; // Mostly black
+        }
+        else
+            return false; // Mostly data
     } catch (Exception $e) {
         return false; // Handle exceptions (e.g., file not found, invalid image)
     }
