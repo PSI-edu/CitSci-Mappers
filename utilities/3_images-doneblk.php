@@ -20,7 +20,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     //output data of each row
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
 
         // Get the values
         $id = $row["id"];
@@ -28,7 +28,7 @@ if ($result->num_rows > 0) {
 
         echo "Checking image: " . $file_location . "\n";
 
-        if(isImageBlack($file_location)) {
+        if (isImageBlack($file_location)) {
             echo "Image is black. Setting done=1 \n";
             $update_sql = "UPDATE images SET done = 1 WHERE id = ?";
             $stmt = $conn->prepare($update_sql);
@@ -50,7 +50,8 @@ if ($result->num_rows > 0) {
 }
 $conn->close();
 
-function isImageBlack($image_url) {
+function isImageBlack($image_url)
+{
     try {
         $image = @imagecreatefromstring(file_get_contents($image_url)); //Use @ to suppress warnings in case of invalid URL or image
 
@@ -69,17 +70,17 @@ function isImageBlack($image_url) {
 
                 if ($rgb != 0) { // not black
                     $notblk++;
-                    }
                 }
             }
         }
         imagedestroy($image);
 
-    if ( ($notblk) / $tot <= 0.25) {
+        if (($notblk) / $tot <= 0.25)
             return true; // Mostly black
         else
             return false; // Mostly data
-    } catch (Exception $e) {
+    } catch
+    (Exception $e) {
         return false; // Handle exceptions (e.g., file not found, invalid image)
     }
 }
