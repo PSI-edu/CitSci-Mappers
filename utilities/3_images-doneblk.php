@@ -69,16 +69,15 @@ function isImageBlack($image_url) {
 
                 if ($rgb != 0) { // not black
                     $notblk++;
+                    if ( $notblk / $tot >= 0.5) {
+                        imagedestroy($image);
+                        return true; // Mostly black
+                    }
                 }
             }
         }
         imagedestroy($image);
-
-        if ( $notblk / $tot >= 0.5) {
-            return true; // Mostly black
-        }
-        else
-            return false; // Mostly data
+        return false; // Mostly data
     } catch (Exception $e) {
         return false; // Handle exceptions (e.g., file not found, invalid image)
     }
