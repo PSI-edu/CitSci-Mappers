@@ -12,7 +12,7 @@ $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-echo "Connected successfully to database: " . $db_name . " on " . $db_host . ":" . $db_port . "<br>";
+echo "Connected successfully to database: " . $db_name . " on " . $db_host . ":" . $db_port . "\n";
 
 // Get all the images
 $sql = "SELECT id, file_location FROM images WHERE done=0";
@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
         echo "Checking image: " . $file_location . "\n";
 
         if(isImageBlack($file_location)) {
-            echo "Image is black. Setting done=1";
+            echo "Image is black. Setting done=1 \n";
             $update_sql = "UPDATE images SET done = 1 WHERE id = ?";
             $stmt = $conn->prepare($update_sql);
             $stmt->bind_param("i", $id); // "i" specifies the variable type is integer
@@ -69,7 +69,7 @@ function isImageBlack($image_url) {
 
                 if ($rgb != 0) { // not black
                     $notblk++;
-                    if ( $notblk / $tot >= 0.5) {
+                    if ( $notblk / $tot >= 0.75) {
                         imagedestroy($image);
                         return true; // Mostly black
                     }
