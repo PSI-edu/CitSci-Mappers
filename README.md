@@ -239,7 +239,7 @@ Now you can type ```dodist``` from anywhere to pull the latest code from the rep
 Got to ```http://yourAPIurl.com/installer-tools/install.php```
 
 That's it. You now have a database.
-
+ 
 # Adding Data to annotate
 
 NOTE TO DOCKER USERS: The utilities directory is not mounted in the docker container. You'll need to
