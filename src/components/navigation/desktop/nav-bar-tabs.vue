@@ -3,8 +3,8 @@
     <template v-if="isAuthenticated">
       <NavBarTab path="/" label="Home" />
       <NavBarTab path="/profile" label="Profile" />
-      <NavBarTab path="/mars-mosaic" label="Mars Mosaics" />
       <NavBarTab path="/lunar-melt" label="Lunar Melt" />
+      <NavBarTab path="/mars-mosaic" label="Mars Mosaics" />
     </template>
   </div>
 </template>

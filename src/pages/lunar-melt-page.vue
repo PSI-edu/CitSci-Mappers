@@ -46,6 +46,7 @@
           <br/>
           <h4>{{ infoTitle }}</h4>
           <p>{{ infoText }}</p>
+
           <div id="ex-canvas">
             <canvas
                 ref="exampleMarks" id="exampleMarks">
@@ -189,9 +190,6 @@ const saveResponse = async () => {
 
   console.log("Submitting drawings:", payload);
 
-  //clear existing drawings
-  drawings.value = [];
-
   try {
     const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", payload);
     console.log("Submission Successful:", response.data);
@@ -199,6 +197,19 @@ const saveResponse = async () => {
 
   } catch (error) {
     console.error("Error submitting drawings:", error);
+    // Show the submit button and hide the busy button in case of error
+    if (submitButton) {
+      submitButton.style.display = 'inline';
+    }
+    if (busyButton) {
+      busyButton.style.display = 'none';
+    }
+  } finally {
+    // Clear drawings after submission
+    drawings.value = [];
+    if (canvasMapRef.value) {
+      canvasMapRef.value.redrawCanvas();
+    }
   }
 
   // Show the submit button and hide the busy button
