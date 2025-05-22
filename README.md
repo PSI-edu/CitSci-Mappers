@@ -241,7 +241,14 @@ Got to ```http://yourAPIurl.com/installer-tools/install.php```
 That's it. You now have a database.
 
 # Adding Data to annotate
-This software allows people to map / annotate / comment on images that are displayed within a user interface.
+
+NOTE TO DOCKER USERS: The utilities directory is not mounted in the docker container. You'll need to
+move the utilities directory into the api directory and edit the path to settings.php DO NOT DO THIS
+ON A PUBLICLY ACCESSIBLE CONTAINER. This is a localhost solution. To access Docker from the command line, 
+use ```docker ps``` to get the container ID, and then use ```docker exec -it <container_id> bash``` to get a shell in the container.
+
+
+This software allows people to map/annotate/comment on images that are displayed within a user interface.
 It is understood these images are likely coming from something larger that we're calling a master image. Since
 our software works entirely in pixel space, the database is designed to track the following information
 - Which application an app belongs too

@@ -82,8 +82,11 @@ onMounted(async () => {
       usernameError.value = ''; // Clear any previous username error
       apiError.value = '';
       successMessage.value = '';
+      if (response.data.username == 'not set' && response.data.publishable_name == 'not set') {
+        successMessage.value = 'Welcome unnamed human - please set some values.';
+      }
     } else {
-      successMessage.value = 'Welcome unnamed human - please set some values.';
+      apiError.value = 'Your account wasn\'t added to the DB correctly. Please alert Pamela on the Discord or email her at plg@psi.edu';
       console.error('Failed to fetch user data:', response);
     }
 

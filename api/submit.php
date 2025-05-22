@@ -65,10 +65,18 @@ if ($data !== null &&
 // check what the app_id is and then call a related routine
 if ($data !== null && $data['app_id'] !== null && isset($data['app_id'])) {
     $app_id = clean_inputs($data["app_id"]);
-    if ($app_id == 2) {
-        // Mars Mosaic App
-        submit_mars_mosaic($data, $last_id);
+    // use a switch statement to determine which app_id is being used
+    switch ($app_id) {
+        case 2:
+            submit_mars_mosaic($data, $last_id);
+            break;
+        case 3:
+            submit_moon_activity_1($data, $last_id);
+            break;
+        default:
+            echo "error: App not found";
     }
+
 } else {
     echo "App ID not set";
 }
@@ -99,4 +107,79 @@ function submit_mars_mosaic($data, $user_image_id) {
     } else {
         die("Error: Response not set");
     }
+}
+
+function submit_moon_activity_1($data, $user_image_id) {
+    global $conn;
+
+    print_r($data["drawings"]);
+
+    // set values that get reused
+    $app_id = clean_inputs($data["app_id"]);
+    $user_id = clean_inputs($data["user_id"]);
+    $image_id = clean_inputs($data["image_id"]);
+
+    // If there are marks, step through the json and save the drawings in the marks table
+    if (!isset($data["drawings"]) || $data["drawings"] == null) {
+        die("This image had no marks to record;");
+    }
+    foreach ($data["drawings"] as $drawing) {
+        // Get the data
+
+        $type = clean_inputs($drawing["type"]);
+
+        switch ($type) {
+            case "circle":
+                $type = "crater";
+                $x1 = clean_inputs($drawing["data"]["x"]);
+                $y1 = clean_inputs($drawing["data"]["y"]);
+                $diameter = 2 * clean_inputs($drawing["data"]["radius"]);
+
+                //setup the mysql to insert into the marks table
+                $sql = "INSERT INTO marks (application_id, image_user_id, user_id, image_id, type, x1, y1, diameter) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("iiiisiid", $app_id, $user_image_id, $user_id, $image_id, $type, $x1, $y1, $diameter);
+                if (!$stmt->execute()) {
+                    die("Error: " . $sql . "<br>" . $conn->error);
+                }
+                break;
+            case "dot":
+                $type = "rock";
+                $x1 = clean_inputs($drawing["data"]["x"]);
+                $y1 = clean_inputs($drawing["data"]["y"]);
+
+                //setup the mysql to insert into the marks table
+                $sql = "INSERT INTO marks (application_id, image_user_id, user_id, image_id, type, x1, y1) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("iiiisii", $app_id, $user_image_id, $user_id, $image_id, $type, $x1, $y1);
+                if (!$stmt->execute()) {
+                    die("Error: " . $sql . "<br>" . $conn->error);
+                }
+                break;
+            case "line":
+                $type = "boulder";
+                // x1 is always the lower x value
+                $x1 = clean_inputs($drawing["data"]["x1"]);
+                $x2 = clean_inputs($drawing["data"]["x2"]);
+                $y1 = clean_inputs($drawing["data"]["y1"]);
+                $y2 = clean_inputs($drawing["data"]["y2"]);
+                if ($x1 > $x2) {
+                    $temp = $x1;
+                    $x1 = $x2;
+                    $x2 = $temp;
+                    $temp = $y1;
+                    $y1 = $y2;
+                    $y2 = $temp;
+                }
+
+                //setup the mysql to insert into the marks table
+                $sql = "INSERT INTO marks (application_id, image_user_id, user_id, image_id, type, x1, y1, x2, y2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("iiiisiiii", $app_id, $user_image_id, $user_id, $image_id, $type, $x1, $y1, $x2, $y2);
+                break;
+            default:
+                die("Error: Unknown type");
+        }
+    }
+
 }
