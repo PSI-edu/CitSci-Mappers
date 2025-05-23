@@ -1,0 +1,29 @@
+#annoucements, #socials {
+  display: flex;
+    position: relative;
+  flex-direction: column;
+    background: #29336c;
+    min-height: 5vh;
+    border-radius: 1rem;
+    color: var(--white);
+    padding: 1rem 2rem;
+}
+#annoucements h4, #socials h4 {
+    margin: 5px 0 2px 0;
+}
+
+#annoucements ul, #socials ul {
+    margin: 0;
+}
+
+#annoucements {
+    width: 60%;
+    float: left;
+    margin: 1rem 0 1rem 2rem;
+}
+
+#socials {
+    width: 33%;
+    float: right;
+    margin: 1rem 2rem 1rem 0;
+}
