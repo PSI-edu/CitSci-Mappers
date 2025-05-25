@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  position: relative;
   width: 100%;
 
   background: var(--orange);
@@ -88,5 +88,13 @@
   .hero-banner__description {
     font-size: 1.6rem;
     line-height: 2.4rem;
+
   }
+}
+
+#beta {
+  position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(50px);
 }

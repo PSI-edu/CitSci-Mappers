@@ -18,7 +18,6 @@
       </ul>
       <h4>Minor Missing Features</h4>
       <ul>
-        <li>Add "BETA" graphic to hero graphic</li>
         <li>Graphics/ Icons are needed on homepage blue boxes</li>
       </ul>
     </div>
