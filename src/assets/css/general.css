@@ -195,7 +195,7 @@ code {
   padding: 0.6rem;
     top: 0;
     right: 0;
-  float: right;
+  z-index: 1000;
   text-align: right;
 }
 

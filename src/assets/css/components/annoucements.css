@@ -1,6 +1,6 @@
 #annoucements, #socials {
-  display: flex;
     position: relative;
+  display: flex;
   flex-direction: column;
     background: #29336c;
     min-height: 5vh;
@@ -9,7 +9,13 @@
     padding: 1rem 2rem;
 }
 #annoucements h4, #socials h4 {
-    margin: 5px 0 2px 0;
+    margin: 8px 0 8px 0;
+    line-height: 22px;
+}
+
+#annoucements .text-block, #socials .text-block {
+    display: flex;
+    flex-direction: column;
 }
 
 #annoucements ul, #socials ul {
@@ -24,6 +30,29 @@
 
 #socials {
     width: 33%;
+    position: relative;
     float: right;
     margin: 1rem 2rem 1rem 0;
 }
+.social-icon {
+    background-color: var(--white);
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+    position: relative;
+    float: left;
+    margin-right: 10px;
+    margin-top: 3px;
+}
+
+.social-icon img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+
+}
+
