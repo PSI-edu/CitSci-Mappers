@@ -9,9 +9,7 @@
   color: var(--white);
 
   /* responsive */
-
-  margin: 0 auto;
-  padding: 9rem 6.4rem 1rem;
+  padding: 2rem 6.4rem 1rem;
 }
 
 
@@ -61,9 +59,17 @@
   line-height: 3.2rem;
 }
 
+#beta {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(30px);
+  width: 150px;
+}
+
 @media only screen and (max-width: 540px) {
   .hero-banner {
-    padding: 7rem 1rem 1rem;
+    padding: 1rem 1rem 1rem;
   }
 
   .hero-banner__logo {
@@ -90,11 +96,13 @@
     line-height: 2.4rem;
 
   }
+
+  #beta {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(25px);
+    width: 75px;
+  }
 }
 
-#beta {
-  position: absolute;
-    top: 90px;
-    left: 50%;
-    transform: translateX(50px);
-}

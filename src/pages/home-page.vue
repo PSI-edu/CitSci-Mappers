@@ -2,8 +2,8 @@
   <div class="page-layout">
     <NavBar />
     <MobileNavBar />
-    <HeroBanner></HeroBanner>
     <div class="page-layout__content">
+      <HeroBanner></HeroBanner>
       <Blurbs/>
       <Announcements/>
     </div>

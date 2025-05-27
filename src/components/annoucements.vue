@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-content">
     <div id="annoucements">
       <div class="updated">Updated: 25 May 2025</div>
       <div class="text-block">
@@ -25,24 +25,29 @@
     </div>
     <div id="socials">
       <div class="text-block">
-      <div>
-        <div class="social-icon">
-          <a href="https://github.com/PSI-edu/CitSci-Mappers">
-            <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/github.png" alt="GitHub" />
-          </a>
-        </div>
-        <div>
-          <h4>Opensource, <br/>Open Science</h4>
-          <p>All are welcome. Help us map worlds and develop new ways of doing science.</p></div>
-      </div>
-
         <div>
           <div class="social-icon">
-            <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/discord.png" alt="Discord" />
+            <a href="https://github.com/PSI-edu/CitSci-Mappers">
+              <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/github.png" alt="GitHub" />
+            </a>
+          </div>
+          <div>
+            <h4>Opensource, <br>Open Science</h4>
+            <p>All are welcome. Help us map worlds and develop new ways of doing science.</p></div>
+        </div>
+      </div>
+    </div>
+    <div id="socials">
+      <div class="text-block">
+        <div>
+          <div class="social-icon">
+            <a href="https://discord.gg/3MCQRsu5DW">
+              <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/discord.png" alt="Discord" />
+            </a>
           </div>
           <div>
             <h4>Join the Community thru <a href="https://cosmoquest.org">CosmoQuest</a></h4>
-            <p>Get news, educational content, podcasts, and more through our donation-funded sibling program.</p>
+            <p>Get space news, educational content, podcasts, and more through our donation-funded sibling program.</p>
           </div>
         </div>
       </div>

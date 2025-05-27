@@ -1,5 +1,5 @@
 <template>
-<div id="blurbs">
+<div class="main-content" id="blurbs">
   <Blurb
       title="Lunar Melt"
       description="Help us map out ancient geologies on the Moon."

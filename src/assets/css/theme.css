@@ -74,4 +74,6 @@
   --font-primary: "Poiret One", sans-serif;
   --font-secondary: "Lexand", sans-serif;
   --font-mono: "Fira Code", monospace;
+
+  --page-width:  120rem;
 }
