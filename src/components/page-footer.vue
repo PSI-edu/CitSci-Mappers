@@ -5,7 +5,7 @@
         <div class="page-footer-info__message">
           <p class="page-footer-message__headline">
             This project is supported by the National
-            Aeronautics and Space Administration (NASA) grants NEED NUMBERS HERE. Any
+            Aeronautics and Space Administration (NASA) grants 23-CSSFP23-0014 and NNH21ZDA001N-PDART. Any
             opinions, findings, conclusions or recommendations expressed in this material are those
             of the author and do not necessarily reflect the views of NASA.
           </p>

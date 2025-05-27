@@ -21,7 +21,7 @@ $stampSize = 450;
 $overlap = 0.1 * $stampSize;
 
 // Create a text file with the name of the image.txt
-$file = fopen( $rootFilename . ".txt", "w") or die("Unable to open file!");
+$file = fopen( "scratch/" . $rootFilename . ".txt", "w") or die("Unable to open file!");
 
 // write file name to the file
 fwrite($file, basename($argv[1]) . "\n");
@@ -51,7 +51,7 @@ for ($x = 0; $x < $width - $overlap; $x += $stampSize - $overlap) {
         $im = imagecreatefrompng($argv[1]);
         $im1 = imagecreatetruecolor($stampSize, $stampSize);
         imagecopy($im1, $im, 0, 0, $x, $y, $delX, $delY);
-        imagepng($im1, $rootFilename . "_$x-$y.png");
+        imagepng($im1, "scratch/" . $rootFilename . "_$x-$y.png");
         imagedestroy($im1);
         imagedestroy($im);
 

@@ -44,7 +44,7 @@ const props = defineProps({
     required: true,
   },
   userId: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
@@ -62,8 +62,6 @@ const isSubmitting = ref(false);
 // Get user ID and email from local storage
 const id = props.userId;
 const email = props.email;
-
-console.log(id, email)
 
 onMounted(async () => {
   if (!id || !email) {
@@ -84,8 +82,11 @@ onMounted(async () => {
       usernameError.value = ''; // Clear any previous username error
       apiError.value = '';
       successMessage.value = '';
+      if (response.data.username == 'not set' && response.data.publishable_name == 'not set') {
+        successMessage.value = 'Welcome unnamed human - please set some values.';
+      }
     } else {
-      successMessage.value = 'Welcome unnamed human - please set some values.';
+      apiError.value = 'Your account wasn\'t added to the DB correctly. Please alert Pamela on the Discord or email her at plg@psi.edu';
       console.error('Failed to fetch user data:', response);
     }
 
@@ -108,14 +109,11 @@ const validateUsername = async () => {
   }
 
   try {
-    console.log("here", form.username, id);
     // Check if the username already exists (excluding the current user)
     const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-validateusername.php", {
         username: form.username,
         id: id, // Pass the current user's ID to exclude them from the check
     });
-
-    console.log(response.data);
 
     if (response.data && response.data.exists) {
       usernameError.value = 'This username is already taken.';

@@ -1,5 +1,5 @@
 <template>
-  <PageLayout title=": Lunar Melt">
+  <PageLayout title=": Lunar Melt BETA">
     <div class="content-layout">
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
@@ -40,12 +40,13 @@
           <h3>Craters, Boulders, Rocks</h3>
           <p >We are mapping geologic features related to flowing impact melt
             in the Moon's Little Lowell & Tycho craters. Long ago, the heat
-            of asteroid impacts melted the regions you're mapping. You're
+            of asteroid impacts melted the regions you're mapping. Your
             work helps us understand how the melt flowed & when it cooled. </p>
 
           <br/>
           <h4>{{ infoTitle }}</h4>
           <p>{{ infoText }}</p>
+
           <div id="ex-canvas">
             <canvas
                 ref="exampleMarks" id="exampleMarks">
@@ -54,8 +55,11 @@
           </div>
         </div>
         <button
-            @click="submitDrawings()" class="submit-button"
+            @click="saveResponse()" class="submit-button" id = "submit-button"
         >Submit</button>
+        <button
+          class="busy-button" id="busy-button"
+        >Working....</button>
         <div id="citsci-examples">
           <img
               v-for="example in exampleImages"
@@ -112,7 +116,6 @@ const setText = (text1, text2) => {
 
 const setExamples = (tool) => {
   const prefix = "https://moon-mappers.s3.us-east-2.amazonaws.com/examples/";
-  console.log("Setting examples for tool:", tool);
   exampleImages.value = [];
   if (tool === 'line') {
     for (let i = 1; i <= 6; i++) {
@@ -150,7 +153,6 @@ const setExamples = (tool) => {
 
 const handleDraw = (drawing) => {
   drawings.value.push(drawing);
-  console.log("Current Drawings:", drawings.value);
 };
 
 const clearDrawing = (index) => {
@@ -160,38 +162,110 @@ const clearDrawing = (index) => {
   }
 };
 
-const submitDrawings = async () => {
-  console.log("Submitting drawings");
-  // if (!localStorage.getItem('user_id') || !localStorage.getItem('image_id')) {
-  //   console.error("User ID or Image ID not found in local storage.");
-  //   return;
-  // }
-  //
-  // const payload = {
-  //   user_id: localStorage.getItem('user_id'),
-  //   image_id: localStorage.getItem('image_id'),
-  //   drawings: drawings.value.map(drawing => ({
-  //     type: drawing.type,
-  //     data: drawing.data,
-  //   })),
-  // };
-  //
-  // console.log("Submitting drawings:", payload);
-  //
-  // try {
-  //   const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit-annotations.php", payload);
-  //   console.log("Submission successful:", response.data);
-  //   // Optionally, provide user feedback here
-  // } catch (error) {
-  //   console.error("Error submitting drawings:", error);
-  //   // Optionally, provide user feedback here
-  // }
+const saveResponse = async () => {
+
+  // hide submit button and show busy button
+  const submitButton = document.getElementById('submit-button');
+  const busyButton = document.getElementById('busy-button');
+  if (submitButton) {
+    submitButton.style.display = 'none';
+  }
+  if (busyButton) {
+    busyButton.style.display = 'inline';
+  }
+
+  if (!localStorage.getItem('user_id') || !localStorage.getItem('image_id')) {
+    console.error("User ID or Image ID not found in local storage.");
+    return;
+  }
+  const payload = {
+    user_id: localStorage.getItem('user_id'),
+    image_id: localStorage.getItem('image_id'),
+    app_id: 3,
+    drawings: drawings.value.map(drawing => ({
+      type: drawing.type,
+      data: drawing.data,
+    })),
+  };
+
+  console.log("Submitting drawings:", payload);
+
+  try {
+    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", payload);
+    console.log("Submission Successful:", response.data);
+    await getNewImage();
+
+  } catch (error) {
+    console.error("Error submitting drawings:", error);
+    // Show the submit button and hide the busy button in case of error
+    if (submitButton) {
+      submitButton.style.display = 'inline';
+    }
+    if (busyButton) {
+      busyButton.style.display = 'none';
+    }
+  } finally {
+    // Clear drawings after submission
+    drawings.value = [];
+    if (canvasMapRef.value) {
+      canvasMapRef.value.redrawCanvas();
+    }
+  }
+
+  // Show the submit button and hide the busy button
+  if (submitButton) {
+    submitButton.style.display = 'inline';
+  }
+  if (busyButton) {
+    busyButton.style.display = 'none';
+  }
 };
 
 onMounted(async () => {
+  // First get the user_id.
+  try {
+    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+      email: user.value.email
+    });
+    localStorage.setItem('user_id',response.data);
+    localStorage.setItem('email',user.value.email);
+    // Now get the first image
+    await getNewImage();
+  } catch (error) {
+    console.log(error);
+  }
 
+  // Now get the first image
+  await getNewImage();
+
+  // Draw the example marks
+  drawExampleCanvas();
+
+  // Add the example images at the bottom
+  setExamples(null);
+
+});
+
+const getNewImage = async () => {
+  // Now get the first image
+  try {
+    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
+      app_id: 3,
+      user_id: localStorage.getItem('user_id')
+    });
+    imageUrl.value = response.data.file_location;
+    localStorage.setItem('image_id',response.data.id);
+    console.log("Image URL: " + imageUrl.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const drawExampleCanvas = () => {
   // Draw the example marks on the canvas: a 6px circle and a 6 pixel line
   const canvasExample = exampleMarks.value;
+  canvasExample.width=100;
+  canvasExample.height=75;
   const ctxExample = canvasExample.getContext('2d');
   //
   // // Draw example circle
@@ -215,41 +289,7 @@ onMounted(async () => {
   ctxExample.font = "12px sans-serif";
   ctxExample.fillStyle = "black";
   ctxExample.fillText("minimum sizes", 10, 60)
+};
 
-  // First get the user_id.
-  try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
-      email: user.value.email
-    });
-    localStorage.setItem('user_id',response.data);
-    localStorage.setItem('email',user.value.email);
-    // Now get the first image
-    try {
-      const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-        app_id: 3,
-        user_id: localStorage.getItem('user_id')
-      });
-      imageUrl.value = response.data.file_location;
-      localStorage.setItem('image_id',response.data.id);
-      console.log("Image URL: " + imageUrl.value);
-    } catch (error) {
-      console.log(error);
-    }
-  } catch (error) {
-    console.log(error);
-  }
 
-  setExamples(null);
-
-  watch(imageUrl, (newImageUrl) => {
-    if (newImageUrl && canvasMapRef.value?.$el) {
-      const canvasElement = canvasMapRef.value.$el;
-      const infoPanel = document.getElementById('citsci-info-panel');
-      if (infoPanel && canvasElement) {
-        infoPanel.style.height = `${canvasElement.offsetHeight}px`;
-        infoPanel.style.top = `${canvasElement.offsetTop}px`;
-      }
-    }
-  });
-});
 </script>

@@ -1,10 +1,10 @@
 <template>
-<div id="blurbs">
+<div class="main-content" id="blurbs">
   <Blurb
       title="Lunar Melt"
       description="Help us map out ancient geologies on the Moon."
       image="https://moon-mappers.s3.us-east-2.amazonaws.com/Moon.png"
-      link="moon-mapper"
+      link="lunar-melt"
   />
   <Blurb
       title="Mars Mosaics"

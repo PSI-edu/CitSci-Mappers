@@ -1,0 +1,3 @@
+php 2_upload_imageset.php 2 D02_028007_1921_XN_12N268W scratch/D02_028007_1921_XN_12N268W.l1.map.txt https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/controlled/D02_028007_1921_XN_12N268W.l1.map/
+php 2_upload_imageset.php 3 M138222163LE_final scratch/M138222163LE_final.txt https://moon-mappers.s3.us-east-2.amazonaws.com/Lowell_Crater/M138222163LE_final/
+php 2_upload_imageset.php 3 M105192594LE_final scratch/M105192594LE_final.txt https://moon-mappers.s3.us-east-2.amazonaws.com/Lowell_Crater/M105192594LE_final/

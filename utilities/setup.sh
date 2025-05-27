@@ -8,6 +8,7 @@ sudo apt -y install apache2
 sudo apt -y install certbot python3-certbot-apache
 # add ServerName and edit ServerAlias in file below
 # also add beneath DocumentRoot
+# Redirect / https://yourserver.com/
 # <Directory /var/www/html>
 #    Options Indexes FollowSymLinks
 #    AllowOverride All
@@ -22,5 +23,11 @@ sudo apt install mysql-client-core-8.0
 sudo apt install git
 sudo apt -y install nodejs
 sudo apt -y install npm
+sudo apt-get update && sudo apt-get install -y \
+    php-gd \
+    libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libfreetype6-dev
 cd ~
-git clone https://github.com/PSI-edu/mappers.git
+git clone https://github.com/PSI-edu/CitSci-Mappers.git

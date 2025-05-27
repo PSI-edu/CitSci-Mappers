@@ -70,18 +70,7 @@ onMounted(async () => {
     localStorage.setItem('user_id',response.data);
     localStorage.setItem('email',user.value.email);
     // Now get the first image
-    try {
-      const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-        app_id: 2,
-        user_id: localStorage.getItem('user_id')
-      });
-      controlUrl.value = response.data.file_location;
-      imageUrl.value = controlUrl.value.replace('controlled', 'uncontrolled');
-      diffUrl.value = controlUrl.value.replace('controlled', 'difference');
-      localStorage.setItem('image_id',response.data.id);
-    } catch (error) {
-      console.log(error);
-    }
+    await getNewImage();
   } catch (error) {
     console.log(error);
   }
@@ -132,7 +121,6 @@ const saveResponse = async (response) => {
       image_id: localStorage.getItem('image_id'),
       response: response
     });
-    console.log(res.data);
     getNewImage();
   } catch (error) {
     console.log(error);
@@ -141,6 +129,7 @@ const saveResponse = async (response) => {
 
 // Create a function to get a new image
 const getNewImage = async () => {
+  setLoadingImages();
   try {
     const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
       app_id: 2,

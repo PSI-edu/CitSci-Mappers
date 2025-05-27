@@ -11,6 +11,7 @@
       <span>
         We've got worlds to explore.
       </span>
+      <img id="beta" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/beta.png">
     </p>
   </div>
 </template>

@@ -106,7 +106,7 @@
     background: var(--white);
 }
 
-.submit-button {
+.submit-button, .busy-button {
     padding: 2px 15px;
     width: 380px;
     height: 50px;
@@ -118,10 +118,16 @@
     border-radius: 5px; /* Optional: for rounded corners */
     font-size: 3rem;
     Margin-top: 10px;
+    display: inline;
 }
 
 .submit-button:hover {
     background-color: var(--indigo);
+}
+
+.busy-button {
+    background-color: var(--aluminium);
+    display: none;
 }
 
 #canvas__control {

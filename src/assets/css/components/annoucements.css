@@ -1,0 +1,78 @@
+#annoucements, #socials {
+    position: relative;
+  display: flex;
+  flex-direction: column;
+    background: #29336c;
+    min-height: 5vh;
+    border-radius: 1rem;
+    color: var(--white);
+    padding: 1rem 2rem;
+}
+#annoucements h4, #socials h4 {
+    margin: 0px 0 8px 0;
+    line-height: 22px;
+}
+#annoucements p, #socials p {
+    margin-bottom: 1em;
+}
+
+#annoucements .text-block, #socials .text-block {
+    display: flex;
+    flex-direction: column;
+}
+
+#annoucements ul, #socials ul {
+    margin: 0 0 1em 0;
+}
+
+
+#annoucements {
+    width: 60%;
+    min-width: 300px;
+    float: left;
+    margin: 1rem 0 1rem 2rem;
+}
+
+#socials {
+    width: 31%;
+    min-width: 100px;
+    position: relative;
+    float: right;
+    margin: 1rem 2rem 1rem 0;
+}
+.social-icon {
+    background-color: var(--white);
+    border-radius: 10px;
+    height: 40px;
+    width: 40px;
+    position: relative;
+    float: left;
+    margin-right: 10px;
+    margin-top: 0px;
+}
+
+.social-icon img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+
+}
+
+@media only screen and (max-width: 540px) {
+    #annoucements, #socials {
+        width: 90%;
+        margin: 0 auto;
+        float: none;
+    }
+    #annoucements {
+        margin-bottom: 1rem;
+    }
+    #socials {
+        margin-top: 1rem;
+    }
+}
+

@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   height: 100%;
   width: 100%;
 }
@@ -14,9 +13,13 @@
   display: flex;
   flex-direction: column;
 
-  margin-top: 8rem;
-  max-width: 120rem;
+  margin: 8rem auto 0;
   width: 100%;
+}
+
+.main-content {
+  max-width: var(--page-width);
+  margin: 0 auto;
 }
 
 @media only screen and (max-width: 640px) {

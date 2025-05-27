@@ -11,6 +11,8 @@ header("Access-Control-Allow-Origin: ".$vue_url);
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+
+
 // Get the data
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
