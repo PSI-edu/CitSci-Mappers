@@ -10,8 +10,8 @@
         <ul>
           <li>Hangs if cookies go stall or session expires</li>
           <li>Need to Disable Lunar Melt App on Mobile</li>
-          <li>Scale BETA graphic on mobile</li>
           <li>Fix Profile Form on Mobile</li>
+          <li>You can login before DB installed - kill that</li>
         </ul>
 
         <h4>&#129513; Missing Features </h4>
@@ -23,7 +23,7 @@
         </ul>
       </div>
     </div>
-    <div id="socials">
+    <div class="socials">
       <div class="text-block">
         <div>
           <div class="social-icon">
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div id="socials">
+    <div class="socials">
       <div class="text-block">
         <div>
           <div class="social-icon">
@@ -51,9 +51,25 @@
           </div>
         </div>
       </div>
+    </div>
 
+    <div class="socials">
+      <div class="text-block">
+        <div>
+          <div class="social-icon">
 
-
+          </div>
+          <div>
+            <h4>Stay up-to-date wherever you scroll</h4>
+            <p>Keep up with all
+              <a href="https://psi.edu">PSI</a> is discovering.</p>
+            insert tiny icons here
+            <p>Learn & do science with
+              <a href="https://cosmoquest.org">CosmoQuest</a>.</p>
+            insert tiny icons here
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>

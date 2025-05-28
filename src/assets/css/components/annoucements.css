@@ -1,4 +1,4 @@
-#annoucements, #socials {
+#annoucements, .socials {
     position: relative;
   display: flex;
   flex-direction: column;
@@ -8,20 +8,20 @@
     color: var(--white);
     padding: 1rem 2rem;
 }
-#annoucements h4, #socials h4 {
+#annoucements h4, .socials h4 {
     margin: 0px 0 8px 0;
     line-height: 22px;
 }
-#annoucements p, #socials p {
+#annoucements p, .socials p {
     margin-bottom: 1em;
 }
 
-#annoucements .text-block, #socials .text-block {
+#annoucements .text-block, .socials .text-block {
     display: flex;
     flex-direction: column;
 }
 
-#annoucements ul, #socials ul {
+#annoucements ul, .socials ul {
     margin: 0 0 1em 0;
 }
 
@@ -33,7 +33,7 @@
     margin: 1rem 0 1rem 2rem;
 }
 
-#socials {
+.socials {
     width: 31%;
     min-width: 100px;
     position: relative;

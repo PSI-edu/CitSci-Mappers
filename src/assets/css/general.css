@@ -83,6 +83,10 @@ p {
   margin: 0 0 0.8rem;
   font-size: 1.6rem;
 }
+
+p a {
+  text-decoration: underline;
+}
 li {
   margin: 0 0 0.4rem;
   font-size: 1.6rem;
