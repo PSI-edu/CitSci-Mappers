@@ -20,6 +20,7 @@
           <li>Stats on Profile Page</li>
           <li>Lunar Melt: Ability to move marks</li>
           <li>Social Media / Github links need added</li>
+          <li>About pages for team and each project</li>
         </ul>
       </div>
     </div>
