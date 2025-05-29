@@ -43,7 +43,7 @@
             </a>
           </div>
           <div>
-            <h4>Join the Community thru <a href="https://cosmoquest.org">CosmoQuest</a></h4>
+            <h4>Join a science community thru our sibling <a href="https://cosmoquest.org">CosmoQuest</a></h4>
             <p>Get space news, educational content, podcasts, and more through our donation-funded sibling program.</p>
           </div>
         </div>
@@ -54,20 +54,49 @@
       <div class="text-block">
         <div>
           <div class="social-icon">
-
+            <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/social.png" alt="Social Icon">
           </div>
-          <div>
+          <div style="position: relative; width: 100%;">
             <h4>Stay up-to-date wherever you scroll</h4>
-            <p>Keep up with all
-              <a href="https://psi.edu">PSI</a> is discovering.</p>
-            insert tiny icons here
-            <p>Learn & do science with
-              <a href="https://cosmoquest.org">CosmoQuest</a>.</p>
-            insert tiny icons here
+            <img style="position: absolute; width:30%; top:50%; right: 1em;" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/CQ-PSI-Logo.png" alt="CQ-PSI Logo" >
+            <div style="width:70%;">
+              <p>Keep up with all <a href="https://psi.edu" target="_blank">PSI</a> is discovering.
+                <a href="https://bsky.app/profile/psi.edu" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Bluesky_Logo.png" alt="Bluesky" />
+                </a>
+                <a href="https://instagram.com/planetary.sci" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Instagram_Logo.png" alt="Instagram" />
+                </a>
+                <a href="https://threads.net/@planetary.sci" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Threads_Logo.png" alt="Threads" />
+                </a>
+                <a href="https://facebook.com/PlanetarySci" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Facebook_Logo.png" alt="Facebook" />
+                </a>
+              </p>
+              <p>Learn & do science with <a href="https://cosmoquest.org" target="_blank">CosmoQuest</a>.
+                <a href="https://bsky.app/profile/cosmoquest.org" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Bluesky_Logo.png" alt="Bluesky" />
+                </a>
+                <a href="https://instagram.com/CosmoQuestX" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Instagram_Logo.png" alt="Instagram" />
+                </a>
+                <a href="https://threads.net/@CosmoQuestX" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Threads_Logo.png" alt="Threads" />
+                </a>
+                <a href="https://facebook.com/CosmoQuestX" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Facebook_Logo.png" alt="Facebook" />
+                </a>
+                <a href="https://scicomm.xyz/@cosmoquestx" target="_blank">
+                  <img class="tiny-inline-img" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Mastodon_Logo.png" alt="Mastodon" />
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
 
   </div>
 </template>
