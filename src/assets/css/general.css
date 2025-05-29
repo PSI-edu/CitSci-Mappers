@@ -203,6 +203,13 @@ code {
   text-align: right;
 }
 
+.tiny-inline-img {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+
 @media only screen and (max-width: 640px) {
   .mobile-scroll-lock {
     overflow: hidden;
