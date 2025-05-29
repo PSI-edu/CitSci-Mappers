@@ -1,25 +1,22 @@
 <template>
   <div class="main-content">
     <div id="annoucements">
-      <div class="updated">Updated: 25 May 2025</div>
+      <div class="updated">Updated: 28 May 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
         <p>This site is in Beta! Currently no data can be expected to be saved. Play. Give feedback. Get a preview of what's coming.</p>
 
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
-          <li>Hangs if cookies go stall or session expires</li>
-          <li>Need to Disable Lunar Melt App on Mobile</li>
+          <li>Hangs if cookies go stale or session expires</li>
           <li>Fix Profile Form on Mobile</li>
-          <li>You can login before DB installed - kill that</li>
+          <li>On new servers you can login before DB installed - kill that</li>
         </ul>
 
-        <h4>&#129513; Missing Features </h4>
+        <h4>&#129513; Features in Progress</h4>
         <ul>
-          <li>Tutorials</li>
           <li>Stats on Profile Page</li>
           <li>Lunar Melt: Ability to move marks</li>
-          <li>Social Media / Github links need added</li>
         </ul>
       </div>
     </div>
