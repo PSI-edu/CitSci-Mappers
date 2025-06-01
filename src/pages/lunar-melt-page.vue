@@ -1,5 +1,7 @@
 <template>
-  <PageLayout title=": Lunar Melt BETA">
+
+<template v-if="isNoFingers">
+  <PageLayout title=": Lunar Melt BETA" >
     <div class="content-layout">
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
@@ -74,13 +76,28 @@
     </div>
   </PageLayout>
 </template>
+<template v-else>
+  <PageLayout title=": Lunar Melt BETA" >
+    <div class="content-layout">
+      <div id="citsci-main-panel">
+        <div id="citsci-buttons-panel">
+          <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
+        </div>
+      </div>
+    </div>
+  </PageLayout>
+</template>
+</template>
 
 <script setup>
+import { useIsNoFingers } from "@/composables/noFingers.js";
 import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref, watch } from 'vue';
 import axios from 'axios';
+
+const isNoFingers = useIsNoFingers();
 
 const { user } = useAuth0();
 

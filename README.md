@@ -182,6 +182,13 @@ cp settings-example.php settings.php
 vi settings.php
 ```
 
+Now restrict API access to only your server by editting the .htaccess file in the api directory
+```
+cp htaccess-example .htaccess
+vi .htaccess
+```
+Add your Vue Server's IP (localhost is 127.0.0.1)
+
 # Deploy the software
 
 ### Local Vue Development

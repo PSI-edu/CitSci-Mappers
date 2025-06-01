@@ -16,3 +16,9 @@ $db_name = "mappers_db";
    ------------------------------- */
 
 $vue_url ="http://localhost:4040";
+
+/* -------------------------------
+   API Keys
+   ------------------------------- */
+
+#vue_key = "vue_key"; // Use your password manager or similar to generate a secure key

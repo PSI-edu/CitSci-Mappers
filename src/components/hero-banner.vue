@@ -3,7 +3,7 @@
     <div class="hero-banner__logo">
       <img
           class="hero-banner__image"
-          src="/src/assets/images/mappers-logo.png"
+          src="https://wm-web-assets.s3.us-east-2.amazonaws.com/mappers-logo.png"
           alt="Mappers Logo" />
     </div>
     <h1 id="page-title" class="hero-banner__headline">Welcome, Mappers!</h1>

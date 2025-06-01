@@ -11,7 +11,9 @@
     "@auth0/auth0-vue": "^2.0.0",
     "axios": "^1.7.9",
     "vue": "^3.2.36",
-    "vue-router": "^4.0.15"
+    "@vueuse/core": "^13.3.0",
+    "vue-router": "^4.0.15",
+    "vue3-mq": "^4.0.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
