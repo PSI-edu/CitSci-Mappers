@@ -25,6 +25,11 @@
               :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
               style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
           ></button>
+          <button
+              @click="setMode('edit'); setText(eraseTitle, eraseInfo); setExamples('erase')"
+              :class="{'button-not-selected': mode !== 'edit', 'button-selected': mode === 'edit'}"
+              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png');background-size: contain;"
+          ></button>
         </div>
         <div id="citsci-mapping-panel">
           <CanvasMap
@@ -35,6 +40,7 @@
               :mode="mode"
               :drawings="drawings"
               @clearDrawing="clearDrawing"
+              @updateDrawing="handleUpdateDrawing"
           />
         </div>
         <div id="citsci-info-panel">
@@ -116,6 +122,8 @@ const rocksInfo = ref("Click in the centers of rocks to mark their locations.");
 const eraseTitle = ref("Erasing");
 const eraseInfo = ref("Click on a mark to delete it.");
 const exampleImages = ref([]);
+const editTitle = ref("Editing Marks");
+const editInfo = ref("Click on a mark to move or (if appropriate) resize.");
 
 const exampleMarks = ref(null);
 
@@ -170,6 +178,15 @@ const setExamples = (tool) => {
 
 const handleDraw = (drawing) => {
   drawings.value.push(drawing);
+};
+
+const handleUpdateDrawing = (payload) => {
+  const { index, newDrawing } = payload; // Destructure the event payload
+  if (drawings.value && typeof index === 'number' && index >= 0 && index < drawings.value.length && newDrawing) {
+    drawings.value[index] = newDrawing;
+  } else {
+    console.error("Invalid payload, index, or newDrawing for updating drawing. Payload:", payload);
+  }
 };
 
 const clearDrawing = (index) => {
