@@ -76,6 +76,7 @@
               width="100"
               height="130"
               style="margin-right: 5px;"
+              alt ="Example Image"
           />
         </div>
       </div>
@@ -100,7 +101,7 @@ import { useIsNoFingers } from "@/composables/noFingers.js";
 import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
 const isNoFingers = useIsNoFingers();
