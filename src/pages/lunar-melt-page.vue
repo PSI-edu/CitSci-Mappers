@@ -1,7 +1,7 @@
 <template>
 
 <template v-if="isNoFingers">
-  <PageLayout title=": Lunar Melt BETA" >
+  <PageLayout title=": Lunar Melt" >
     <div class="content-layout">
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
@@ -43,7 +43,7 @@
               @updateDrawing="handleUpdateDrawing"
           />
         </div>
-        <div id="citsci-info-panel">
+        <div class="citsci-info-panel melt">
           <h5>Activity 1:</h5>
           <h3>Craters, Boulders, Rocks</h3>
           <p >We are mapping geologic features related to flowing impact melt
@@ -57,8 +57,8 @@
 
           <div id="ex-canvas">
             <canvas
-                ref="exampleMarks" id="exampleMarks">
-                width="100" height="75"
+                ref="exampleMarks" id="exampleMarks"
+                width="100" height="75">
             </canvas>
           </div>
         </div>
@@ -68,13 +68,12 @@
         <button
           class="busy-button" id="busy-button"
         >Working....</button>
-        <div id="citsci-examples">
+        <div class="LunarMelt citsci-examples">
+          <h4> Examples</h4>
           <img
               v-for="example in exampleImages"
               :key="example"
               :src="example"
-              width="100"
-              height="130"
               style="margin-right: 5px;"
               alt ="Example Image"
           />

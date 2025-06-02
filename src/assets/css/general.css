@@ -167,6 +167,20 @@ code {
     float: right;
 }
 
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+
+.no-right-margin {
+  margin-right: 0 !important;
+}
+
 .underline {
   text-decoration: underline;
 }

@@ -1,7 +1,7 @@
 #citsci-main-panel {
     position: relative;
     width: 950px;
-    height: 600px;
+    height: 630px;
     border-radius: 5px;
     margin: 10px auto;
     padding: 10px;
@@ -47,18 +47,25 @@
     width: 230px;
 }
 
-#citsci-examples {
+.citsci-examples {
     position: relative;
     float: left;
     width: 100%;
-    height: 120px;
+    min-height: 150px;
     border-radius: 5px;
     padding: 10px 0;
     background: var(--dark-aluminium);
     color: var(--white);
 }
 
-#citsci-examples img {
+.citsci-examples h4 {
+    color: var(--white);
+    text-align: left;
+    margin-left: 13px;
+    margin-top: 0;
+}
+
+.citsci-examples img {
     width: 140px;
     height: 100px;
     border-radius: 5px;
@@ -69,7 +76,9 @@
     position: relative;
     width: 450px;
     float: left;
-    margin-right: 10px
+}
+#citsci-mapping-panel h4 {
+    color: var(--dark-aluminium);
 }
 
 #canvas__map, #canvas__compare {
@@ -82,17 +91,63 @@
     background: var(--dark-aluminium);
 }
 
-#citsci-info-panel {
+.citsci-info-panel{
     position: relative;
     float: left;
-    height: 390px;
-    width: 380px;
     border-radius: 5px;
     padding: 10px;
     margin: 0;
     background: var(--dark-aluminium);
     color: var(--white);
 
+}
+.melt {
+    height: 390px;
+    width: 380px;
+    margin-left: 10px;
+}
+
+
+.mosaic {
+    height: 450px;
+    width: 470px;
+    margin-right: 10px;
+}
+.mosaic-examples {
+    margin-top: 10px;
+    margin-right: 10px;
+    height: 150px;
+    width: 470px;
+}
+
+.mosaic-examples h4 {
+    margin-top: 0;
+}
+.mosaic-examples img {
+    width: 140px;
+    height: 80px;
+    float: left;
+    border-radius: 5px;
+}
+
+.mosaic-examples .align-good {
+    border: 4px solid var(--light-green);
+    margin-right: 15px;
+}
+
+.mosaic-examples .align-warning {
+    border: 5px solid var(--light-yellow);
+    margin-right: 15px;
+}
+.mosaic-examples .align-bad {
+    border: 4px solid var(--light-orange);
+}
+
+.mosaic-examples .label {
+    float: left;
+    width: 140px;
+    margin-top: 5px;
+    margin-right: 15px;
 }
 
 #ex-canvas {
@@ -118,6 +173,7 @@
     border-radius: 5px; /* Optional: for rounded corners */
     font-size: 3rem;
     Margin-top: 10px;
+    margin-left: 10px;
     display: inline;
 }
 
@@ -141,12 +197,16 @@
 }
 
 #compare-buttons-panel {
-    color: var(--dark-aluminium);
+    color: var(--white);
+    background-color: var(--dark-aluminium);
     float: left;
     width: 100%;
     font-weight: 500;
     font-size: 1.5rem;
     line-height: 2.4rem;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
 }
 
 .compare-column {
@@ -165,50 +225,66 @@
     margin: 0 0 11.5px 0;
 }
 
-#control_panel {
-    border: 5px solid var(--orange);
-    border-radius: 8px;
-    margin: -5px 5px 0 0;
-    width: 459px;
-    height: 570px;
-    float: right;
-}
-
-#control-instructions p {
-    text-align: center;
-    color: var(--dark-aluminium);
-    font-size: 1.5rem;
-    line-height: 2.4rem;
-    font-weight: 800;
-    margin: 0;
-}
-
-#control-buttons {
-    margin:0 auto;
-    padding-left: 30px;
-    width: 420px;
-}
-.control-button {
-    width: 100px;
-    height: 40px;
-    margin: 0 30px 0 0;
+#mosaic-submit-panel {
     float: left;
-    font-size: 1.5rem;
-    font-weight: 500;
-    line-height: 1.2rem;
-    background-color: var(--blue);
-    color: var(--white);
-    border-radius: 5px;
+    width: 450px;
+    margin-top: 10px;
+}
+#mosaic-submit-panel h4 {
+    margin: 0 0 7px 0;
 }
 
-.control-button-oops {
-    width: 200px;
-    height: 20px;
-    margin: 5px 80px;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.2rem;
-    background-color: var(--blue);
-    color: var(--white);
+.mosaics-submit {
+    position: relative;
+    float: left;
+    width: 105px;
+    height: 65px;
+    margin-right: 10px;
     border-radius: 5px;
+    color: var(--black);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+#good {
+    background: var(--light-green);
+}
+#warning {
+    background: var(--light-yellow);
+}
+#bad {
+    background: var(--light-orange);
+}
+#error {
+    background: var(--black);
+    color: var(--white);
+    margin-right: 0;
+}
+
+#label1, #label2 {
+    color: var(--white);
+    float: left;
+    width: 220px;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    text-align: center;
+}
+
+#label1 p, #label2 p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
+}
+
+#image1, #image2 {
+    position: relative;
+    float: left;
+    height: 220px;
+    width: 220px;
+    border-radius: 5px;
+    background: var(--white);
+}
+
+#image1, #label1 {
+    margin-right: 10px;
 }
