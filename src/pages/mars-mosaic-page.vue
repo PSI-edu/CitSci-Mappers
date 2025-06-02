@@ -26,9 +26,9 @@
         </div>
         <div class="citsci-info-panel mosaic-examples">
           <h4>Examples of different alignments</h4>
-          <img class="align-good" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PerfectlyAligned.png">
-          <img class="align-warning" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-AlmostAligned.png">
-          <img class="align-bad" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned.png">
+          <img class="align-good" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PerfectlyAligned.png" alt="Perfectly Aligned Example Image">
+          <img class="align-warning" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-AlmostAligned.png" alt="Almost Aligned Example Image">
+          <img class="align-bad" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned.png" alt="Poorly Aligned Example Image">
           <div class="label"><p>Perfectly Aligned</p></div>
           <div class="label"><p>Almost Aligned</p></div>
           <div class="label no-right-margin"><p>Poorly Aligned</p></div>
@@ -42,7 +42,7 @@
               :image-name="imageUrl"
           />
           <div id="mosaic-submit-panel">
-            <h4>These images are</h4>
+            <h4>These images are...? <small>click the button that matches best.</small></h4>
             <button class="mosaics-submit" id="good" @click="submitGood">Perfectly Aligned</button>
             <button class="mosaics-submit" id="warning" @click="submitWarning">Almost Aligned</button>
             <button class="mosaics-submit" id="bad" @click="submitBad">Poorly Aligned</button>
@@ -150,8 +150,9 @@ const saveResponse = async (response) => {
       response: response
     });
     getNewImage();
+    console.log("Response saved successfully:", res.data);
   } catch (error) {
-    console.log(error);
+    console.error("Error saving response:", error);
   }
 };
 
