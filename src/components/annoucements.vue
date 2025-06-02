@@ -1,22 +1,20 @@
 <template>
   <div class="main-content">
     <div id="annoucements">
-      <div class="updated">Updated: 28 May 2025</div>
+      <div class="updated">Updated: 2 June 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
         <p>This site is in Beta! Currently no data can be expected to be saved. Play. Give feedback. Get a preview of what's coming.</p>
 
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
-          <li>Hangs if cookies go stale or session expires</li>
-          <li>On new servers you can login before DB installed - kill that</li>
+          <li>May hang if cookies go stale or session expires</li>
         </ul>
 
         <h4>&#129513; Features in Progress</h4>
         <ul>
           <li>Maintenance Mode</li>
-          <li>Stats on Profile Page</li>
-          <li>Lunar Melt: Ability to move marks</li>
+          <li>Stats/Achievements on Profile Page</li>
         </ul>
       </div>
     </div>
