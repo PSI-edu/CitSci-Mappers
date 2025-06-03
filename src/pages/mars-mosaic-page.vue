@@ -1,27 +1,39 @@
 <template>
   <PageLayout title=": Mars Mosaic">
-    <div class="content-layout">
+    <div class="content-layout mars">
 
       <div id="citsci-main-panel">
         <div style="width:480px; float:left;">
         <div class="citsci-info-panel mosaic">
           <h5>Keeping Coordinated</h5>
           <h3>Are these images aligned?</h3>
-          <p>We're verifying that a new algorithm can correctly align images of Mars and map objects to precise locations. We
-            need your help finding where it fails and succeeds.</p>
-          <p>&nbsp;</p>
-          <h4 style="text-align:center;">You're comparing these images</h4>
-          <div id="label1">
-            <p>Image 1</p>
+          <div class="label">
+            <p>Task:</p>
           </div>
-          <div id="label2">
-            <p>Image 2</p>
+          <div class="content">
+            <p>Let's verify new algorithms make accurate Mars mosaics that provide clear views & pixel perfect coordinates.</p>
           </div>
-          <div id="image1">
+          <div class="label">
+            <p>Links:</p>
+          </div>
+          <div class="content">
+            <p>The Team * Science * Data</p>
+          </div>
 
-          </div>
-          <div id="image2">
+          <div class="context-image">
+            <h5 style="text-align:center;">You're comparing these images</h5>
+            <div id="label1">
+              <p>Image 1</p>
+            </div>
+            <div id="label2">
+              <p>Image 2</p>
+            </div>
+            <div id="image1">
 
+            </div>
+            <div id="image2">
+
+            </div>
           </div>
         </div>
         <div class="citsci-info-panel mosaic-examples">
@@ -29,9 +41,9 @@
           <img class="align-good" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PerfectlyAligned.png" alt="Perfectly Aligned Example Image">
           <img class="align-warning" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-AlmostAligned.png" alt="Almost Aligned Example Image">
           <img class="align-bad" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned.png" alt="Poorly Aligned Example Image">
-          <div class="label"><p>Perfectly Aligned</p></div>
-          <div class="label"><p>Almost Aligned</p></div>
-          <div class="label no-right-margin"><p>Poorly Aligned</p></div>
+          <div class="label"><h5>Perfectly Aligned</h5></div>
+          <div class="label"><h5>Almost Aligned</h5></div>
+          <div class="label no-right-margin"><h5>Poorly Aligned</h5></div>
         </div>
         </div>
         <div style="width: 450px; float: left;">

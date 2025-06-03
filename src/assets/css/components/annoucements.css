@@ -1,4 +1,4 @@
-#annoucements, .socials {
+.annoucements, .socials {
     position: relative;
   display: flex;
   flex-direction: column;
@@ -8,25 +8,25 @@
     color: var(--white);
     padding: 1rem 2rem;
 }
-#annoucements h4, .socials h4 {
+.annoucements h4, .socials h4 {
     margin: 0 0 8px 0;
     line-height: 22px;
 }
-#annoucements p, .socials p {
+.annoucements p, .socials p {
     margin-bottom: 0.4em;
 }
 
-#annoucements .text-block, .socials .text-block {
+.annoucements .text-block, .socials .text-block {
     display: flex;
     flex-direction: column;
 }
 
-#annoucements ul, .socials ul {
+.annoucements ul, .socials ul {
     margin: 0 0 1em 0;
 }
 
 
-#annoucements {
+.annoucements {
     width: 60%;
     min-width: 300px;
     float: left;
@@ -62,15 +62,15 @@
 }
 
 @media only screen and (max-width: 540px) {
-    #annoucements, #socials {
+    .annoucements, #socials {
         width: 90%;
         margin: 0 auto;
         float: none;
     }
-    #annoucements {
+    .annoucements {
         margin-bottom: 1rem;
     }
-    #socials {
+    .socials {
         margin-top: 1rem;
     }
 }

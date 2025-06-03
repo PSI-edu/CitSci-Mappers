@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <div id="annoucements">
+    <div class="annoucements">
       <div class="updated">Updated: 2 June 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
@@ -16,6 +16,12 @@
           <li>Maintenance Mode</li>
           <li>Stats/Achievements on Profile Page</li>
         </ul>
+      </div>
+      <div class="text-block">
+        <h4>&#128250; Help Us Test</h4>
+        <p>We are in Beta! We need your help testing the site. Please report any bugs you find, and let us know what you like and what you want to see next.</p>
+        <p>We are working on a new way to do citizen science, and we need your help to make it better.</p>
+        <p>Join our <a href="https://discord.gg/3MCQRsu5DW">Discord</a> to chat with us and other testers.</p>
       </div>
     </div>
     <div class="socials">

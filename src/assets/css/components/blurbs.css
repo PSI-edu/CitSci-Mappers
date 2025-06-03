@@ -30,11 +30,12 @@
     font-size: 3rem;
     font-weight: 800;
     margin: 0 0 1rem 2rem;
+    text-align: center;
 }
 
 .blurb-description {
-    padding: 0 8rem;
-    text-align: center;
+    padding: 0 2rem;
+    text-align: left;
 }
 
 @media only screen and (max-width: 540px) {
