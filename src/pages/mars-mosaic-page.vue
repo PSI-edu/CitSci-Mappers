@@ -17,7 +17,13 @@
             <p>Links:</p>
           </div>
           <div class="content">
-            <p>The Team * Science * Data</p>
+            <p>
+              <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team">The Team </a>
+              *
+              <a href="https://mappers.psi.edu/learn/mars-mosiacs/">Science </a>
+              *
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/">Data</a>
+            </p>
           </div>
 
           <div class="context-image">
