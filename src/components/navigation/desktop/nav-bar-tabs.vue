@@ -1,7 +1,8 @@
 <template>
   <div class="nav-bar__tabs">
+    <NavBarTab path="/" label="Do Science" />
+    <NavBarTab path="https://mappers.psi.edu/learn" label="Learn" external />
     <template v-if="isAuthenticated">
-      <NavBarTab path="/" label="Home" />
       <NavBarTab path="/profile" label="Profile" />
       <NavBarTab path="/lunar-melt" label="Lunar Melt" />
       <NavBarTab path="/mars-mosaic" label="Mars Mosaics" />

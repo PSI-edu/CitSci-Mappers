@@ -323,6 +323,20 @@ both can access. To make life easier, consider putting the compands in a script 
 
 
 # Extras
+### Content management with Wordpress
+This is not a Content Management System (CMS). We recommend using Wordpress to manage your content, and the included 
+.htaccess file assumes it will be installed in the /learn directory of your webserver. 
+
+You will need to create a database and database user for Wordpress:
+```
+mysql -u root -p 
+CREATE DATABASE wp_db;
+CREATE USER 'wp_user'@'YOURHOST' IDENTIFIED BY 'password'; # use % as wildcard for all hosts
+
+```
+
+Once you have the db and user created, use the wp_install script to install Wordpress on your server. 
+
 ### Image creation
 To create the favicon and navbar icon
 - Create the icon as SVG and name it icon.svg

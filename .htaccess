@@ -1,7 +1,11 @@
-
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+    # Exclude the /learn directory - this is where wordpress is installed
+    RewriteRule ^learn/ - [L,NC]
+
+    # Redirect all other requests to Vue
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

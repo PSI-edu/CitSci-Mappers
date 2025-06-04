@@ -5,7 +5,7 @@
 
 sudo apt update
 sudo apt -y install apache2
-sudo apt -y install certbot python3-certbot-apache
+sudo apt -y install certbot python3-certbot-apache unzip
 # add ServerName and edit ServerAlias in file below
 # also add beneath DocumentRoot
 # Redirect / https://yourserver.com/
