@@ -15,6 +15,16 @@
       content="Come map other worlds."
     />
 
+      <!-- Google Analytics -->
+      <script async
+              src="https://www.googletagmanager.com/gtag/js?id=%VITE_GTAG_ID%"></script>
+      <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '%VITE_GTAG_ID%');
+      </script>
+
     <!-- Open Graph -->
     <meta property="og:title" content="%VITE_OG_TITLE%" />
     <meta property="og:description" content="%VITE_OG_DESCRIPTION%" />
