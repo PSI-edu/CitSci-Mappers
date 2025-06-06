@@ -6,7 +6,6 @@ CREATE TABLE `users` (
      `details` text COLLATE utf8_unicode_ci,
      `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
      `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-     `tutorials_completed` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
      `scistarter_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
      `scistarter_id` int(11) DEFAULT NULL,
      `scistarter_profile_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

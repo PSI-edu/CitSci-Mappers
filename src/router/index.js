@@ -12,6 +12,7 @@ const PrivacyPage = () => import("@/pages/privacy.vue");
 const TeamPage = () => import("@/pages/team.vue");
 const ScratchPage = () => import("@/pages/scratch-page.vue");
 const MarsMosaicPage = () => import("@/pages/mars-mosaic-page.vue");
+const MarsMosaicTutorialPage = () => import("@/pages/tutorials/mars-mosaic-tutorial-page.vue");
 const LunarMeltPage = () => import("@/pages/lunar-melt-page.vue");
 const MasterImagePage = () => import("@/pages/master-image-page.vue");
 
@@ -62,6 +63,12 @@ const routes = [
     path: "/mars-mosaic",
     name: "mars-mosaic",
     component: MarsMosaicPage,
+    beforeEnter: authGuard,
+  },
+  {
+    path: "/tutorials/mars-mosaic-tutorial",
+    name: "mars-mosaic-tutorial",
+    component: MarsMosaicTutorialPage,
     beforeEnter: authGuard,
   },
   {

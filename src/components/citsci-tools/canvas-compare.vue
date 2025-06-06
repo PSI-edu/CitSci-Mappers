@@ -23,6 +23,11 @@ const props = defineProps({
   diffName: String,
 });
 
+// To stop CORS issues with image loading from cache
+const getCacheBustedUrl = (url) => {
+  return `${url}?t=${new Date().getTime()}`;
+};
+
 // onload show imageName and then respond to radio button clicks
 const canvas__compare = ref(null);
 onMounted(() => {
@@ -121,7 +126,7 @@ const loadDiff = () => {
     console.error(`Failed to load image: ${props.diffName}`);
   };
 
-  image.src = props.diffName;
+  image.src = getCacheBustedUrl(props.diffName);
 
   // unselect the other radio buttons
   document.getElementById("control").checked = false;
@@ -180,8 +185,8 @@ const loadControl = () => {
     console.error(`Failed to load test image: ${props.imageName}`);
   };
 
-  controlImage.src = props.controlName;
-  testImage.src = props.imageName;
+  controlImage.src = getCacheBustedUrl(props.controlName);
+  testImage.src = getCacheBustedUrl(props.imageName);
 
   // unselect the other radio buttons
   document.getElementById("diff").checked = false;
@@ -257,8 +262,8 @@ const loadBlink = () => {
     console.error(`Failed to load image for blink (Test): ${props.imageName}`);
   };
 
-  image1.src = props.controlName;
-  image2.src = props.imageName;
+  image1.src = getCacheBustedUrl(props.controlName);
+  image2.src = getCacheBustedUrl(props.imageName);
 };
 
 // You can add a drawRectangle function if needed, but it's not directly related to the image loading logic

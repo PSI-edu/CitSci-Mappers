@@ -2,6 +2,8 @@
 
 sudo apt update
 sudo apt upgrade -y
+sudo apt-get install -y php-xml php-xmlwriter curl php-curl
+
 cd /tmp && wget https://wordpress.org/latest.tar.gz
 tar -xvf latest.tar.gz
 sudo mkdir /var/www/html/learn

@@ -313,3 +313,68 @@
 #image1, #label1 {
     margin-right: 10px;
 }
+
+#tutorial {
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 80%;
+    max-width: 800px;
+    height: 500px;
+    overflow: scroll;
+    background: var(--white);
+    border-radius: 5px;
+    z-index: 1001;
+    padding: 10px;
+    transition: all 0.5s ease-in-out
+}
+
+#tutorial button {
+    margin: 10px 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+#tutorial button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+
+#tutorial h3, #tutorial p {
+    color: var(--black);
+}
+
+#tutorial-image {
+    float: right;
+    max-width: 200px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.tutorial-navigation {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.tutorial-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    /* Added padding to create space from the bottom of the tutorial box */
+    padding-top: 10px;
+}
+
+.nav-button {
+    min-width: 80px;
+}
