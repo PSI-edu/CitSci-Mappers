@@ -71,7 +71,8 @@ Create a new application
   - leave everything else as their default values
 - Click "Save Changes"
 
-Create a new action so each user gets written into the database
+Create a new action so each user gets written into the database. NOTE: development on localhost requires
+a different setup than production, so you will need to do this twice, once for each environment.
 - In auth0 go to Actions->Library
 - Click [Create Action] to add a new action and select "Build from scratch"
 - Give the action a name (We used "Consent Check"), and use the default runtime "Node 22"
@@ -81,7 +82,7 @@ Create a new action so each user gets written into the database
 - click the blue "Add Secret" button again, and this time enter
   - Key: PROFILE_URL
   - Value: https://your.url/profile
-- Replace everything in the code window with the software below
+- FOR LOCALHOST: Replace everything in the code window with the software below
 ```
 exports.onExecutePostLogin = async (event, api) => {
   const { consentGiven } = event.user.user_metadata || {};
@@ -207,7 +208,7 @@ means you need the api directory on a webserver (system or docker based).
 
 Start the docker container using
 
-`docker-compose build --no-cache; docker-compose up --no-build`
+`docker-compose build --no-cache; docker-compose up -d --no-build; docker-compose exec api composer install`
 
 With docker, it is running a build of the app, and a build of the api, so you'll need to rerun that container to see changes made in vue if you
 use the docker container version of the Vue app. 

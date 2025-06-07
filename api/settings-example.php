@@ -1,11 +1,17 @@
 <?php
 
 /* -------------------------------
+   Set Mode
+   ------------------------------- */
+
+$localhost_dev = true; // Set to true if using localhost for development, false for anything else
+
+/* -------------------------------
    Database Settings
    ------------------------------- */
 
-$db_host = "localhost";
-$db_port = "3306";
+$db_host = "db";
+$db_port = 3306;
 $db_username = "mappers_dbuser";
 $db_password = "Ch4ngeM3"; // Using Docker? Check in docker-compose.yml
 $db_name = "mappers_db";
@@ -18,7 +24,8 @@ $db_name = "mappers_db";
 $vue_url ="http://localhost:4040";
 
 /* -------------------------------
-   API Keys
+   Auth0 Info
    ------------------------------- */
 
-#vue_key = "vue_key"; // Use your password manager or similar to generate a secure key
+$auth0_domain = "https://your.auth0.server"; // Your Auth0 tenant domain with https://
+$auth0_api_audience = "http://your.api.server"; // The Audience (Identifier) of your API as defined in Auth0

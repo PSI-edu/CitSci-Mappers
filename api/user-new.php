@@ -1,10 +1,17 @@
 <?php
-global $vue_url;
+global $vue_url, $auth0_domain, $localhost_dev;
 
 require_once ("settings.php");
 require_once ("helper-functions.php");
 
-header("Access-Control-Allow-Origin: ".$vue_url);
+if ($localhost_dev) {
+    // If localhost, set the vue_url to the local development server
+    header("Access-Control-Allow-Origin: ".$vue_url);
+} else {
+    // Otherwise, use the Auth0 domain
+    header("Access-Control-Allow-Origin: * ");
+}
+
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
