@@ -9,7 +9,7 @@ if ($localhost_dev) {
     header("Access-Control-Allow-Origin: ".$vue_url);
 } else {
     // Otherwise, use the Auth0 domain
-    header("Access-Control-Allow-Origin: * ");
+    header("Access-Control-Allow-Origin: $auth0_domain ");
 }
 
 header('Access-Control-Allow-Methods: POST');
