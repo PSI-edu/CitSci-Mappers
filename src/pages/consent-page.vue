@@ -40,37 +40,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import PageLayout from '@/components/page-layout.vue';
+import PageLayout from "@/components/page-layout.vue";
 
 const formAction = ref('');
-
-const addEmailAndRedirect = async (event) => { // Make it async to await the axios call
-  event.preventDefault(); // Manually prevent default form submission first
-
-  if (import.meta.env.VITE_LOCALHOST_DEV) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-
-    try {
-      const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-new.php', { email: email });
-      localStorage.setItem('userID', response.data);
-      console.log('Success:', response.data);
-
-      // After successful API call, now redirect to Auth0
-      // This simulates the form submission by directly navigating
-      window.location.href = formAction.value;
-
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle error, maybe show an error message to the user
-      // Don't redirect if there's an error in addEmail
-    }
-  } else {
-    console.log("addEmail not executed: VITE_LOCALHOST_DEV is false. Redirecting to Auth0 directly.");
-    // If VITE_LOCALHOST_DEV is false, just proceed with Auth0 redirect
-    window.location.href = formAction.value;
-  }
-};
+const urlParams = new URLSearchParams(window.location.search);
+const state = urlParams.get('state');
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -81,4 +55,17 @@ onMounted(() => {
 
   consentForm.action = baseUrl;
 });
+
+const addEmail = () => {
+  const email = urlParams.get('email');
+
+  axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-new.php', { email: email })
+      .then(response => {
+        localStorage.setItem('userID', response.data);
+        console.log('Success:', response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+};
 </script>
