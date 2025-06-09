@@ -4,19 +4,19 @@ global $vue_url, $auth0_domain, $localhost_dev, $auth0_api_secret;
 require_once("settings.php");
 require_once("helper-functions.php");
 
-if ($localhost_dev) {
-    // If localhost, set the vue_url to the local development server
-    header("Access-Control-Allow-Origin: " . $vue_url);
-} else {
-    // Otherwise, use the Auth0 domain
-    header("Access-Control-Allow-Origin: $auth0_domain ");
-}
 
-header('Access-Control-Allow-Methods: POST');
+    header("Access-Control-Allow-Origin: " . $vue_url);
+
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// If not localhost, check for authentication key
-if (!$localhost_dev) {
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// check for authentication key
+
     $headers = getallheaders();
     $authorizationHeader = isset($headers['Authorization']) ? $headers['Authorization'] : '';
 
@@ -33,7 +33,7 @@ if (!$localhost_dev) {
         echo "Unauthorized access: Missing Authorization header.";
         exit(); // Stop execution
     }
-}
+
 
 // Get the data
 $jsonData = file_get_contents('php://input');
