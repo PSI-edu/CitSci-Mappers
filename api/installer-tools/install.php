@@ -13,6 +13,7 @@ echo "Connected successfully to database: " . $db_name . " on " . $db_host . ":"
 
 // Get all the tables to install and install them
 $dir = "db_tables";
+print_r($dir);
 
 foreach (glob($dir . '/*.sql') as $filename) {
     echo "Creating table: " . $filename . "<br>";

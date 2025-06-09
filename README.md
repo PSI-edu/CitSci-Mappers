@@ -82,9 +82,7 @@ a different setup than production, so you will need to do this twice, once for e
 - click the blue "Add Secret" button again, and this time enter
   - Key: PROFILE_URL
   - Value: https://your.url/profile
-- and again click the blue "Add Secret" button, and this time enter
-  - Key: API_ENDPOINT_USER_NEW
-  - Value: https://your.url/api/user-new.php
+
 ```
 exports.onExecutePostLogin = async (event, api) => {
   const { consentGiven } = event.user.user_metadata || {};
@@ -185,12 +183,6 @@ cp settings-example.php settings.php
 vi settings.php
 ```
 
-Now restrict API access to only your server by editting the .htaccess file in the api directory
-```
-cp htaccess-example .htaccess
-vi .htaccess
-```
-Add your Vue Server's IP (localhost is 127.0.0.1)
 
 # Deploy the software
 
@@ -243,6 +235,8 @@ Then add the following line to your .bashrc file
 ```
 alias dodist='source ~/scripts/dodist.sh'
 ```
+then run `source ~/.bashrc` to load the new alias.
+
 Now you can type ```dodist``` from anywhere to pull the latest code from the repo, build the distribution, and copy it to your webserver."
 
 # Install the database

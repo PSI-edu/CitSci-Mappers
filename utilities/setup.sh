@@ -5,7 +5,7 @@
 
 sudo apt update
 sudo apt -y install apache2
-sudo apt -y install certbot python3-certbot-apache unzip
+sudo apt -y install certbot python3-certbot-apache zip unzip php-zip
 # add ServerName and edit ServerAlias in file below
 # also add beneath DocumentRoot
 # Redirect / https://yourserver.com/
@@ -18,7 +18,7 @@ sudo vi /etc/apache2/sites-available/000-default.conf
 sudo apache2ctl configtest
 sudo apache2ctl restart
 sudo certbot --apache
-sudo apt -y install php libapache2-mod-php php-mysql
+sudo apt -y install php libapache2-mod-php php-mysql php-mbstring
 sudo apt install mysql-client-core-8.0
 sudo apt install git
 sudo apt -y install nodejs
@@ -28,6 +28,9 @@ sudo apt-get update && sudo apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libwebp-dev \
-    libfreetype6-dev
+    libfreetype6-dev \
+    php-curl \
+    composer
+sudo apache2ctl restart
 cd ~
 git clone https://github.com/PSI-edu/CitSci-Mappers.git

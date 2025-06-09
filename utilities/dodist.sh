@@ -4,6 +4,10 @@ git fetch
 git pull
 npm install
 npm run build
+cd api
+sudo rm composer.lock
+composer install
+cd ..
 sudo mkdir /var/www/html/api
 sudo cp -R ~/CitSci-Mappers/.env /var/www/html/.env
 sudo cp -R ~/CitSci-Mappers/.htaccess /var/www/html/.htaccess
