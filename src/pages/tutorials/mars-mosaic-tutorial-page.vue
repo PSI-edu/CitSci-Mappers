@@ -2,9 +2,6 @@
   <div class="darken" v-if="currStep > 0"></div>
   <div id="tutorial" :class="currentStepClass" v-if="currStep > 0">
     <h3>{{ currentStepTitle }}</h3>
-    <img v-if="currentStepImage" :src="currentStepImage" :alt="currentStepTitle" class="tutorial-image">
-    <p v-html="currentStepContent"></p>
-
     <div class="tutorial-navigation">
       <button
           v-for="step in tutorialSteps.slice(1)" :key="step.id"
@@ -14,10 +11,12 @@
         {{ step.id }}
       </button>
     </div>
-
+    <div class="clear"><</div>
+    <img v-if="currentStepImage" :src="currentStepImage" :alt="currentStepTitle" class="tutorial-image">
+    <p v-html="currentStepContent"></p>
     <div class="tutorial-controls">
       <button @click="prevStep" v-if="currStep > 1" class="nav-button prev-button">Previous</button>
-      <button v-if="currStep === 1" @click="startTutorial" class="nav-button start-button">Start Tutorial</button>
+      <button v-if="currStep === 1" class="nav-button start-button">Let's go!</button>
       <button @click="endTutorial" v-if="currStep === tutorialSteps.length - 1" class="end-button">Got It!</button>
       <button @click="nextStep" v-if="currStep < tutorialSteps.length - 1" class="nav-button next-button">Next</button>
     </div>
@@ -42,11 +41,11 @@
             </div>
             <div class="content">
               <p>
-                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team">The Team </a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team" target="_blank">The Team </a>
                 *
-                <a href="https://mappers.psi.edu/learn/mars-mosiacs/">Science </a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
                 *
-                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/">Data</a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
               </p>
             </div>
 
@@ -109,7 +108,7 @@ import CanvasMap from "@/components/citsci-tools/canvas-compare.vue";
 
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref, computed } from 'vue';
-import axios from 'axios';
+import apiClient from '@/api/axios';
 import { useRouter } from 'vue-router';
 
 const { user, isAuthenticated, isLoading: auth0IsLoading } = useAuth0();
@@ -200,7 +199,7 @@ const startTutorial = () => {
 onMounted(async () => {
   // First get the user_id.
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
       email: user.value.email
     });
     localStorage.setItem('user_id', response.data);
@@ -231,10 +230,4 @@ onMounted(async () => {
 
   startTutorial();
 });
-
-// Submit functions
-const submitGood = () => { /* ... */ };
-const submitWarning = () => { /* ... */ };
-const submitBad = () => { /* ... */ };
-const submitBlack = () => { /* ... */ };
 </script>

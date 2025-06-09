@@ -8,16 +8,15 @@
 <script setup>
 import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-unbounded.vue";
-import axios from 'axios';
+import apiClient from '@/api/axios';
 import { onMounted, ref } from 'vue';
 
 const json = ref(null);
 
 onMounted(async () => {
 
-  // First get the user_id.
   try {
-    const response = await axios.get(import.meta.env.VITE_MAPPERS_API_SERVER + '/masterimage.php');
+    const response = await apiClient.get(import.meta.env.VITE_MAPPERS_API_SERVER + '/masterimage.php');
     json.value = response.data;
     //console.log( JSON.stringify(json, null, 2));
   } catch (error) {

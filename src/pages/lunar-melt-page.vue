@@ -101,7 +101,7 @@ import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
+import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
 
@@ -225,7 +225,7 @@ const saveResponse = async () => {
   console.log("Submitting drawings:", payload);
 
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", payload);
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", payload);
     console.log("Submission Successful:", response.data);
     await getNewImage();
 
@@ -258,7 +258,7 @@ const saveResponse = async () => {
 onMounted(async () => {
   // First get the user_id.
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
       email: user.value.email
     });
     localStorage.setItem('user_id',response.data);
@@ -283,7 +283,7 @@ onMounted(async () => {
 const getNewImage = async () => {
   // Now get the first image
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
       app_id: 3,
       user_id: localStorage.getItem('user_id')
     });

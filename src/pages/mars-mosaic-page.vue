@@ -19,11 +19,11 @@
             </div>
             <div class="content">
               <p>
-                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team">The Team </a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team" target="_blank">The Team </a>
                 *
-                <a href="https://mappers.psi.edu/learn/mars-mosiacs/">Science </a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
                 *
-                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/">Data</a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
               </p>
             </div>
 
@@ -87,7 +87,7 @@ import CanvasMap from "@/components/citsci-tools/canvas-compare.vue";
 
 import {useAuth0} from "@auth0/auth0-vue";
 import {onMounted, ref} from 'vue';
-import axios from 'axios';
+import apiClient from '@/api/axios';
 import {useRouter} from 'vue-router';
 
 const {user, isAuthenticated, isLoading: auth0IsLoading} = useAuth0(); // Destructure isAuthenticated and auth0IsLoading
@@ -104,7 +104,6 @@ function setLoadingImages() {
   if (controlButtons) {
     controlButtons.style.display = 'none';
   }
-
   controlUrl.value = "/src/assets/images/loading.png";
   imageUrl.value = "/src/assets/images/loading.png";
   diffUrl.value = "/src/assets/images/loading.png";
@@ -121,7 +120,7 @@ onMounted(async () => {
 
   // First get the user_id.
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
       email: user.value.email
     });
     localStorage.setItem('user_id', response.data);
@@ -132,7 +131,7 @@ onMounted(async () => {
 
   // Check if this user has done the tutorial
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-tutorial.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-tutorial.php", {
       user_id: localStorage.getItem('user_id'),
       app_id: 2,
       task: "check"
@@ -188,7 +187,7 @@ const submitBlack = () => {
 // Create a function to save the response to the server
 const saveResponse = async (response) => {
   try {
-    const res = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", {
+    const res = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", {
       app_id: 2,
       user_id: localStorage.getItem('user_id'),
       image_id: localStorage.getItem('image_id'),
@@ -205,10 +204,11 @@ const saveResponse = async (response) => {
 const getNewImage = async () => {
   setLoadingImages();
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
       app_id: 2,
       user_id: localStorage.getItem('user_id')
     });
+    console.log("New image response:", response.data);
     controlUrl.value = response.data.file_location;
     imageUrl.value = controlUrl.value.replace('controlled', 'uncontrolled');
     diffUrl.value = controlUrl.value.replace('controlled', 'difference');

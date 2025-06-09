@@ -334,21 +334,26 @@
     margin: 10px 5px;
     padding: 8px 15px;
     cursor: pointer;
-    border: 1px solid #ccc;
-    background-color: #f0f0f0;
+    border: 1px solid var(--aluminium);
+    background-color: var(--light-aluminium);
     border-radius: 4px;
 }
 
 #tutorial button.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
+    background-color: var(--indigo);
+    color: var(--white);
+    border-color: var(--blue);
     font-weight: bold;
 }
 
-
 #tutorial h3, #tutorial p {
     color: var(--black);
+}
+
+#tutorial h3 {
+    float: left;
+    width: 50%;
+    margin-bottom: 0.2em;
 }
 
 #tutorial-image {
@@ -359,11 +364,11 @@
 }
 
 .tutorial-navigation {
-    margin-top: 15px;
-    margin-bottom: 10px;
     display: flex;
-    justify-content: center;
+    justify-content: right;
     flex-wrap: wrap;
+    float: right;
+    width: 50%;
 }
 
 .tutorial-controls {
@@ -377,4 +382,12 @@
 
 .nav-button {
     min-width: 80px;
+    font-size: 1.5em;
+}
+
+.start-button {
+    background: none !important;
+    border: none !important;
+    color: var(--black);
+    font-weight: bold;
 }
