@@ -3,7 +3,7 @@
     <div class="content-layout">
       <h1 id="page-title" class="content__title">Informed Consent & GDPR Disclosures</h1>
       <div class="content__body">
-        <form id="consentForm" action="/consent" method="POST" @submit.prevent="addEmail">
+        <form id="consentForm" action="/consent" method="POST" @submit="addEmail">
           <p>This site invites you to participate in science projects by reviewing images
             and either mapping their features or indicating aspects of their content. We
             require an email address from you, and will use it to email you whenever your
