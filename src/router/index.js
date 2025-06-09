@@ -10,7 +10,6 @@ const ProtectedPage = () => import("@/pages/protected-page.vue");
 const DataPage = () => import("@/pages/data-page.vue");
 const PrivacyPage = () => import("@/pages/privacy.vue");
 const TeamPage = () => import("@/pages/team.vue");
-const ScratchPage = () => import("@/pages/scratch-page.vue");
 const MarsMosaicPage = () => import("@/pages/mars-mosaic-page.vue");
 const MarsMosaicTutorialPage = () => import("@/pages/tutorials/mars-mosaic-tutorial-page.vue");
 const LunarMeltPage = () => import("@/pages/lunar-melt-page.vue");
@@ -53,11 +52,6 @@ const routes = [
     path: "/team",
     name: "team",
     component: TeamPage,
-  },
-  {
-    path: "/scratch",
-    name: "scratch",
-    component: ScratchPage,
   },
   {
     path: "/mars-mosaic",
