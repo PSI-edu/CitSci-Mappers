@@ -4,13 +4,21 @@
 require_once ("helper-functions.php");
 require_once("settings.php");
 
+
 global $vue_url, $db_host, $db_username, $db_password, $db_name, $db_port;
-require_once ("settings.php");
 
 header("Access-Control-Allow-Origin: ".$vue_url);
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// Validate the JWT token
+require_once("auth-check.php");
 
 
 // Get the data

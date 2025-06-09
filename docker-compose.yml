@@ -4,16 +4,16 @@ services:
       context: .
       dockerfile: .docker/php-api/Dockerfile
     ports:
-      - "8081:80" #maps port 8081 on host to port 80 in the container
+      - "8081:80"
     volumes:
-      - ./api:/var/www/html
-#  app:
-#    build:
-#      context: .
-#      dockerfile: .docker/vue-app/Dockerfile
-#    container_name: vue-app
-#    ports:
-#      - "8080:8080"
+      - ./api:/var/www/html # Mount your local code for live changes
+      - api_vendor:/var/www/html/vendor # Named volume for Composer dependencies
+    # entrypoint: /bin/sh -c "composer install && apache2-foreground"
+    # Or, even better for dev:
+    # command: ["apache2-foreground"] # Keep default Apache command
+    # And run composer install manually or via an entrypoint script for dev
+    # (see explanation below)
+
   db:
     image: mariadb:latest
     container_name: mariadb-compose
@@ -24,3 +24,9 @@ services:
       MYSQL_ROOT_PASSWORD: Ch4ngeM32,plz.
     ports:
       - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  api_vendor: # Declare the named volume for vendor files
+  db_data: {} # Declare the named volume for database data

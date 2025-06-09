@@ -5,6 +5,11 @@
     # Exclude the /learn directory - this is where wordpress is installed
     RewriteRule ^learn/ - [L,NC]
 
+    # Don't lost the headers
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+
     # Redirect all other requests to Vue
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f

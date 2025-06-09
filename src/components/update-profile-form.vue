@@ -36,7 +36,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, defineProps } from 'vue';
-import axios from 'axios';
+import apiClient from '@/api/axios'; // Use our configured client
 
 const props = defineProps({
   email: {
@@ -71,7 +71,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-profile.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-profile.php", {
       id: id,
       email: email,
     });
@@ -110,7 +110,7 @@ const validateUsername = async () => {
 
   try {
     // Check if the username already exists (excluding the current user)
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-validateusername.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-validateusername.php", {
         username: form.username,
         id: id, // Pass the current user's ID to exclude them from the check
     });
@@ -137,7 +137,7 @@ const submitForm = async () => {
   successMessage.value = '';
 
   try {
-    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-update.php", {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-update.php", {
       id: id,
       email: email,
       username: form.username,

@@ -27,5 +27,6 @@ $vue_url ="http://localhost:4040";
    Auth0 Info
    ------------------------------- */
 
-$auth0_domain = "https://your.auth0.server"; // Your Auth0 tenant domain with https://
+$auth0_audience = "set this in auth0";
+$auth0_domain = ""; // e.g. "dev-12345678.us.auth0.com" if not using localhost_dev
 $auth0_api_secret = ""; // 32 random characters, used to verify the API requests
