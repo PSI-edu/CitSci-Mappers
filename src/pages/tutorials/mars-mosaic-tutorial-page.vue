@@ -62,8 +62,6 @@
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
                 *
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
-                *
-                <a @onclick="redoTutorial" href="">Tutorial</a>
               </p>
             </div>
 
@@ -310,10 +308,5 @@ onMounted(async () => {
 
   startTutorial();
 });
-
-const redoTutorial =() => {
-  // Redirect to the tutorial page
-  router.push('/tutorials/mars-mosaic-tutorial');
-};
 
 </script>
