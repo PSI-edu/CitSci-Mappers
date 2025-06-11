@@ -1,30 +1,46 @@
 <template>
-  <div class="darken" v-if="currStep > 0"></div>
-  <div id="tutorial" :class="currentStepClass" v-if="currStep > 0">
-    <h3>{{ currentStepTitle }}</h3>
-    <div class="tutorial-navigation">
-      <button
-          v-for="step in tutorialSteps.slice(1)" :key="step.id"
-          @click="goToStep(step.id)"
-          :class="{ active: currStep === step.id }"
-      >
-        {{ step.id }}
-      </button>
-    </div>
-    <div class="clear"><</div>
-    <img v-if="currentStepImage" :src="currentStepImage" :alt="currentStepTitle" class="tutorial-image">
-    <p v-html="currentStepContent"></p>
-    <div class="tutorial-controls">
-      <button @click="prevStep" v-if="currStep > 1" class="nav-button prev-button">Previous</button>
-      <button v-if="currStep === 1" class="nav-button start-button">Let's go!</button>
-      <button @click="endTutorial" v-if="currStep === tutorialSteps.length - 1" class="end-button">Got It!</button>
-      <button @click="nextStep" v-if="currStep < tutorialSteps.length - 1" class="nav-button next-button">Next</button>
-    </div>
-  </div>
+  <div class="darken" v-if="currStep==1"></div>
   <PageLayout title=": Mars Mosaic">
     <div class="content-layout mars">
 
       <div id="citsci-main-panel">
+        <div class="mars" >
+          <div id="tutorial" :class="currentStepClass" v-if="currStep > 0">
+
+            <!-- Navigation buttons with numbers -->
+            <div class="tutorial-navigation">
+              <button
+                  v-for="step in tutorialSteps.slice(1)" :key="step.id"
+                  @click="goToStep(step.id)"
+                  :class="{ active: currStep === step.id }"
+              >
+                {{ step.id }}
+              </button>
+            </div>
+
+            <!-- Title -->
+            <h3>{{ currentStepTitle }}</h3>
+
+            <!-- Content -->
+            <div class="clear"><</div>
+            <img v-if="currentStepImage1" :src="currentStepImage1" :alt="currentStepTitle" class="tutorial-image1">
+            <img v-if="currentStepImage2" :src="currentStepImage2" :alt="currentStepTitle" class="tutorial-image2">
+            <div v-if="currentStepImageCaption" class="image-caption">
+              <p>
+                {{ currentStepImageCaption }}
+              </p>
+            </div>
+            <p v-html="currentStepContent"></p>
+            <div class="tutorial-controls">
+              <button @click="prevStep" v-if="currStep > 1" class="nav-button prev-button">Previous</button>
+              <button v-if="currStep === 1" class="nav-button start-button">Let's go!</button>
+              <button @click="handleSubmitClick" v-if="currStep === tutorialSteps.length - 1" class="end-button">Got It!
+              </button>
+              <button @click="nextStep" v-if="currStep < tutorialSteps.length - 1" class="nav-button next-button">Next
+              </button>
+            </div>
+          </div>
+        </div>
         <div style="width:480px; float:left;">
           <div class="citsci-info-panel mosaic">
             <h5>Keeping Coordinated</h5>
@@ -89,11 +105,31 @@
                 :image-name="imageUrl"
             />
             <div id="mosaic-submit-panel">
+
               <h4>These images are...? <small>click the button that matches best.</small></h4>
-              <button class="mosaics-submit" id="good" >Perfectly Aligned</button>
-              <button class="mosaics-submit" id="warning" >Almost Aligned</button>
-              <button class="mosaics-submit" id="bad" >Poorly Aligned</button>
-              <button class="mosaics-submit" id="error" >Something is wrong</button>
+
+              <div v-if="submissionMade">
+                <button class="mosaics-submit" id="good">Perfectly Aligned</button>
+                <button class="mosaics-submit" id="warning">Almost Aligned</button>
+                <button class="mosaics-submit" id="bad">Poorly Aligned</button>
+                <button class="mosaics-submit" id="error">Something is wrong</button>
+              </div>
+
+              <div v-if="!submissionMade">
+                <button class="mosaics-submit" @click="handleSubmitClick" id="good">Perfectly Aligned</button>
+                <button class="mosaics-submit" @click="handleSubmitClick" id="warning">Almost Aligned</button>
+                <button class="mosaics-submit" @click="handleSubmitClick" id="bad">Poorly Aligned</button>
+                <button class="mosaics-submit" @click="handleSubmitClick" id="error">Something is wrong</button>
+              </div>
+
+              <div v-if="showNotYetMessage">
+                <button class="not-yet-box">Not Yet</button>
+              </div>
+
+              <div v-if="submissionMade">
+                <button class="thank-you">Thank you!</button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -106,17 +142,20 @@
 import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-compare.vue";
 
-import { useAuth0 } from "@auth0/auth0-vue";
-import { onMounted, ref, computed } from 'vue';
+import {useAuth0} from "@auth0/auth0-vue";
+import {onMounted, ref, computed} from 'vue';
 import apiClient from '@/api/axios';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 
-const { user, isAuthenticated, isLoading: auth0IsLoading } = useAuth0();
+const {user, isAuthenticated, isLoading: auth0IsLoading} = useAuth0();
 const router = useRouter();
 
 const imageUrl = ref(null);
 const controlUrl = ref(null);
 const diffUrl = ref(null);
+
+const showNotYetMessage = ref(false);
+const submissionMade = ref(false);
 
 // Tutorial Logic
 const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
@@ -127,42 +166,64 @@ const tutorialSteps = [
     title: '',
     content: '',
     className: '',
-    image: ''
+    image1: '',
+    image2: ''
   },
   {
     id: 1,
     title: "Welcome to Mars Mosaics!",
-    content: "This tutorial will guide you through the process of aligning Mars images. Click a number below to navigate, or 'Next' to proceed.",
+    content: "Thanks for joining our team. You are helping us build the next generation of Mars mosaics. Your work " +
+        "will enable research into how Mars changes from season to season and year to year. <br><br>" +
+        "This tutorial will guide you through the process of determining if two images are aligned - " +
+        "a key step in making sure our mosaics provide the same location information as current, individual images. <br><br>" +
+        "It turns out, software sometimes shifts images too much or too little when combining individual frames " +
+        "into mosaics. (Photoshop, we're looking at you!) And sometimes, things just go wrong." +
+        "Your information will help us tweak our software " +
+        "until we get pixel-perfect results." +
+        "<br><br>Click 'Next' to start the tutorial.",
     className: "step-1",
-    image: "https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PerfectlyAligned.png" // Example image
+    image1: "https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/MM-Tutorial/MM-Tutorial-Step1.png",
+    image2: "",
+    imageCaption: "This is an example of where it all started, and how far we've come."
   },
   {
     id: 2,
-    title: "Understanding the Task",
-    content: "Your goal is to determine if the two images in the main panel are aligned. Look for features that match up.",
+    title: "You're comparing these images",
+    content: "Our eyes can't see single pixel differences. " +
+        "If something went really wrong (like one is black, or there are contrasty bands) you'll see it here. <br></br>" +
+        "This <i>shouldn't</i> happen, but if it does, please click 'Something is wrong' and let us know.",
     className: "step-2",
-    image: "" // No image for this step
+    image1: "",
+    image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png"
   },
   {
     id: 3,
-    title: "Image Comparison",
-    content: "Image 1 (left) is the image you need to align, and Image 2 (right) is the reference image. You can click and drag to move them.",
+    title: "See changes with Overlaid & Difference images",
+    content: "<strong>Overlaid</strong> images layer one image in Blue over the other in Yellow. Where they" +
+        "are the same you see shades of grey. Color highlights offsets.<br><br>" +
+        "<strong>Difference </strong> images are black where the images are the same and white where they differ.<br><br> " +
+        "<strong>Blink images for 5sec</strong> to see changes in motion.<br><br>",
     className: "step-3",
-    image: "https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-AlmostAligned.png" // Example image
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-right.png",
+    image2: "",
+    imageCaption: "Click the radio buttons to switch between options."
   },
   {
     id: 4,
-    title: "Example Alignments",
-    content: "Below are examples of perfectly aligned, almost aligned, and poorly aligned images. Use these as a guide.",
+    title: "How good (or bad) is the alignment?",
+    content: "Each example combines an Overlaid and Difference image to show you both views. ",
     className: "step-4",
-    image: "" // No image for this step
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-down.png",
+    image2: "https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/MM-Tutorial/MM-Tutorial-Step4.png",
   },
   {
     id: 5,
-    title: "Submitting Your Answer",
-    content: "Once you've made your decision, select the appropriate button: 'Perfectly Aligned', 'Almost Aligned', 'Poorly Aligned', or 'Something is wrong'.",
+    title: "Submit Your Answer",
+    content: "Click the button that best matches your images. <br><br>" +
+        "We'll give you new images as long as you want to help! ",
     className: "step-5",
-    image: "" // No image for this step
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-down.png",
+    image2: ""
   }
 ];
 
@@ -170,7 +231,24 @@ const currentStep = computed(() => tutorialSteps[currStep.value]);
 const currentStepTitle = computed(() => currentStep.value.title);
 const currentStepContent = computed(() => currentStep.value.content);
 const currentStepClass = computed(() => currentStep.value.className);
-const currentStepImage = computed(() => currentStep.value.image);
+const currentStepImage1 = computed(() => currentStep.value.image1);
+const currentStepImage2 = computed(() => currentStep.value.image2);
+const currentStepImageCaption = computed(() => currentStep.value.imageCaption);
+
+// Make sure they don't try and submit things to early
+const handleSubmitClick = () => {
+  if (currStep.value < 5) {
+    showNotYetMessage.value = true;
+    setTimeout(() => {
+      showNotYetMessage.value = false;
+    }, 5000); // Hide message after 5 seconds
+    return;
+  }
+  if (currStep.value === 5) {
+    submissionMade.value = true;
+    // You can add your data submission logic here
+  }
+};
 
 const goToStep = (stepId) => {
   currStep.value = stepId;

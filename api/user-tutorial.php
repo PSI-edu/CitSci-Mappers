@@ -33,7 +33,7 @@ if ($data !== null &&
     ($data['task'] !== null && isset($data['task']) ) &&
     ($data['app_id'] !== null && isset($data['app_id'] ))) {
 
-    echo "TRUE";
+    echo "FALSE";
 } else {
     echo "FALSE";
 }
