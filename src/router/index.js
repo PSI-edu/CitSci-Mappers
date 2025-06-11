@@ -63,7 +63,6 @@ const routes = [
     path: "/tutorials/mars-mosaic-tutorial",
     name: "mars-mosaic-tutorial",
     component: MarsMosaicTutorialPage,
-    beforeEnter: authGuard,
   },
   {
     path: "/lunar-melt",
