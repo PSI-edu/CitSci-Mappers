@@ -24,6 +24,8 @@
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
                 *
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
+                *
+                <a @onclick="redoTutorial" href="">Tutorial</a>
               </p>
             </div>
 
@@ -148,6 +150,11 @@ onMounted(async () => {
   await getNewImage();
 
 });
+
+const redoTutorial =() => {
+  // Redirect to the tutorial page
+  router.push('/tutorials/mars-mosaic-tutorial');
+};
 
 // If someone clicks the submitGood button, send the response to the server and get a new image
 const submitGood = () => {
