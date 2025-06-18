@@ -13,6 +13,7 @@ const TeamPage = () => import("@/pages/team.vue");
 const MarsMosaicPage = () => import("@/pages/mars-mosaic-page.vue");
 const MarsMosaicTutorialPage = () => import("@/pages/tutorials/mars-mosaic-tutorial-page.vue");
 const LunarMeltPage = () => import("@/pages/lunar-melt-page.vue");
+const LunarMeltTutorialPage = () => import("@/pages/tutorials/lunar-melt-tutorial-page.vue");
 const MasterImagePage = () => import("@/pages/master-image-page.vue");
 
 const routes = [
@@ -63,11 +64,18 @@ const routes = [
     path: "/tutorials/mars-mosaic-tutorial",
     name: "mars-mosaic-tutorial",
     component: MarsMosaicTutorialPage,
+    beforeEnter: authGuard,
   },
   {
     path: "/lunar-melt",
     name: "lunar-melt",
     component: LunarMeltPage,
+    beforeEnter: authGuard,
+  },
+  {
+    path: "/tutorials/lunar-melt-tutorial",
+    name: "lunar-melt-tutorial",
+    component: LunarMeltTutorialPage,
     beforeEnter: authGuard,
   },
   {
