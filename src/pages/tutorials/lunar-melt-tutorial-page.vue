@@ -1,111 +1,116 @@
 <template>
+  <template v-if="isNoFingers">
+    <div class="darken" v-if="currStep==1"></div>
+    <PageLayout title=": Lunar Melt">
+      <div class="content-layout">
+        <div id="citsci-main-panel">
+          <div class="moon">
 
-<template v-if="isNoFingers">
-  <PageLayout title=": Lunar Melt" >
-    <div class="content-layout">
-      <div id="citsci-main-panel">
-        <div id="citsci-buttons-panel">
-          <button
-              @click="setMode('circle'); setText(craterTitle, craterInfo); setExamples('circle')"
-              :class="{'button-not-selected': mode !== 'circle', 'button-selected': mode === 'circle'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png'); background-size: contain;"
-          ></button>
-          <button
-              @click="setMode('line'); setText(boulderTitle, boulderInfo); setExamples('line')"
-              :class="{'button-not-selected': mode !== 'line', 'button-selected': mode === 'line'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png'); background-size: contain;"
-          ></button>
-          <button
-              @click="setMode('dot'); setText(rocksTitle, rocksInfo); setExamples('dot')"
-              :class="{'button-not-selected': mode !== 'dot', 'button-selected': mode === 'dot'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-rocks.png'); background-size: contain;"
-          ></button>
-          <button
-              @click="setMode('erase'); setText(eraseTitle, eraseInfo); setExamples('erase')"
-              :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
-          ></button>
-          <button
-              @click="setMode('edit'); setText(eraseTitle, eraseInfo); setExamples('erase')"
-              :class="{'button-not-selected': mode !== 'edit', 'button-selected': mode === 'edit'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png');background-size: contain;"
-          ></button>
-        </div>
-        <div id="citsci-mapping-panel">
-          <CanvasMap
-              :image-name="imageUrl"
-              v-if="imageUrl"
-              ref="canvasMapRef"
-              @draw="handleDraw"
-              :mode="mode"
-              :drawings="drawings"
-              @clearDrawing="clearDrawing"
-              @updateDrawing="handleUpdateDrawing"
-          />
-        </div>
-        <div class="citsci-info-panel melt">
-          <h5>Activity 1:</h5>
-          <h3>Craters, Boulders, Rocks</h3>
-          <p >We are mapping geologic features related to flowing impact melt
-            in the Moon's Little Lowell & Tycho craters. Long ago, the heat
-            of asteroid impacts melted the regions you're mapping. Your
-            work helps us understand how the melt flowed & when it cooled. </p>
+            <div id="citsci-buttons-panel">
+              <button
+                  @click="setMode('circle'); setText(craterTitle, craterInfo); setExamples('circle')"
+                  :class="{'button-not-selected': mode !== 'circle', 'button-selected': mode === 'circle'}"
+                  style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png'); background-size: contain;"
+              ></button>
+              <button
+                  @click="setMode('line'); setText(boulderTitle, boulderInfo); setExamples('line')"
+                  :class="{'button-not-selected': mode !== 'line', 'button-selected': mode === 'line'}"
+                  style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png'); background-size: contain;"
+              ></button>
+              <button
+                  @click="setMode('dot'); setText(rocksTitle, rocksInfo); setExamples('dot')"
+                  :class="{'button-not-selected': mode !== 'dot', 'button-selected': mode === 'dot'}"
+                  style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-rocks.png'); background-size: contain;"
+              ></button>
+              <button
+                  @click="setMode('erase'); setText(eraseTitle, eraseInfo); setExamples('erase')"
+                  :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
+                  style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
+              ></button>
+              <button
+                  @click="setMode('edit'); setText(eraseTitle, eraseInfo); setExamples('erase')"
+                  :class="{'button-not-selected': mode !== 'edit', 'button-selected': mode === 'edit'}"
+                  style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png');background-size: contain;"
+              ></button>
+            </div>
+            <div id="citsci-mapping-panel">
+              <CanvasMap
+                  :image-name="imageUrl"
+                  v-if="imageUrl"
+                  ref="canvasMapRef"
+                  @draw="handleDraw"
+                  :mode="mode"
+                  :drawings="drawings"
+                  @clearDrawing="clearDrawing"
+                  @updateDrawing="handleUpdateDrawing"
+              />
+            </div>
+            <div class="citsci-info-panel melt">
+              <h5>Activity 1:</h5>
+              <h3>Craters, Boulders, Rocks</h3>
+              <p>We are mapping geologic features related to flowing impact melt
+                in the Moon's Little Lowell & Tycho craters. Long ago, the heat
+                of asteroid impacts melted the regions you're mapping. Your
+                work helps us understand how the melt flowed & when it cooled. </p>
 
-          <br/>
-          <h4>{{ infoTitle }}</h4>
-          <p>{{ infoText }}</p>
+              <br/>
+              <h4>{{ infoTitle }}</h4>
+              <p>{{ infoText }}</p>
 
-          <div id="ex-canvas">
-            <canvas
-                ref="exampleMarks" id="exampleMarks"
-                width="100" height="75">
-            </canvas>
+              <div id="ex-canvas">
+                <canvas
+                    ref="exampleMarks" id="exampleMarks"
+                    width="100" height="75">
+                </canvas>
+              </div>
+            </div>
+            <button
+                @click="saveResponse()" class="submit-button" id="submit-button"
+            >Submit
+            </button>
+            <button
+                class="busy-button" id="busy-button"
+            >Working....
+            </button>
+            <div class="LunarMelt citsci-examples">
+              <h4> Examples</h4>
+              <img
+                  v-for="example in exampleImages"
+                  :key="example"
+                  :src="example"
+                  style="margin-right: 5px;"
+                  alt="Example Image"
+              />
+            </div>
           </div>
         </div>
-        <button
-            @click="saveResponse()" class="submit-button" id = "submit-button"
-        >Submit</button>
-        <button
-          class="busy-button" id="busy-button"
-        >Working....</button>
-        <div class="LunarMelt citsci-examples">
-          <h4> Examples</h4>
-          <img
-              v-for="example in exampleImages"
-              :key="example"
-              :src="example"
-              style="margin-right: 5px;"
-              alt ="Example Image"
-          />
+      </div>
+    </PageLayout>
+  </template>
+  <template v-else>
+    <PageLayout title=": Lunar Melt BETA">
+      <div class="content-layout">
+        <div id="citsci-main-panel">
+          <div id="citsci-buttons-panel">
+            <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </PageLayout>
-</template>
-<template v-else>
-  <PageLayout title=": Lunar Melt BETA" >
-    <div class="content-layout">
-      <div id="citsci-main-panel">
-        <div id="citsci-buttons-panel">
-          <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
-        </div>
-      </div>
-    </div>
-  </PageLayout>
-</template>
+    </PageLayout>
+  </template>
 </template>
 
 <script setup>
-import { useIsNoFingers } from "@/composables/noFingers.js";
+import {useIsNoFingers} from "@/composables/noFingers.js";
 import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
-import { useAuth0 } from "@auth0/auth0-vue";
-import { onMounted, ref } from 'vue';
+import {useAuth0} from "@auth0/auth0-vue";
+import {onMounted, ref} from 'vue';
 import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
 
-const { user } = useAuth0();
+const {user} = useAuth0();
 
 const imageUrl = ref(null);
 const mode = ref(null);
@@ -181,7 +186,7 @@ const handleDraw = (drawing) => {
 };
 
 const handleUpdateDrawing = (payload) => {
-  const { index, newDrawing } = payload; // Destructure the event payload
+  const {index, newDrawing} = payload; // Destructure the event payload
   if (drawings.value && typeof index === 'number' && index >= 0 && index < drawings.value.length && newDrawing) {
     drawings.value[index] = newDrawing;
   } else {
@@ -261,32 +266,27 @@ onMounted(async () => {
     const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
       email: user.value.email
     });
-    localStorage.setItem('user_id',response.data);
-    localStorage.setItem('email',user.value.email);
-    // Now get the first image
-    await getNewImage();
+    localStorage.setItem('user_id', response.data);
+    localStorage.setItem('email', user.value.email);
   } catch (error) {
     console.log(error);
   }
 
-  // Now get the first image
+  // Now get tutorial image
   imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Lowell_Crater/M105192594LE_final/M105192594LE_final_1215-405.png";
-  localStorage.setItem('image_id',response.data.id);
-  console.log("Image URL: " + imageUrl.value);
 
   // Draw the example marks
   drawExampleCanvas();
 
   // Add the example images at the bottom
   setExamples(null);
-
 });
 
 const drawExampleCanvas = () => {
   // Draw the example marks on the canvas: a 6px circle and a 6 pixel line
   const canvasExample = exampleMarks.value;
-  canvasExample.width=100;
-  canvasExample.height=75;
+  canvasExample.width = 100;
+  canvasExample.height = 75;
   const ctxExample = canvasExample.getContext('2d');
   //
   // // Draw example circle

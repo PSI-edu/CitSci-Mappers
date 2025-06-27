@@ -147,7 +147,7 @@ import {onMounted, ref, computed} from 'vue';
 import apiClient from '@/api/axios';
 import {useRouter} from 'vue-router';
 
-const {user, isAuthenticated, isLoading: auth0IsLoading} = useAuth0();
+const {user} = useAuth0();
 const router = useRouter();
 
 const imageUrl = ref(null);

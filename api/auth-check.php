@@ -30,8 +30,8 @@ try {
     $config = new SdkConfiguration(
         strategy: SdkConfiguration::STRATEGY_API,
         domain: 'https://' . $auth0_domain,
-        audience: [$auth0_audience],
         clientId: $auth0_client_id,
+        audience: [$auth0_audience],
 
     );
 

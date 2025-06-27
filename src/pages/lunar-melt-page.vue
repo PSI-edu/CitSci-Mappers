@@ -263,8 +263,6 @@ onMounted(async () => {
     });
     localStorage.setItem('user_id',response.data);
     localStorage.setItem('email',user.value.email);
-    // Now get the first image
-    await getNewImage();
   } catch (error) {
     console.log(error);
   }
