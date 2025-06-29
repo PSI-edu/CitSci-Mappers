@@ -46,18 +46,20 @@
             </div>
           </div>
           <div class="citsci-info-panel mosaic-examples">
-            <h4>Examples of different alignments</h4>
+            <h4>Examples</h4>
             <img class="align-good"
-                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PerfectlyAligned.png"
-                 alt="Perfectly Aligned Example Image">
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-WellAligned-1.png"
+                 alt="Well-Aligned Example Image">
+            <img class="align-good"
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-WellAligned-2.png"
+                 alt="Poorly-Aligned Example Image">
             <img class="align-warning"
-                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-AlmostAligned.png"
-                 alt="Almost Aligned Example Image">
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned-1.png"
+                 alt="Poorly-Aligned Example Image">
             <img class="align-bad"
-                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned.png"
-                 alt="Poorly Aligned Example Image">
-            <div class="label"><h5>Perfectly Aligned</h5></div>
-            <div class="label"><h5>Almost Aligned</h5></div>
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned-2.png"
+                 alt="Poorly-Aligned Example Image">
+            <div class="label"><h5>Well Aligned</h5></div>
             <div class="label no-right-margin"><h5>Poorly Aligned</h5></div>
           </div>
         </div>
@@ -70,8 +72,7 @@
             />
             <div id="mosaic-submit-panel">
               <h4>These images are...? <small>click the button that matches best.</small></h4>
-              <button class="mosaics-submit" id="good" @click="submitGood">Perfectly Aligned</button>
-              <button class="mosaics-submit" id="warning" @click="submitWarning">Almost Aligned</button>
+              <button class="mosaics-submit" id="good" @click="submitGood">Well Aligned</button>
               <button class="mosaics-submit" id="bad" @click="submitBad">Poorly Aligned</button>
               <button class="mosaics-submit" id="error" @click="submitBlack">Something is wrong</button>
             </div>

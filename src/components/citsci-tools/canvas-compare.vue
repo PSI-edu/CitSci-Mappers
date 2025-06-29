@@ -2,8 +2,7 @@
   <canvas ref="canvas__compare" id="canvas__compare" width="450" height="450" @click="drawRectangle"></canvas>
   <div id="compare-buttons-panel">
     <strong>Show me:</strong>
-      <input type="radio" id="control" name="compare" value="control" @click="loadControl()" >
-      <label for="control">Overlaid </label>
+
       <input type="radio" id="diff" name="diff" value="difference" @click="loadDiff()" checked>
       <label for="diff">Difference</label>
       <input type="radio" id="blink" name="blink" value="blink" @click="loadBlink()" >
@@ -129,7 +128,6 @@ const loadDiff = () => {
   image.src = getCacheBustedUrl(props.diffName);
 
   // unselect the other radio buttons
-  document.getElementById("control").checked = false;
   document.getElementById("blink").checked = false;
 };
 
@@ -266,11 +264,7 @@ const loadBlink = () => {
   image2.src = getCacheBustedUrl(props.imageName);
 };
 
-// You can add a drawRectangle function if needed, but it's not directly related to the image loading logic
-const drawRectangle = (event) => {
-  // Your existing drawRectangle logic here
-  console.log("Canvas clicked at:", event.offsetX, event.offsetY);
-};
+
 </script>
 
 <style scoped>

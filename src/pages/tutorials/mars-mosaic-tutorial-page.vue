@@ -34,7 +34,7 @@
             <div class="tutorial-controls">
               <button @click="prevStep" v-if="currStep > 1" class="nav-button prev-button">Previous</button>
               <button v-if="currStep === 1" class="nav-button start-button">Let's go!</button>
-              <button @click="handleSubmitClick" v-if="currStep === tutorialSteps.length - 1" class="end-button">Got It!
+              <button @click="endTutorial" v-if="currStep === tutorialSteps.length - 1" class="end-button">Got It!
               </button>
               <button @click="nextStep" v-if="currStep < tutorialSteps.length - 1" class="nav-button next-button">Next
               </button>
@@ -82,16 +82,19 @@
             </div>
           </div>
           <div class="citsci-info-panel mosaic-examples">
-            <h4>Examples of different alignments</h4>
+            <h4>Examples</h4>
             <img class="align-good"
-                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PerfectlyAligned.png"
-                 alt="Perfectly Aligned Example Image">
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-WellAligned-1.png"
+                 alt="Well-Aligned Example Image">
+            <img class="align-good"
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-WellAligned-2.png"
+                 alt="Poorly-Aligned Example Image">
             <img class="align-warning"
-                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-AlmostAligned.png"
-                 alt="Almost Aligned Example Image">
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned-1.png"
+                 alt="Poorly-Aligned Example Image">
             <img class="align-bad"
-                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned.png"
-                 alt="Poorly Aligned Example Image">
+                 src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned-2.png"
+                 alt="Poorly-Aligned Example Image">
             <div class="label"><h5>Perfectly Aligned</h5></div>
             <div class="label"><h5>Almost Aligned</h5></div>
             <div class="label no-right-margin"><h5>Poorly Aligned</h5></div>
@@ -109,17 +112,15 @@
               <h4>These images are...? <small>click the button that matches best.</small></h4>
 
               <div v-if="submissionMade">
-                <button class="mosaics-submit" id="good">Perfectly Aligned</button>
-                <button class="mosaics-submit" id="warning">Almost Aligned</button>
+                <button class="mosaics-submit" id="good">Well Aligned</button>
                 <button class="mosaics-submit" id="bad">Poorly Aligned</button>
                 <button class="mosaics-submit" id="error">Something is wrong</button>
               </div>
 
               <div v-if="!submissionMade">
-                <button class="mosaics-submit" @click="handleSubmitClick" id="good">Perfectly Aligned</button>
-                <button class="mosaics-submit" @click="handleSubmitClick" id="warning">Almost Aligned</button>
-                <button class="mosaics-submit" @click="handleSubmitClick" id="bad">Poorly Aligned</button>
-                <button class="mosaics-submit" @click="handleSubmitClick" id="error">Something is wrong</button>
+                <button class="mosaics-submit" @click="handleSubmitClick('other')" id="good">Well Aligned</button>
+                <button class="mosaics-submit" @click="handleSubmitClick('bad')" id="bad">Poorly Aligned</button>
+                <button class="mosaics-submit" @click="handleSubmitClick('other')" id="error">Something is wrong</button>
               </div>
 
               <div v-if="showNotYetMessage">
@@ -127,7 +128,11 @@
               </div>
 
               <div v-if="submissionMade">
-                <button class="thank-you">Thank you!</button>
+                <button class="thank-you">Thank you! loading science...</button>
+              </div>
+
+              <div v-if="showAreYouSure">
+                <button class="are-you-sure">Are you sure? Try again in 3...2...</button>
               </div>
 
             </div>
@@ -156,6 +161,7 @@ const diffUrl = ref(null);
 
 const showNotYetMessage = ref(false);
 const submissionMade = ref(false);
+const showAreYouSure = ref(false);
 
 // Tutorial Logic
 const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
@@ -198,10 +204,8 @@ const tutorialSteps = [
   },
   {
     id: 3,
-    title: "See changes with Overlaid & Difference images",
-    content: "<strong>Overlaid</strong> images layer one image in Blue over the other in Yellow. Where they" +
-        "are the same you see shades of grey. Color highlights offsets.<br><br>" +
-        "<strong>Difference </strong> images are black where the images are the same and white where they differ.<br><br> " +
+    title: "See changes with Difference images",
+    content: "<strong>Difference </strong> images are black where the images are the same and white where they differ.<br><br> " +
         "<strong>Blink images for 5sec</strong> to see changes in motion.<br><br>",
     className: "step-3",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-right.png",
@@ -236,7 +240,7 @@ const currentStepImage2 = computed(() => currentStep.value.image2);
 const currentStepImageCaption = computed(() => currentStep.value.imageCaption);
 
 // Make sure they don't try and submit things to early
-const handleSubmitClick = () => {
+const handleSubmitClick = (alignment) => {
   if (currStep.value < 5) {
     showNotYetMessage.value = true;
     setTimeout(() => {
@@ -245,7 +249,19 @@ const handleSubmitClick = () => {
     return;
   }
   if (currStep.value === 5) {
-    submissionMade.value = true;
+    if (alignment === 'bad') {
+      submissionMade.value = true;
+      setTimeout(() => {
+        endTutorial();
+      }, 3000);
+      console.log('here');
+    } else {
+      showAreYouSure.value = true;
+      setTimeout(() => {
+        showAreYouSure.value = false;
+      }, 3000);
+      console.log('nope');
+    }
     // You can add your data submission logic here
   }
 };
@@ -266,8 +282,22 @@ const prevStep = () => {
   }
 };
 
-const endTutorial = () => {
-  currStep.value = 0; // Set to 0 to hide the tutorial div and darken overlay
+const endTutorial = async () => {
+  const userId = localStorage.getItem('user_id');
+  if (userId) {
+    try {
+      // Send user_id to the tutorial completion endpoint
+      const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-tutorial.php', {
+        user_id: localStorage.getItem('user_id'),
+        app_id: 2,
+        task: "add"
+      });
+      console.log('Successfully marked tutorial as complete for user.', response.data);
+      router.push('/mars-mosaic');
+    } catch (error) {
+      console.error('Failed to send tutorial completion status:', error);
+    }
+  }
 };
 
 const startTutorial = () => {
@@ -282,6 +312,7 @@ onMounted(async () => {
     });
     localStorage.setItem('user_id', response.data);
     localStorage.setItem('email', user.value.email);
+    console.log("User ID set in localStorage:", response.data);
   } catch (error) {
     console.log(error);
   }

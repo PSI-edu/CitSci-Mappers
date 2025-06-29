@@ -6,4 +6,4 @@ CREATE TABLE `tutorials`(
 PRIMARY KEY (`id`),
     KEY `tutorials_application_id_foreign` (`application_id`),
     KEY `tutorials_user_id_foreign` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUT O_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

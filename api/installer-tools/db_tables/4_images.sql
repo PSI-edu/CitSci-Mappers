@@ -21,5 +21,6 @@ UNIQUE KEY `images_name_unique` (`name`),
       KEY `images_on_done` (`done`),
       KEY `images_application_id_index` (`application_id`),
       KEY `images_image_set_id_index` (`image_set_id`),
-      KEY `images_done_index` (`done`)
+      KEY `images_done_index` (`done`),
+      KEY 'idx_priority' (`priority`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

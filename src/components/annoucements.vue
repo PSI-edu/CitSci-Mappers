@@ -1,14 +1,15 @@
 <template>
   <div class="main-content">
     <div class="annoucements">
-      <div class="updated">Updated: 2 June 2025</div>
+      <div class="updated">Updated: 29 June 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
-        <p>This site is in Beta! Currently no data can be expected to be saved. Play. Give feedback. Get a preview of what's coming.</p>
+        <p>This site is in Beta! Play. Give feedback. Get a preview of what's coming. (Please note,
+        we are saving your data, but you may get asked to redo images after future updates.)</p>
 
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
-          <li>May hang if cookies go stale or session expires</li>
+          <li>Mosaics Tutorial is mis-formatted in Safari</li>
         </ul>
 
         <h4>&#129513; Features in Progress</h4>
@@ -18,10 +19,14 @@
         </ul>
       </div>
       <div class="text-block">
-        <h4>&#128250; Help Us Test</h4>
-        <p>We are in Beta! We need your help testing the site. Please report any bugs you find, and let us know what you like and what you want to see next.</p>
-        <p>We are working on a new way to do citizen science, and we need your help to make it better.</p>
-        <p>Join our <a href="https://discord.gg/3MCQRsu5DW">Discord</a> to chat with us and other testers.</p>
+        <h4>&#128250; Catch our streams</h4>
+        <p>Join our partners at CosmoQuest Tuesday - Thursday at 2pm Eastern on
+           <a href="https://twitch.tv/CosmoQuestX">Twitch</a> to hear about updates,
+           report issues, and gab while we map other worlds. Follow to be notified about ninja streams
+           and rocket launch coverage.
+        </p>
+        <p>Join our <a href="https://discord.gg/3MCQRsu5DW">Discord</a> to chat with us and other testers.
+        </p>
       </div>
     </div>
     <div class="socials">
@@ -33,7 +38,9 @@
             </a>
           </div>
           <div>
-            <h4>Opensource, <br>Open Science</h4>
+            <a href="https://github.com/PSI-edu/CitSci-Mappers">
+              <h4>Opensource, <br>Open Science</h4>
+            </a>
             <p>All are welcome. Help us map worlds and develop new ways of doing science.</p></div>
         </div>
       </div>
@@ -47,7 +54,9 @@
             </a>
           </div>
           <div>
-            <h4>Join a science community thru our sibling <a href="https://cosmoquest.org">CosmoQuest</a></h4>
+            <a href="https://discord.gg/3MCQRsu5DW">
+              <h4>Join a science community thru our sibling CosmoQuest</h4>
+            </a>
             <p>Get space news, educational content, podcasts, and more through our donation-funded sibling program.</p>
           </div>
         </div>
@@ -61,7 +70,7 @@
             <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/social.png" alt="Social Icon">
           </div>
           <div style="position: relative; width: 100%;">
-            <h4>Stay up-to-date wherever you scroll</h4>
+            <h4>Get updates wherever you scroll or are social</h4>
             <img style="position: absolute; width:30%; top:50%; right: 1em;" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/CQ-PSI-Logo.png" alt="CQ-PSI Logo" >
             <div style="width:70%;">
               <p>Keep up with all <a href="https://psi.edu" target="_blank">PSI</a> is discovering.

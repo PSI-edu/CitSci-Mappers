@@ -24,6 +24,7 @@ require_once("auth-check.php");
 // Get the data
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
+
 if ($data !== null && $data['email'] !== null && isset($data['email'])) {
     $email = clean_inputs($data["email"]);
 
