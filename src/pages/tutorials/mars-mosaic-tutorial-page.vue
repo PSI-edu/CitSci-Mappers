@@ -205,8 +205,11 @@ const tutorialSteps = [
   {
     id: 3,
     title: "See changes with Difference images",
-    content: "<strong>Difference </strong> images are black where the images are the same and white where they differ.<br><br> " +
-        "<strong>Blink images for 5sec</strong> to see changes in motion.<br><br>",
+    content: "<strong>Difference </strong> images are white where images differ.<br><br> " +
+        "<strong>Blink images</strong> to see changes in motion.<br><br>" +
+        "Well-aligned images will have only the faintest hints of white or grey, and motion will be hard to see." +
+        "In while poorly-aligned you can clearly make out the craters and see motion. <BR><BR>" +
+        "<strong>Note:</strong> changes in shadows should be ignored. ",
     className: "step-3",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-right.png",
     image2: "",

@@ -67,7 +67,6 @@
           <div id="citsci-mapping-panel">
             <CanvasMap
                 :control-name="controlUrl" v-if="controlUrl"
-                :diff-name="diffUrl"
                 :image-name="imageUrl"
             />
             <div id="mosaic-submit-panel">
@@ -219,7 +218,6 @@ const getNewImage = async () => {
     console.log("New image response:", response.data);
     controlUrl.value = response.data.file_location;
     imageUrl.value = controlUrl.value.replace('controlled', 'uncontrolled');
-    diffUrl.value = controlUrl.value.replace('controlled', 'difference');
     localStorage.setItem('image_id', response.data.id);
   } catch (error) {
     console.log(error);
