@@ -41,7 +41,79 @@ if ($data !== null &&
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "SELECT i.id, i.file_location
+    if ($app_id == 2) {
+        $sql = "SELECT i1.id, i1.file_location, i1.image_set_id
+                FROM images i1
+                WHERE i1.application_id = ?
+                AND i1.done = 0
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM image_users iu
+                    WHERE iu.image_id = i1.id
+                    AND iu.user_id = ?
+                )
+                AND EXISTS (
+                    SELECT 1
+                    FROM images i2
+                    WHERE i2.image_set_id = i1.image_set_id
+                    AND i2.id != i1.id
+                    AND i2.done = 0
+                    AND i2.application_id = ?
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM image_users iu2
+                        WHERE iu2.image_id = i2.id
+                        AND iu2.user_id = ?
+                    )
+                )
+                ORDER BY i1.image_set_id ASC, i1.id ASC
+                LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        // Bind app_id twice for the outer query and the inner EXISTS subquery
+        $stmt->bind_param("iiii", $app_id, $user_id, $app_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $image_set_id = $row['image_set_id'];
+
+            // Now select the two rows from the same image_set_id
+            $sql_set = "SELECT i.id, i.file_location
+                        FROM images i
+                        WHERE i.image_set_id = ?
+                        AND i.application_id = ?
+                        AND i.done = 0
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM image_users iu
+                            WHERE iu.image_id = i.id
+                            AND iu.user_id = ?
+                        )
+                        ORDER BY i.id ASC
+                        LIMIT 2";
+            $stmt_set = $conn->prepare($sql_set);
+            // Bind image_set_id, app_id, and user_id
+            $stmt_set->bind_param("iii", $image_set_id, $app_id, $user_id);
+            $stmt_set->execute();
+            $result_set = $stmt_set->get_result();
+
+            $response = [];
+            while ($row_set = $result_set->fetch_assoc()) {
+                $response[] = [
+                    'id' => $row_set['id'],
+                    'file_location' => $row_set['file_location']
+                ];
+            }
+            echo json_encode($response);
+            $stmt_set->close();
+        } else {
+            echo json_encode(['error' => 'No matching image set found.']);
+        }
+
+    } else {
+        $sql = "SELECT i.id, i.file_location
         FROM images i
         WHERE 
             i.application_id = ?
@@ -54,23 +126,24 @@ if ($data !== null &&
         ORDER BY i.id ASC
         LIMIT 1";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $app_id, $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $app_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $response = [
-            'id' => $row['id'],
-            'file_location' => $row['file_location'] // Decode JSON
-        ];
-        echo json_encode($response); // Return as JSON
-    } else {
-        echo json_encode(['error' => 'No matching image found.']); // Return error as JSON
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $response = [
+                'id' => $row['id'],
+                'file_location' => $row['file_location'] // Decode JSON
+            ];
+            echo json_encode($response); // Return as JSON
+            $stmt->close();
+        } else {
+            echo json_encode(['error' => 'No matching image found.']); // Return error as JSON
+        }
     }
 
-    $stmt->close();
     $conn->close();
 
 } else {

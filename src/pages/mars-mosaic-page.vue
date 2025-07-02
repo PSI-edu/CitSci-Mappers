@@ -216,9 +216,12 @@ const getNewImage = async () => {
       user_id: localStorage.getItem('user_id')
     });
     console.log("New image response:", response.data);
-    controlUrl.value = response.data.file_location;
-    imageUrl.value = controlUrl.value.replace('controlled', 'uncontrolled');
-    localStorage.setItem('image_id', response.data.id);
+    if (Array.isArray(response.data) && response.data.length >= 2) {
+      controlUrl.value = response.data[0].file_location;
+      localStorage.setItem('control_id', response.data[0].id);
+      imageUrl.value = response.data[1].file_location;
+      localStorage.setItem('image_id', response.data[1].id);
+    }
   } catch (error) {
     console.log(error);
   }
