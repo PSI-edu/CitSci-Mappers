@@ -3,12 +3,33 @@
     <PageLayout title=": Lunar Melt" >
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
-
+          <button
+            @click="setMode('red-line')"
+            :class="{'button-selected': mode === 'red-line', 'button-not-selected': mode !== 'red-line'}"
+            style="background-color: white; color: red; border: 2px solid red; width: 48px; height: 48px; border-radius: 8px; margin: 6px; font-size: 2em; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"
+            title="Draw Red Line"
+          >
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <line x1="4" y1="28" x2="28" y2="4" stroke="red" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <!-- Placeholder for more buttons -->
         </div>
       </div>
 
       <div id="citsci-mapping-panel">
-
+        <CanvasMap
+          ref="canvasMapRef"
+          :mode="mode"
+          :drawings="drawings"
+          @draw="handleDraw"
+          @clearDrawing="clearDrawing"
+          @updateDrawing="handleUpdateDrawing"
+        />
+      </div>
+      <div class="citsci-info-panel melt">
+        <h5>Activity: Red Lines</h5>
+        <p>Click the red button, then click and drag on the map to draw red line segments.</p>
       </div>
 
     </PageLayout>
@@ -32,4 +53,29 @@ import { onMounted, ref } from 'vue';
 import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
+
+// Drawing State
+const mode = ref('');
+const drawings = ref([]);
+const canvasMapRef = ref(null);
+
+function setMode(newMode) {
+  mode.value = newMode;
+}
+
+function handleDraw(drawing) {
+  // If mode is 'red-line', add color info
+  if (mode.value === 'red-line') {
+    drawing.color = 'red';
+  }
+  drawings.value.push(drawing);
+}
+
+function clearDrawing(index) {
+  drawings.value.splice(index, 1);
+}
+
+function handleUpdateDrawing({ index, drawing }) {
+  drawings.value[index] = drawing;
+}
 </script>
