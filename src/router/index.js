@@ -10,10 +10,11 @@ const ProtectedPage = () => import("@/pages/protected-page.vue");
 const DataPage = () => import("@/pages/data-page.vue");
 const PrivacyPage = () => import("@/pages/privacy.vue");
 const TeamPage = () => import("@/pages/team.vue");
-const MarsMosaicPage = () => import("@/pages/mars-mosaic-page.vue");
+const MarsMosaicPage = () => import("@/pages/do_science/mars-mosaic-page.vue");
 const MarsMosaicTutorialPage = () => import("@/pages/tutorials/mars-mosaic-tutorial-page.vue");
-const LunarMeltPage = () => import("@/pages/lunar-melt-page.vue");
+const LunarMeltPage = () => import("@/pages/do_science/lunar-melt-page.vue");
 const LunarMeltTutorialPage = () => import("@/pages/tutorials/lunar-melt-tutorial-page.vue");
+const LunarMeltFlowsPage = () => import("@/pages/do_science/lunar-melt-flows-page.vue");
 const MasterImagePage = () => import("@/pages/master-image-page.vue");
 
 const routes = [
@@ -55,7 +56,7 @@ const routes = [
     component: TeamPage,
   },
   {
-    path: "/mars-mosaic",
+    path: "/do_science/mars-mosaic",
     name: "mars-mosaic",
     component: MarsMosaicPage,
     beforeEnter: authGuard,
@@ -67,7 +68,7 @@ const routes = [
     beforeEnter: authGuard,
   },
   {
-    path: "/lunar-melt",
+    path: "/do_science/lunar-melt",
     name: "lunar-melt",
     component: LunarMeltPage,
     beforeEnter: authGuard,
@@ -76,6 +77,12 @@ const routes = [
     path: "/tutorials/lunar-melt-tutorial",
     name: "lunar-melt-tutorial",
     component: LunarMeltTutorialPage,
+    beforeEnter: authGuard,
+  },
+  {
+    path: "/do_science/lunar-melt-flows",
+    name: "lunar-melt-flows",
+    component: LunarMeltFlowsPage,
     beforeEnter: authGuard,
   },
   {
