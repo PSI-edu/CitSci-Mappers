@@ -14,7 +14,18 @@
                 <line x1="4" y1="28" x2="28" y2="4" stroke="red" stroke-width="4" stroke-linecap="round"/>
               </svg>
             </button>
-            <!-- Placeholder for more buttons -->
+            <button
+              @click="setMode('erase')"
+              :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'erase'}"
+              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png'); background-size: contain; width: 48px; height: 48px; border: none; border-radius: 8px; margin: 6px;"
+              title="Erase/Delete"
+            ></button>
+            <button
+              @click="setMode('edit')"
+              :class="{'button-selected': mode === 'edit', 'button-not-selected': mode !== 'edit'}"
+              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png'); background-size: contain; width: 48px; height: 48px; border: none; border-radius: 8px; margin: 6px;"
+              title="Move/Edit"
+            ></button>
           </div>
           <div id="citsci-mapping-panel">
             <CanvasMap
@@ -67,6 +78,12 @@ import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
 
+// Info panel state (copied from lunar-melt-page.vue for erase/edit)
+const eraseTitle = ref("Erasing");
+const eraseInfo = ref("Click on a mark to delete it.");
+const infoTitle = ref("Ready?");
+const infoText = ref("Welcome to the lunar surface. Select a tool to begin marking features.");
+
 // Drawing State
 const mode = ref('');
 const drawings = ref([]);
@@ -74,6 +91,19 @@ const canvasMapRef = ref(null);
 
 function setMode(newMode) {
   mode.value = newMode;
+  if (newMode === 'erase') {
+    infoTitle.value = eraseTitle.value;
+    infoText.value = eraseInfo.value;
+  } else if (newMode === 'edit') {
+    infoTitle.value = 'Editing';
+    infoText.value = 'Drag or resize marks to adjust.';
+  } else if (newMode === 'red-line') {
+    infoTitle.value = 'Red Lines';
+    infoText.value = 'Click and drag to draw red line segments.';
+  } else {
+    infoTitle.value = 'Ready?';
+    infoText.value = 'Welcome to the lunar surface. Select a tool to begin marking features.';
+  }
 }
 
 function handleDraw(drawing) {
