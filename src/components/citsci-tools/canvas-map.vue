@@ -143,6 +143,11 @@ const handleMouseDown = (event) => {
   const mouseX = event.offsetX;
   const mouseY = event.offsetY;
 
+  if (props.mode === 'red-line') {
+    // Do nothing on mousedown for two-click logic
+    return;
+  }
+
   if (props.mode === 'edit') {
     const { index, handle } = getShapeAtPoint(mouseX, mouseY);
     if (index !== -1) {
@@ -168,12 +173,34 @@ const handleMouseDown = (event) => {
 
   // Original drawing mode logic
   if (!props.mode || props.mode === 'erase' || props.mode === 'dot') return;
+  // --- Begin red-line mode logic ---
+  if (props.mode === 'red-line') {
+    isDrawing.value = true;
+    startPoint.value = { x: mouseX, y: mouseY };
+    currentDrawing.value = { type: 'red-line', data: {} };
+    return;
+  }
+  // --- End red-line mode logic ---
   isDrawing.value = true;
   startPoint.value = { x: mouseX, y: mouseY };
   currentDrawing.value = { type: props.mode, data: {} };
 };
 
 const handleMouseMove = (event) => {
+  if (props.mode === 'red-line') {
+    if (!isDrawing.value || !startPoint.value || !annCtx.value) return;
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
+    annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+    if (props.drawings) {
+      props.drawings.forEach(existingDrawing => {
+        drawShape(annCtx.value, existingDrawing, -1);
+      });
+    }
+    // Live preview
+    drawShape(annCtx.value, { type: 'red-line', data: { x1: startPoint.value.x, y1: startPoint.value.y, x2: mouseX, y2: mouseY }, color: 'red' }, -1);
+    return;
+  }
   const mouseX = event.offsetX;
   const mouseY = event.offsetY;
 
@@ -234,11 +261,21 @@ const handleMouseMove = (event) => {
   }
   const tempData = getCurrentShapeData(currentX, currentY);
   if (currentDrawing.value && currentDrawing.value.type) {
-    drawShape(annCtx.value, { type: currentDrawing.value.type, data: tempData }, -1);
+    // --- Begin red-line live preview ---
+    if (props.mode === 'red-line') {
+      drawShape(annCtx.value, { type: 'red-line', data: tempData }, -1);
+    } else {
+      drawShape(annCtx.value, { type: currentDrawing.value.type, data: tempData }, -1);
+    }
+    // --- End red-line live preview ---
   }
 };
 
 const handleMouseUp = (event) => {
+  if (props.mode === 'red-line') {
+    // Do nothing on mouseup for two-click logic
+    return;
+  }
   if (props.mode === 'edit' && isEditing.value && selectedShapeIndex.value !== -1) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
@@ -296,11 +333,21 @@ const handleMouseUp = (event) => {
     isDrawing.value = false;
     return;
   }
-  // ... (rest of original mouse up logic, remember to correct MINESIZE to MINSIZE)
   const endPoint = { x: event.offsetX, y: event.offsetY };
   const drawingData = getCurrentShapeData(endPoint.x, endPoint.y);
 
   let isValidDrawing = true;
+  // --- Begin red-line validation ---
+  if (props.mode === 'red-line') {
+    const dx_draw = endPoint.x - startPoint.value.x;
+    const dy_draw = endPoint.y - startPoint.value.y;
+    const length = Math.sqrt(dx_draw * dx_draw + dy_draw * dy_draw);
+    if (length <= MINSIZE) {
+      isValidDrawing = false;
+      console.log('red-line too small');
+    }
+  }
+  // --- End red-line validation ---
   if (props.mode === 'line' || props.mode === 'circle') {
     const dx_draw = endPoint.x - startPoint.value.x;
     const dy_draw = endPoint.y - startPoint.value.y;
@@ -322,6 +369,16 @@ const handleMouseUp = (event) => {
     redrawAnnotations();
     return;
   }
+  // --- Begin red-line finalize ---
+  if (props.mode === 'red-line') {
+    const finalDrawing = { type: 'red-line', data: drawingData, color: 'red' };
+    emit('draw', finalDrawing);
+    isDrawing.value = false;
+    startPoint.value = null;
+    currentDrawing.value = null;
+    return;
+  }
+  // --- End red-line finalize ---
   const finalDrawing = { type: props.mode, data: drawingData };
   emit('draw', finalDrawing);
   isDrawing.value = false;
@@ -333,6 +390,35 @@ const handleMouseUp = (event) => {
 
 
 const handleCanvasClick = (event) => {
+  if (props.mode === 'red-line') {
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
+    if (!isDrawing.value) {
+      // First click: set start point
+      startPoint.value = { x: mouseX, y: mouseY };
+      isDrawing.value = true;
+      // Show preview on next mousemove
+    } else {
+      // Second click: finalize line
+      const endPoint = { x: mouseX, y: mouseY };
+      const dx = endPoint.x - startPoint.value.x;
+      const dy = endPoint.y - startPoint.value.y;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      if (length > MINSIZE) {
+        const finalDrawing = { type: 'red-line', data: { x1: startPoint.value.x, y1: startPoint.value.y, x2: endPoint.x, y2: endPoint.y }, color: 'red' };
+        emit('draw', finalDrawing);
+      }
+      isDrawing.value = false;
+      startPoint.value = null;
+      annCtx.value && annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+      if (props.drawings) {
+        props.drawings.forEach(existingDrawing => {
+          drawShape(annCtx.value, existingDrawing, -1);
+        });
+      }
+    }
+    return;
+  }
   const clickX = event.offsetX;
   const clickY = event.offsetY;
 
@@ -412,8 +498,10 @@ const drawShape = (context, drawing, index) => {
     context.arc(drawing.data.x, drawing.data.y, drawing.data.radius, 0, 2 * Math.PI);
     context.stroke();
     context.fill();
-  } else if (drawing.type === 'line') {
-    context.strokeStyle = 'white'; // Outer stroke
+  } else if (drawing.type === 'line' || drawing.type === 'red-line') {
+    // --- Begin red-line rendering ---
+    const isRed = drawing.type === 'red-line' || drawing.color === 'red';
+    context.strokeStyle = isRed ? 'red' : 'white'; // Outer stroke
     context.lineWidth = 4; // Outer stroke width
     context.beginPath();
     context.moveTo(drawing.data.x1, drawing.data.y1);
@@ -426,13 +514,14 @@ const drawShape = (context, drawing, index) => {
       context.strokeStyle = 'red';
       context.setLineDash([3, 3]);
     } else {
-      context.strokeStyle = '#6f6e2a'; // Green color for valid line
+      context.strokeStyle = isRed ? 'red' : '#6f6e2a'; // Red for red-line, green for normal line
     }
     context.lineWidth = 2; // Inner stroke width
     context.beginPath();
     context.moveTo(drawing.data.x1, drawing.data.y1);
     context.lineTo(drawing.data.x2, drawing.data.y2);
     context.stroke();
+    // --- End red-line rendering ---
 
   } else if (drawing.type === 'dot') {
     const dotRadius = 5;
