@@ -1,37 +1,50 @@
 <template>
   <template v-if="isNoFingers">
     <PageLayout title=": Lunar Melt" >
-      <div id="citsci-main-panel">
-        <div id="citsci-buttons-panel">
-          <button
-            @click="setMode('red-line')"
-            :class="{'button-selected': mode === 'red-line', 'button-not-selected': mode !== 'red-line'}"
-            style="background-color: white; color: red; border: 2px solid red; width: 48px; height: 48px; border-radius: 8px; margin: 6px; font-size: 2em; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"
-            title="Draw Red Line"
-          >
-            <svg width="32" height="32" viewBox="0 0 32 32">
-              <line x1="4" y1="28" x2="28" y2="4" stroke="red" stroke-width="4" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <!-- Placeholder for more buttons -->
+      <div class="content-layout">
+        <div id="citsci-main-panel">
+          <div id="citsci-buttons-panel">
+            <button
+              @click="setMode('red-line')"
+              :class="{'button-selected': mode === 'red-line', 'button-not-selected': mode !== 'red-line'}"
+              style="background-color: white; color: red; border: 2px solid red; width: 48px; height: 48px; border-radius: 8px; margin: 6px; font-size: 2em; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"
+              title="Draw Red Line"
+            >
+              <svg width="32" height="32" viewBox="0 0 32 32">
+                <line x1="4" y1="28" x2="28" y2="4" stroke="red" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <!-- Placeholder for more buttons -->
+          </div>
+          <div id="citsci-mapping-panel">
+            <CanvasMap
+              ref="canvasMapRef"
+              :mode="mode"
+              :drawings="drawings"
+              @draw="handleDraw"
+              @clearDrawing="clearDrawing"
+              @updateDrawing="handleUpdateDrawing"
+            />
+          </div>
+          <div class="citsci-info-panel melt">
+            <h5>Activity 1:</h5>
+            <h3>Craters, Boulders, Rocks</h3>
+            <p>We are mapping geologic features related to flowing impact melt in the Moon's Little Lowell & Tycho craters. Long ago, the heat of asteroid impacts melted the regions you're mapping. Your work helps us understand how the melt flowed & when it cooled. </p>
+            <br/>
+            <h4>{{ infoTitle }}</h4>
+            <p>{{ infoText }}</p>
+            <div id="ex-canvas">
+              <canvas ref="exampleMarks" id="exampleMarks" width="100" height="75"></canvas>
+            </div>
+          </div>
+          <button @click="saveResponse()" class="submit-button" id="submit-button">Submit</button>
+          <button class="busy-button" id="busy-button">Working....</button>
+          <div class="LunarMelt citsci-examples">
+            <h4>Examples</h4>
+            <img v-for="example in exampleImages" :key="example" :src="example" style="margin-right: 5px;" alt="Example Image" />
+          </div>
         </div>
       </div>
-
-      <div id="citsci-mapping-panel">
-        <CanvasMap
-          ref="canvasMapRef"
-          :mode="mode"
-          :drawings="drawings"
-          @draw="handleDraw"
-          @clearDrawing="clearDrawing"
-          @updateDrawing="handleUpdateDrawing"
-        />
-      </div>
-      <div class="citsci-info-panel melt">
-        <h5>Activity: Red Lines</h5>
-        <p>Click the red button, then click and drag on the map to draw red line segments.</p>
-      </div>
-
     </PageLayout>
   </template>
   <template v-else>
