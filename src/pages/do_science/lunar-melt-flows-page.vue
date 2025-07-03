@@ -32,6 +32,7 @@
               ref="canvasMapRef"
               :mode="mode"
               :drawings="drawings"
+              :image-name="imageUrl"
               @draw="handleDraw"
               @clearDrawing="clearDrawing"
               @updateDrawing="handleUpdateDrawing"
@@ -77,6 +78,7 @@ import { onMounted, ref } from 'vue';
 import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
+const { user } = useAuth0();
 
 // Info panel state (copied from lunar-melt-page.vue for erase/edit)
 const eraseTitle = ref("Erasing");
@@ -88,6 +90,10 @@ const infoText = ref("Welcome to the lunar surface. Select a tool to begin marki
 const mode = ref('');
 const drawings = ref([]);
 const canvasMapRef = ref(null);
+
+// Image and example state
+const imageUrl = ref(null);
+const exampleImages = ref([]);
 
 function setMode(newMode) {
   mode.value = newMode;
@@ -121,4 +127,50 @@ function clearDrawing(index) {
 function handleUpdateDrawing({ index, drawing }) {
   drawings.value[index] = drawing;
 }
+
+function setExamples(tool) {
+  const prefix = "https://moon-mappers.s3.us-east-2.amazonaws.com/examples/";
+  exampleImages.value = [];
+  // For now, just show a default set
+  exampleImages.value = [
+    prefix + 'example-crater-1.png',
+    prefix + 'example-crater-2.png',
+    prefix + 'example-boulder-1.png',
+    prefix + 'example-boulder-2.png',
+    prefix + 'example-rock-1.png',
+    prefix + 'example-rock-2.png',
+  ];
+}
+
+async function getNewImage() {
+  try {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
+      app_id: 3,
+      user_id: localStorage.getItem('user_id'),
+    });
+    imageUrl.value = response.data.file_location;
+    localStorage.setItem('image_id', response.data.id);
+    // Optionally, you can clear drawings here
+    drawings.value = [];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(async () => {
+  // Get user_id
+  try {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+      email: user.value.email
+    });
+    localStorage.setItem('user_id', response.data);
+    localStorage.setItem('email', user.value.email);
+  } catch (error) {
+    console.log(error);
+  }
+  // Get image
+  await getNewImage();
+  // Set examples
+  setExamples();
+});
 </script>
