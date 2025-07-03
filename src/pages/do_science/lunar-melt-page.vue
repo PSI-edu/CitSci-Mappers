@@ -85,11 +85,7 @@
 <template v-else>
   <PageLayout title=": Lunar Melt BETA" >
     <div class="content-layout">
-      <div id="citsci-main-panel">
-        <div id="citsci-buttons-panel">
           <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
-        </div>
-      </div>
     </div>
   </PageLayout>
 </template>
