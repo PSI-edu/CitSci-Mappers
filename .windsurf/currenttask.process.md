@@ -1,4 +1,5 @@
 # Lunar Melt 2 Layout
+Default STARTER_CHARACTER = 🧱
 
 ## Login Info
 

@@ -113,7 +113,7 @@ function getShapeAtPoint(x, y) {
       if (distance({ x, y }, { x: data.x, y: data.y }) < data.radius + HANDLE_SIZE / 2) { // Slightly larger hit area
         return { index: i, handle: 'body' };
       }
-    } else if (drawing.type === 'line') {
+    } else if (drawing.type === 'line' || drawing.type === 'red-line') {
       const { x1, y1, x2, y2 } = data;
       const distToLine = pointToLineSegmentDistance(x, y, x1, y1, x2, y2);
       if (distToLine < HANDLE_SIZE) { // Tolerance for line selection
@@ -187,6 +187,37 @@ const handleMouseDown = (event) => {
 };
 
 const handleMouseMove = (event) => {
+  // --- Erase mode: highlight line to delete ---
+  if (props.mode === 'erase') {
+    if (!annCtx.value) return;
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
+    let highlightIndex = -1;
+    // Find the topmost line (including red-line) under the cursor
+    for (let i = props.drawings.length - 1; i >= 0; i--) {
+      const drawing = props.drawings[i];
+      if ((drawing.type === 'line' || drawing.type === 'red-line')) {
+        const { x1, y1, x2, y2 } = drawing.data;
+        const dist = pointToLineSegmentDistance(mouseX, mouseY, x1, y1, x2, y2);
+        if (dist < HANDLE_SIZE) {
+          highlightIndex = i;
+          break;
+        }
+      }
+    }
+    annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+    props.drawings.forEach((drawing, idx) => {
+      if (idx === highlightIndex && (drawing.type === 'line' || drawing.type === 'red-line')) {
+        // Draw highlighted in blue
+        drawShape(annCtx.value, { ...drawing, color: 'blue' }, -1);
+      } else {
+        drawShape(annCtx.value, drawing, -1);
+      }
+    });
+    // Store for click
+    handleMouseMove._highlightIndex = highlightIndex;
+    return;
+  }
   if (props.mode === 'red-line') {
     if (!isDrawing.value || !startPoint.value || !annCtx.value) return;
     const mouseX = event.offsetX;
@@ -390,6 +421,20 @@ const handleMouseUp = (event) => {
 
 
 const handleCanvasClick = (event) => {
+  // --- Erase mode: delete highlighted line ---
+  if (props.mode === 'erase') {
+    const highlightIndex = handleMouseMove._highlightIndex;
+    if (highlightIndex !== undefined && highlightIndex !== -1) {
+      emit('clearDrawing', highlightIndex);
+      // Clear highlight after deletion
+      handleMouseMove._highlightIndex = -1;
+      if (annCtx.value) {
+        annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+        props.drawings.forEach(drawing => drawShape(annCtx.value, drawing, -1));
+      }
+    }
+    return;
+  }
   if (props.mode === 'red-line') {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
@@ -500,8 +545,10 @@ const drawShape = (context, drawing, index) => {
     context.fill();
   } else if (drawing.type === 'line' || drawing.type === 'red-line') {
     // --- Begin red-line rendering ---
-    const isRed = drawing.type === 'red-line' || drawing.color === 'red';
-    context.strokeStyle = isRed ? 'red' : 'white'; // Outer stroke
+    let colorOverride = drawing.color;
+    const isRed = drawing.type === 'red-line' || colorOverride === 'red';
+    const isBlue = colorOverride === 'blue';
+    context.strokeStyle = isBlue ? 'blue' : (isRed ? 'red' : 'white'); // Outer stroke
     context.lineWidth = 4; // Outer stroke width
     context.beginPath();
     context.moveTo(drawing.data.x1, drawing.data.y1);
@@ -514,7 +561,7 @@ const drawShape = (context, drawing, index) => {
       context.strokeStyle = 'red';
       context.setLineDash([3, 3]);
     } else {
-      context.strokeStyle = isRed ? 'red' : '#6f6e2a'; // Red for red-line, green for normal line
+      context.strokeStyle = isBlue ? 'blue' : (isRed ? 'red' : '#6f6e2a'); // Blue for highlight, red for red-line, green for normal line
     }
     context.lineWidth = 2; // Inner stroke width
     context.beginPath();
