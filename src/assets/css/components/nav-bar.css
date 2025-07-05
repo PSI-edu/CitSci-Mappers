@@ -62,7 +62,7 @@
   justify-content: center;
 
   margin-right: 24px;
-
+  padding: 10px;
   font-weight: 500;
   font-size: 16px;
   line-height: 16px;
@@ -81,7 +81,7 @@
 }
 
 .nav-bar__tab:hover {
-  color: var(--white);
+  background: var(--indigo);
 }
 
 .nav-bar__icon {
@@ -111,11 +111,12 @@
 
 .nav-bar__dropdown-menu {
   position: absolute;
-  top: 100%; /* Position right below the toggle */
+  top: 35px; /* Position right below the toggle */
   left: 0;
   background-color: var(--blue);
   border: 1px solid var(--aluminium);
-  min-width: 300px;
+  border-top: none;
+  min-width: 150px;
   z-index: 1000;
 }
 
@@ -123,7 +124,6 @@
   display: block;
   padding: 10px 15px;
   text-decoration: none;
-  margin-right: 24px;
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;

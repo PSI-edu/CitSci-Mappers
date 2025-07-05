@@ -62,6 +62,8 @@
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
                 *
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
+                *
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mars-mosaics-examples/" target="_blank">Examples</a>
               </p>
             </div>
 
@@ -95,8 +97,7 @@
             <img class="align-bad"
                  src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/examples/Example-Mosaics-PoorlyAligned-2.png"
                  alt="Poorly-Aligned Example Image">
-            <div class="label"><h5>Perfectly Aligned</h5></div>
-            <div class="label"><h5>Almost Aligned</h5></div>
+            <div class="label"><h5>Well Aligned</h5></div>
             <div class="label no-right-margin"><h5>Poorly Aligned</h5></div>
           </div>
         </div>
@@ -196,8 +197,8 @@ const tutorialSteps = [
     id: 2,
     title: "You're comparing these images",
     content: "Our eyes can't see single pixel differences. " +
-        "If something went really wrong (like one is black, or there are contrasty bands) you'll see it here. <br></br>" +
-        "This <i>shouldn't</i> happen, but if it does, please click 'Something is wrong' and let us know.",
+        "If something went really wrong (like there are contrasty bands) you'll see it here. <br></br>" +
+        "This <i>shouldn't</i> happen, but if it does, please click 'Something is wrong' below to let us know.",
     className: "step-2",
     image1: "",
     image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png"
@@ -207,9 +208,9 @@ const tutorialSteps = [
     title: "See changes with Difference images",
     content: "<strong>Difference </strong> images are white where images differ.<br><br> " +
         "<strong>Blink images</strong> to see changes in motion.<br><br>" +
-        "Well-aligned images will have only the faintest hints of white or grey, and motion will be hard to see." +
-        "In while poorly-aligned you can clearly make out the craters and see motion. <BR><BR>" +
-        "<strong>Note:</strong> changes in shadows should be ignored. ",
+        "Well-aligned images will have only the faintest hints of white or grey, and motion will be hard to see. " +
+        "In poorly-aligned images you can clearly make out the craters and see motion. <BR><BR>" +
+        "<strong>Note:</strong> Changing shadows can be ignored. <a href=''See Examples",
     className: "step-3",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-right.png",
     image2: "",
@@ -218,15 +219,17 @@ const tutorialSteps = [
   {
     id: 4,
     title: "How good (or bad) is the alignment?",
-    content: "Each example combines an Overlaid and Difference image to show you both views. ",
+    content: "We have a couple examples for you to compare to, and a link above to see more.<br><br> " +
+             "<strong>Key Detail:</strong> If you don't see well-defined white edges to features, " +
+             "the images are well aligned.",
     className: "step-4",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-down.png",
-    image2: "https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/MM-Tutorial/MM-Tutorial-Step4.png",
+    image2: ""
   },
   {
     id: 5,
     title: "Submit Your Answer",
-    content: "Click the button that best matches your images. <br><br>" +
+    content: "Click the button that best matches each image. <br><br>" +
         "We'll give you new images as long as you want to help! ",
     className: "step-5",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-down.png",
@@ -296,7 +299,7 @@ const endTutorial = async () => {
         task: "add"
       });
       console.log('Successfully marked tutorial as complete for user.', response.data);
-      router.push('/mars-mosaic');
+      router.push('/do_science/mars-mosaic');
     } catch (error) {
       console.error('Failed to send tutorial completion status:', error);
     }

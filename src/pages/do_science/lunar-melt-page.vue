@@ -46,12 +46,29 @@
         <div class="citsci-info-panel melt">
           <h5>Activity 1:</h5>
           <h3>Craters, Boulders, Rocks</h3>
-          <p >We are mapping geologic features related to flowing impact melt
-            in the Moon's Little Lowell & Tycho craters. Long ago, the heat
+          <div class="label">
+            <p>Task:</p>
+          </div>
+          <div class="content">
+          <p >We're mapping geologic features from/in flowing impact melt. Long ago, the heat
             of asteroid impacts melted the regions you're mapping. Your
             work helps us understand how the melt flowed & when it cooled. </p>
+          </div>
+          <div class="label">
+            <p>Links:</p>
+          </div>
+          <div class="content">
+            <p>
+              <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team" target="_blank">The Team </a>
+              *
+              <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
+              *
+              <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
+              *
+              <a href="/tutorials/lunar-melt-tutorial" target="_blank">Tutorial</a>
+            </p>
+          </div>
 
-          <br/>
           <h4>{{ infoTitle }}</h4>
           <p>{{ infoText }}</p>
 
