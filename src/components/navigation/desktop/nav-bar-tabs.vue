@@ -4,8 +4,7 @@
     <NavBarDropdown
         label="Do Science"
         :items="[
-              { path: '/do_science/lunar-melt', label: 'Lunar Melt: Craters, Boulders, Rocks' },
-              { path: '/do_science/lunar-melt-flows', label: 'Lunar Melt: Flows, Faults, & More' },
+              { path: '/do_science/lunar-melt', label: 'Lunar Melt' },
               { path: '/do_science/mars-mosaic', label: 'Mars Mosaics' },
           ]"
     />

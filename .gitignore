@@ -569,8 +569,33 @@ PublishScripts/
 #!**/[Pp]ackages/repositories.config
 # NuGet v3's project.json files produces more ignorable files
 *.nuget.props
-*.nuget.targets
-
+# Ignored files added on 2025-07-03 by Cascade AI
+api/composer.lock
+api/utilities/
+src/assets/images/CitSci/examples/LunarMelt/example-boulder-1.ai
+src/assets/images/CitSci/examples/LunarMelt/example-boulder-2.ai
+src/assets/images/CitSci/examples/LunarMelt/example-boulder-3.ai
+src/assets/images/CitSci/examples/LunarMelt/example-boulder-4.ai
+src/assets/images/CitSci/examples/LunarMelt/example-boulder-5.ai
+src/assets/images/CitSci/examples/LunarMelt/example-boulder-6.ai
+src/assets/images/CitSci/examples/LunarMelt/example-crater-1.ai
+src/assets/images/CitSci/examples/LunarMelt/example-crater-2.ai
+src/assets/images/CitSci/examples/LunarMelt/example-crater-3.ai
+src/assets/images/CitSci/examples/LunarMelt/example-crater-4.ai
+src/assets/images/CitSci/examples/LunarMelt/example-crater-5.ai
+src/assets/images/CitSci/examples/LunarMelt/example-crater-6.ai
+src/assets/images/CitSci/examples/LunarMelt/example-rock-1.ai
+src/assets/images/CitSci/examples/LunarMelt/example-rock-2.ai
+src/assets/images/CitSci/examples/LunarMelt/example-rock-3.ai
+src/assets/images/CitSci/examples/LunarMelt/example-rock-4.ai
+src/assets/images/CitSci/examples/LunarMelt/example-rock-5.ai
+src/assets/images/CitSci/examples/LunarMelt/example-rock-6.ai
+src/assets/images/CitSci/tutorials/
+src/assets/images/Illustrator_Files/
+src/assets/images/icons/Screenshot 2025-06-26 at 5.13.18‗PM.png
+src/assets/images/icons/arrow-down.png
+src/assets/images/icons/arrow-left.png
+src/assets/images/icons/arrow-right.png
 # Microsoft Azure Build Output
 csx/
 *.build.csdef
@@ -730,3 +755,4 @@ dist-ssr
 /cypress/videos/
 /cypress/screenshots/
 /package-lock.json
+/.windsurf/

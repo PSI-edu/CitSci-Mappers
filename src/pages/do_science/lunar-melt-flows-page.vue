@@ -1,16 +1,62 @@
 <template>
   <template v-if="isNoFingers">
     <PageLayout title=": Lunar Melt" >
-      <div id="citsci-main-panel">
-        <div id="citsci-buttons-panel">
-
+      <div class="content-layout">
+        <div id="citsci-main-panel">
+          <div id="citsci-buttons-panel">
+            <button
+              @click="setMode('red-line')"
+              :class="{'button-selected': mode === 'red-line', 'button-not-selected': mode !== 'red-line'}"
+              style="background-color: white; color: red; border: 2px solid red; width: 48px; height: 48px; border-radius: 8px; margin: 6px; font-size: 2em; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"
+              title="Draw Red Line"
+            >
+              <svg width="32" height="32" viewBox="0 0 32 32">
+                <line x1="4" y1="28" x2="28" y2="4" stroke="red" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button
+              @click="setMode('erase')"
+              :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'erase'}"
+              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png'); background-size: contain; width: 48px; height: 48px; border: none; border-radius: 8px; margin: 6px;"
+              title="Erase/Delete"
+            ></button>
+            <button
+              @click="setMode('edit')"
+              :class="{'button-selected': mode === 'edit', 'button-not-selected': mode !== 'edit'}"
+              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png'); background-size: contain; width: 48px; height: 48px; border: none; border-radius: 8px; margin: 6px;"
+              title="Move/Edit"
+            ></button>
+          </div>
+          <div id="citsci-mapping-panel">
+            <CanvasMap
+              ref="canvasMapRef"
+              :mode="mode"
+              :drawings="drawings"
+              :image-name="imageUrl"
+              @draw="handleDraw"
+              @clearDrawing="clearDrawing"
+              @updateDrawing="handleUpdateDrawing"
+            />
+          </div>
+          <div class="citsci-info-panel melt">
+            <h5>Activity 1:</h5>
+            <h3>Craters, Boulders, Rocks</h3>
+            <p>We are mapping geologic features related to flowing impact melt in the Moon's Little Lowell & Tycho craters. Long ago, the heat of asteroid impacts melted the regions you're mapping. Your work helps us understand how the melt flowed & when it cooled. </p>
+            <br/>
+            <h4>{{ infoTitle }}</h4>
+            <p>{{ infoText }}</p>
+            <div id="ex-canvas">
+              <canvas ref="exampleMarks" id="exampleMarks" width="100" height="75"></canvas>
+            </div>
+          </div>
+          <button @click="saveResponse()" class="submit-button" id="submit-button">Submit</button>
+          <button class="busy-button" id="busy-button">Working....</button>
+          <div class="LunarMelt citsci-examples">
+            <h4>Examples</h4>
+            <img v-for="example in exampleImages" :key="example" :src="example" style="margin-right: 5px;" alt="Example Image" />
+          </div>
         </div>
       </div>
-
-      <div id="citsci-mapping-panel">
-
-      </div>
-
     </PageLayout>
   </template>
   <template v-else>
@@ -32,4 +78,99 @@ import { onMounted, ref } from 'vue';
 import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
+const { user } = useAuth0();
+
+// Info panel state (copied from lunar-melt-page.vue for erase/edit)
+const eraseTitle = ref("Erasing");
+const eraseInfo = ref("Click on a mark to delete it.");
+const infoTitle = ref("Ready?");
+const infoText = ref("Welcome to the lunar surface. Select a tool to begin marking features.");
+
+// Drawing State
+const mode = ref('');
+const drawings = ref([]);
+const canvasMapRef = ref(null);
+
+// Image and example state
+const imageUrl = ref(null);
+const exampleImages = ref([]);
+
+function setMode(newMode) {
+  mode.value = newMode;
+  if (newMode === 'erase') {
+    infoTitle.value = eraseTitle.value;
+    infoText.value = eraseInfo.value;
+  } else if (newMode === 'edit') {
+    infoTitle.value = 'Editing';
+    infoText.value = 'Drag or resize marks to adjust.';
+  } else if (newMode === 'red-line') {
+    infoTitle.value = 'Red Lines';
+    infoText.value = 'Click and drag to draw red line segments.';
+  } else {
+    infoTitle.value = 'Ready?';
+    infoText.value = 'Welcome to the lunar surface. Select a tool to begin marking features.';
+  }
+}
+
+function handleDraw(drawing) {
+  // If mode is 'red-line', add color info
+  if (mode.value === 'red-line') {
+    drawing.color = 'red';
+  }
+  drawings.value.push(drawing);
+}
+
+function clearDrawing(index) {
+  drawings.value.splice(index, 1);
+}
+
+function handleUpdateDrawing({ index, drawing }) {
+  drawings.value[index] = drawing;
+}
+
+function setExamples(tool) {
+  const prefix = "https://moon-mappers.s3.us-east-2.amazonaws.com/examples/";
+  exampleImages.value = [];
+  // For now, just show a default set
+  exampleImages.value = [
+    prefix + 'example-crater-1.png',
+    prefix + 'example-crater-2.png',
+    prefix + 'example-boulder-1.png',
+    prefix + 'example-boulder-2.png',
+    prefix + 'example-rock-1.png',
+    prefix + 'example-rock-2.png',
+  ];
+}
+
+async function getNewImage() {
+  try {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
+      app_id: 3,
+      user_id: localStorage.getItem('user_id'),
+    });
+    imageUrl.value = response.data.file_location;
+    localStorage.setItem('image_id', response.data.id);
+    // Optionally, you can clear drawings here
+    drawings.value = [];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(async () => {
+  // Get user_id
+  try {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-getid.php", {
+      email: user.value.email
+    });
+    localStorage.setItem('user_id', response.data);
+    localStorage.setItem('email', user.value.email);
+  } catch (error) {
+    console.log(error);
+  }
+  // Get image
+  await getNewImage();
+  // Set examples
+  setExamples();
+});
 </script>

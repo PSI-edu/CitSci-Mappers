@@ -25,7 +25,9 @@
                 *
                 <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
                 *
-                <a href="/tutorials/mars-mosaic-tutorial">Tutorial</a>
+                <a href="https://mappers.psi.edu/learn/mars-mosiacs/mars-mosaics-examples/" target="_blank">Examples</a>
+                *
+                <a href="/tutorials/mars-mosaic-tutorial" target="_blank">Tutorial</a>
               </p>
             </div>
 

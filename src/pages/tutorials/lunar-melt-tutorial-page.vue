@@ -2,9 +2,46 @@
   <template v-if="isNoFingers">
     <div class="darken" v-if="currStep==1"></div>
     <PageLayout title=": Lunar Melt">
-      <div class="content-layout">
+      <div class="content-layout melt">
         <div id="citsci-main-panel">
           <div class="moon">
+
+            <div id="tutorial" :class="currentStepClass" v-if="currStep > 0">
+
+              <!-- Navigation buttons with numbers -->
+              <div class="tutorial-navigation">
+                <button
+                    v-for="step in tutorialSteps.slice(1)" :key="step.id"
+                    @click="goToStep(step.id)"
+                    :class="{ active: currStep === step.id }"
+                >
+                  {{ step.id }}
+                </button>
+              </div>
+
+              <!-- Title -->
+              <h3>{{ currentStepTitle }}</h3>
+
+              <!-- Content -->
+              <div class="clear"><</div>
+              <img v-if="currentStepImage1" :src="currentStepImage1" :alt="currentStepTitle" class="tutorial-image1">
+              <img v-if="currentStepImage2" :src="currentStepImage2" :alt="currentStepTitle" class="tutorial-image2">
+              <div v-if="currentStepImageCaption" class="image-caption">
+                <p>
+                  {{ currentStepImageCaption }}
+                </p>
+              </div>
+              <p v-html="currentStepContent"></p>
+              <div class="tutorial-controls">
+                <button @click="prevStep" v-if="currStep > 1" class="nav-button prev-button">Previous</button>
+                <button v-if="currStep === 1" class="nav-button start-button">Let's go!</button>
+                <button @click="endTutorial" v-if="currStep === tutorialSteps.length - 1" class="end-button">Got It!
+                </button>
+                <button @click="nextStep" v-if="currStep < tutorialSteps.length - 1" class="nav-button next-button">Next
+                </button>
+              </div>
+            </div>
+
 
             <div id="citsci-buttons-panel">
               <button
@@ -48,12 +85,28 @@
             <div class="citsci-info-panel melt">
               <h5>Activity 1:</h5>
               <h3>Craters, Boulders, Rocks</h3>
-              <p>We are mapping geologic features related to flowing impact melt
-                in the Moon's Little Lowell & Tycho craters. Long ago, the heat
-                of asteroid impacts melted the regions you're mapping. Your
-                work helps us understand how the melt flowed & when it cooled. </p>
-
-              <br/>
+              <div class="label">
+                <p>Task:</p>
+              </div>
+              <div class="content">
+                <p>We're mapping geologic features from/in flowing impact melt. Long ago, the heat
+                  of asteroid impacts melted the regions you're mapping. Your
+                  work helps us understand how the melt flowed & when it cooled. </p>
+              </div>
+              <div class="label">
+                <p>Links:</p>
+              </div>
+              <div class="content">
+                <p>
+                  <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team" target="_blank">The Team </a>
+                  *
+                  <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
+                  *
+                  <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
+                  *
+                  <a href="/tutorials/lunar-melt-tutorial" target="_blank">Tutorial</a>
+                </p>
+              </div>
               <h4>{{ infoTitle }}</h4>
               <p>{{ infoText }}</p>
 
@@ -105,7 +158,7 @@ import {useIsNoFingers} from "@/composables/noFingers.js";
 import PageLayout from "@/components/page-layout.vue";
 import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
 import {useAuth0} from "@auth0/auth0-vue";
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
@@ -131,6 +184,144 @@ const editTitle = ref("Editing Marks");
 const editInfo = ref("Click on a mark to move or (if appropriate) resize.");
 
 const exampleMarks = ref(null);
+
+// Tutorial Logic
+const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
+
+const tutorialSteps = [
+  { // Step 0: Hidden/Inactive state for the tutorial
+    id: 0,
+    title: '',
+    content: '',
+    className: '',
+    image1: '',
+    image2: ''
+  },
+  {
+    id: 1,
+    title: "Welcome to Lunar Melt!",
+    content: "Ready to get mapping? You are helping us understand how impact melt flowed across the lunar surface. " +
+      "Your work will enable research into how asteroid impacts changed the Moon's surface.<br><br>" +
+
+      "This tutorial will guide you through the process of marking craters, boulders, and rocks in the melt. Our" +
+        "team of researchers will use your work analyze Little Lowell crater and potentially to train" +
+        "machine learning algorithms to automate this process in the future.<br><br>" +
+        "Today, computers can't do this work, and your efforts will greatly accelerate our research by " +
+        "letting us focus on analysis. Thank you. We'll share all our research with you on this site." +
+        "You can also sign up for our newsletter on the profile page." +
+      "Let's get started!",
+    className: "step-1",
+    image1: "",
+    image2: "",
+    imageCaption: ""
+  },
+  {
+    id: 2,
+    title: "",
+    content: "",
+    className: "step-2",
+    image1: "",
+    image2: ""
+  },
+  {
+    id: 3,
+    title: "",
+    content: "",
+    className: "step-3",
+    image1: "",
+    image2: "",
+    imageCaption: ""
+  },
+  {
+    id: 4,
+    title: "",
+    content: "",
+    className: "step-4",
+    image1: "",
+    image2: ""
+  },
+  {
+    id: 5,
+    title: "",
+    content: "",
+    className: "step-5",
+    image1: "",
+    image2: ""
+  }
+];
+
+const currentStep = computed(() => tutorialSteps[currStep.value]);
+const currentStepTitle = computed(() => currentStep.value.title);
+const currentStepContent = computed(() => currentStep.value.content);
+const currentStepClass = computed(() => currentStep.value.className);
+const currentStepImage1 = computed(() => currentStep.value.image1);
+const currentStepImage2 = computed(() => currentStep.value.image2);
+const currentStepImageCaption = computed(() => currentStep.value.imageCaption);
+
+// Make sure they don't try and submit things to early
+const handleSubmitClick = (alignment) => {
+  if (currStep.value < 5) {
+    showNotYetMessage.value = true;
+    setTimeout(() => {
+      showNotYetMessage.value = false;
+    }, 5000); // Hide message after 5 seconds
+    return;
+  }
+  if (currStep.value === 5) {
+    if (alignment === 'bad') {
+      submissionMade.value = true;
+      setTimeout(() => {
+        endTutorial();
+      }, 3000);
+      console.log('here');
+    } else {
+      showAreYouSure.value = true;
+      setTimeout(() => {
+        showAreYouSure.value = false;
+      }, 3000);
+      console.log('nope');
+    }
+    // You can add your data submission logic here
+  }
+};
+
+const goToStep = (stepId) => {
+  currStep.value = stepId;
+};
+
+const nextStep = () => {
+  if (currStep.value < tutorialSteps.length - 1) {
+    currStep.value++;
+  }
+};
+
+const prevStep = () => {
+  if (currStep.value > 1) { // Ensure we don't go below step 1 (where the tutorial starts)
+    currStep.value--;
+  }
+};
+
+const startTutorial = () => {
+  currStep.value = 1; // Start from the first actual tutorial step
+};
+
+const endTutorial = async () => {
+  const userId = localStorage.getItem('user_id');
+  if (userId) {
+    try {
+      // Send user_id to the tutorial completion endpoint
+      const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-tutorial.php', {
+        user_id: localStorage.getItem('user_id'),
+        app_id: 2,
+        task: "add"
+      });
+      console.log('Successfully marked tutorial as complete for user.', response.data);
+      router.push('/do_science/mars-mosaic');
+    } catch (error) {
+      console.error('Failed to send tutorial completion status:', error);
+    }
+  }
+};
 
 const setMode = (newMode) => {
   mode.value = newMode;
@@ -280,6 +471,8 @@ onMounted(async () => {
 
   // Add the example images at the bottom
   setExamples(null);
+
+  startTutorial();
 });
 
 const drawExampleCanvas = () => {
