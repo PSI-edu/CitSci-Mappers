@@ -17,6 +17,7 @@
         <br/>
         <h4>Stats</h4>
         <p>Coming Soon</p>
+        <MailchimpSignupForm />
       </div>
     </div>
   </PageLayout>
@@ -25,6 +26,7 @@
 <script setup>
 import PageLayout from "@/components/page-layout.vue";
 import UpdateProfileForm from "@/components/update-profile-form.vue";
+import MailchimpSignupForm from "@/components/MailchimpSignupForm.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref } from 'vue';
 import apiClient from '@/api/axios'; // Use our configured client
