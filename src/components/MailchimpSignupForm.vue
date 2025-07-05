@@ -2,6 +2,9 @@
   <div id="mc_embed_shell">
     <div id="mc_embed_signup">
       <h4>Receive Mappers News</h4>
+      <p>We'll only send you updates related to science projects here at World Mappers. You'll get an email whenever
+      we launch a new project, or when new results are presented or published. These emails are provided by our
+      partners at CosmoQuest and sent through Mailchimp.</p>
       <form
           action="https://psi.us10.list-manage.com/subscribe/post?u=f3326717f0f4b2535dfc89d72&amp;id=11ad0c11c2&amp;f_id=000248e4f0"
           method="post"

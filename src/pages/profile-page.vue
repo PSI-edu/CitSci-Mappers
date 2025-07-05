@@ -17,6 +17,7 @@
         <br/>
         <h4>Stats</h4>
         <p>Coming Soon</p>
+        <br/>
         <MailchimpSignupForm />
       </div>
     </div>
