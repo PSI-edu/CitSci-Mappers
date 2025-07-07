@@ -1,10 +1,10 @@
 <template>
   <div class="darken" v-if="currStep==1"></div>
   <PageLayout title=": Mars Mosaic">
-    <div class="content-layout mars">
+    <div class="content-layout">
 
       <div id="citsci-main-panel">
-        <div class="mars" >
+        <div id="mars" >
           <div id="tutorial" :class="currentStepClass" v-if="currStep > 0">
 
             <!-- Navigation buttons with numbers -->

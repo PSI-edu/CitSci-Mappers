@@ -22,6 +22,7 @@
     width: 70px;
     height: 70px;
     border-radius: 5px;
+    margin-bottom: 5px;
 }
 
 .button-not-selected {
@@ -342,6 +343,8 @@
     border: 1px solid var(--aluminium);
     background-color: var(--light-aluminium);
     border-radius: 4px;
+    width: 40px;
+    color: var(--dark-aluminium);
 }
 
 #tutorial button.active {
@@ -356,8 +359,8 @@
 }
 
 #tutorial h3 {
-    float: left;
-    width: 60%;
+    float: center;
+    width: 100%;
     margin-bottom: 0.2em;
 }
 
@@ -365,8 +368,8 @@
     display: flex;
     justify-content: right;
     flex-wrap: wrap;
-    float: right;
-    width: 40%;
+    width: 100%;
+    justify-content: center;
 }
 
 .tutorial-controls {
@@ -381,8 +384,8 @@
     padding: 0 10px;
 }
 
-.nav-button {
-    min-width: 80px;
+.nav-button, .start-button, .end-button {
+    min-width: 150px;
     font-size: 1.5em;
 }
 
@@ -393,6 +396,7 @@
     font-weight: bold;
 }
 
+/* Tutorial Step 1 is formatted the same always */
 #tutorial.step-1 img {
     width: 50%;
     height: auto;
@@ -403,7 +407,21 @@
     transform: translate(50%, 0);
 }
 
-#tutorial.step-1 .image-caption  {
+#tutorial.step-1 h3 {
+    width: 60%;
+    text-align: center;
+}
+
+#tutorial.step-1 .tutorial-navigation {
+    display: flex;
+    justify-content: right;
+    flex-wrap: wrap;
+    float: right;
+    width: 40%;
+}
+
+/* Mars Mosaics formatting */
+#mars #tutorial.step-1 .image-caption  {
     position: absolute;
     bottom: 100px;
     left: 10px;
@@ -412,7 +430,7 @@
     font-style: italic;
 }
 
-#tutorial.step-2, #tutorial.step-3 {
+#mars #tutorial.step-2, #mars #tutorial.step-3 {
     width: 430px;
     height: 305px;
     right: 20px;
@@ -430,7 +448,7 @@
     text-align: center;
 }
 
-#tutorial.step-2 img {
+#mars #tutorial.step-2 img {
     width: 50px;
     height: auto;
     float: left;
@@ -438,7 +456,7 @@
     margin-top: 5px;
 }
 
-#tutorial.step-3 {
+#mars #tutorial.step-3 {
     width: 450px;
     height: 420px;
     right: 480px;
@@ -446,7 +464,7 @@
     top: 160px;
 }
 
-#tutorial.step-3 img {
+#mars #tutorial.step-3 img {
     width: auto;
     height: 50px;
     position: absolute;
@@ -454,7 +472,7 @@
     right: 10px;
 }
 
-#tutorial.step-3 .image-caption {
+#mars #tutorial.step-3 .image-caption {
     position: absolute;
     bottom: 70px;
     right: 30px;
@@ -462,12 +480,12 @@
     font-style: italic;
     font-weight: bold;
 }
-#tutorial.step-3 .image-caption p {
+#mars #tutorial.step-3 .image-caption p {
     color: var(--blue) !important;
     text-align: right;
 }
 
-#tutorial.step-4 {
+#mars #tutorial.step-4 {
     position: absolute;
     height: 275px;
     width: 450px;
@@ -476,7 +494,7 @@
     transform: none;
 }
 
-#tutorial.step-4 img.tutorial-image2 {
+#mars #tutorial.step-4 img.tutorial-image2 {
     position: absolute;
     bottom: 55px;
     width: 400px;
@@ -485,7 +503,7 @@
     border-radius: 10px;
 }
 
-#tutorial.step-4 img.tutorial-image1, #tutorial.step-5 img.tutorial-image1 {
+#mars #tutorial.step-4 img.tutorial-image1, #tutorial.step-5 img.tutorial-image1 {
     position: absolute;
     bottom: 10px;
     height: 30px;
@@ -494,7 +512,7 @@
     border-radius: 10px;
 }
 
-#tutorial.step-5 {
+#mars #tutorial.step-5 {
     position: absolute;
     height: 225px;
     width: 430px;
@@ -506,7 +524,7 @@
 
 .mars .not-yet-box {}
 
-.mars .thank-you, .mars .not-yet-box, .mars .are-you-sure {
+#mars .thank-you, #mars .not-yet-box, #mars .are-you-sure {
     position: absolute;
     bottom: 10px;
     left: 50%;
@@ -518,4 +536,73 @@
     font-size: 20px;
     font-weight: bold;
     border-radius: 5px;
+}
+
+/* Moon Melt formatting */
+#moon #tutorial.step-1 img {
+    width: 50%;
+    height: auto;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 60px;
+    right: 50%;
+    transform: translate(50%, 0);
+}
+
+#moon #tutorial.step-1 .image-caption {
+    position: absolute;
+    bottom: 100px;
+    left: 10px;
+    width: 23%;
+    color: var(--black);
+    font-style: italic;
+}
+#moon #tutorial.step-2, #moon #tutorial.step-3, #moon #tutorial.step-4, #moon #tutorial.step-5 {
+    width: 360px;
+    height: 430px;
+    right: 20px;
+    transform: none;
+    top: 20px;
+}
+
+#moon #tutorial.step-6 {
+    width: 360px;
+    height: 370px;
+    right: 20px;
+    transform: none;
+    top: 20px;
+}
+
+#moon #tutorial.step-2 h3 {
+    width: 100%;
+    text-align: center;
+    padding-left: 40px;
+}
+
+#moon #tutorial.step-2 .tutorial-image2 {
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    width: 50px;
+    height: auto;
+}
+
+.not-yet-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    z-index: 1000;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; display: none; }
 }

@@ -2,13 +2,12 @@
   <template v-if="isNoFingers">
     <div class="darken" v-if="currStep==1"></div>
     <PageLayout title=": Lunar Melt">
-      <div class="content-layout melt">
+      <div class="content-layout">
         <div id="citsci-main-panel">
-          <div class="moon">
+          <div id="moon">
 
             <div id="tutorial" :class="currentStepClass" v-if="currStep > 0">
 
-              <!-- Navigation buttons with numbers -->
               <div class="tutorial-navigation">
                 <button
                     v-for="step in tutorialSteps.slice(1)" :key="step.id"
@@ -19,10 +18,8 @@
                 </button>
               </div>
 
-              <!-- Title -->
               <h3>{{ currentStepTitle }}</h3>
 
-              <!-- Content -->
               <div class="clear"><</div>
               <img v-if="currentStepImage1" :src="currentStepImage1" :alt="currentStepTitle" class="tutorial-image1">
               <img v-if="currentStepImage2" :src="currentStepImage2" :alt="currentStepTitle" class="tutorial-image2">
@@ -80,7 +77,15 @@
                   :drawings="drawings"
                   @clearDrawing="clearDrawing"
                   @updateDrawing="handleUpdateDrawing"
+                  :currStep="currStep"
+                  @canvas-click-during-tutorial="handleCanvasClickDuringTutorial"
               />
+              <div v-if="showNotYetMessage" class="not-yet-message">
+                Not yet! Please wait for Step 3 to mark rocks.
+              </div>
+              <div v-if="showPatienceMessage" class="not-yet-message">
+                Patience - We'll get to mapping in a moment.
+              </div>
             </div>
             <div class="citsci-info-panel melt">
               <h5>Activity 1:</h5>
@@ -156,9 +161,9 @@
 <script setup>
 import {useIsNoFingers} from "@/composables/noFingers.js";
 import PageLayout from "@/components/page-layout.vue";
-import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
+import CanvasMap from "@/components/citsci-tools/tutorial-canvas-map.vue";
 import {useAuth0} from "@auth0/auth0-vue";
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import apiClient from '@/api/axios';
 
 const isNoFingers = useIsNoFingers();
@@ -187,6 +192,23 @@ const exampleMarks = ref(null);
 
 // Tutorial Logic
 const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
+const showNotYetMessage = ref(false);
+const showPatienceMessage = ref(false); // New state variable
+
+const displayNotYetMessage = () => {
+  showNotYetMessage.value = true;
+  setTimeout(() => {
+    showNotYetMessage.value = false;
+  }, 3000); // Message disappears after 3 seconds
+};
+
+const displayPatienceMessage = () => {
+  showPatienceMessage.value = true;
+  setTimeout(() => {
+    showPatienceMessage.value = false;
+  }, 3000); // Message disappears after 3 seconds
+};
+
 
 const tutorialSteps = [
   { // Step 0: Hidden/Inactive state for the tutorial
@@ -200,16 +222,17 @@ const tutorialSteps = [
   {
     id: 1,
     title: "Welcome to Lunar Melt!",
-    content: "Ready to get mapping? You are helping us understand how impact melt flowed across the lunar surface. " +
-      "Your work will enable research into how asteroid impacts changed the Moon's surface.<br><br>" +
+    content: "Ready to get mapping? " +
+        "Your work will accelerate research into how asteroid impacts changed the Moon's surface.  Our research" +
+        "might even help humans find water and stay safe when humans return to the lunar surface.<br><br>" +
 
-      "This tutorial will guide you through the process of marking craters, boulders, and rocks in the melt. Our" +
-        "team of researchers will use your work analyze Little Lowell crater and potentially to train" +
+        "This tutorial will guide you through the process of marking craters, boulders, and rocks in the melt. Our " +
+        "team of researchers will use your work analyze Little Lowell crater and potentially to train " +
         "machine learning algorithms to automate this process in the future.<br><br>" +
-        "Today, computers can't do this work, and your efforts will greatly accelerate our research by " +
-        "letting us focus on analysis. Thank you. We'll share all our research with you on this site." +
-        "You can also sign up for our newsletter on the profile page." +
-      "Let's get started!",
+        "Today, computers can't do this work, and your efforts  " +
+        "helo us focus more of our limited time on data analysis. Thank you! We'll share all our research with you on this site." +
+        "You can also sign up for our news in your inbox on your profile page. <br></br>" +
+        "Let's get started!",
     className: "step-1",
     image1: "",
     image2: "",
@@ -217,16 +240,21 @@ const tutorialSteps = [
   },
   {
     id: 2,
-    title: "",
-    content: "",
+    title: "You're mapping this image's rocks, boulders, & craters",
+    content: "In this activity, we are marking rocks, measuring boulders, and outlining craters larger than the minimum size.<br><br>" +
+        "There are examples of each type of mark below. When you select a mapping tool on the left, we'll show you more examples " +
+        "specific to that tool.<br><br>" +
+        "<strong>Try it!</strong> Go ahead and press the different buttons to see the examples change.",
     className: "step-2",
     image1: "",
-    image2: ""
+    image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png"
   },
   {
     id: 3,
-    title: "",
-    content: "",
+    title: "Got Rocks?",
+    content: "Let's go ahead and mark the rocks in this image. <strong>Click the button with 3 rocks marked with blue dots.</strong><Br><br>" +
+        "Can you click on atleast 5 rocks in this image? If you want to mark more, that's great! Let the examples" +
+        "below guide you. We'll give you feedback as we go.",
     className: "step-3",
     image1: "",
     image2: "",
@@ -234,7 +262,7 @@ const tutorialSteps = [
   },
   {
     id: 4,
-    title: "",
+    title: "Boulders",
     content: "",
     className: "step-4",
     image1: "",
@@ -242,9 +270,19 @@ const tutorialSteps = [
   },
   {
     id: 5,
-    title: "",
+    title: "Craters",
     content: "",
     className: "step-5",
+    image1: "",
+    image2: ""
+  },
+  {
+    id: 6,
+    title: "There is no going back!",
+    content: "When you're happy with your marks, go ahead and click [Submit] below. <br><br>" +
+        "Make sure you're happy with everything first, and check that you got everything you wanted to mark! " +
+        "Once you submit, you can't go back and change your marks.<br><br>",
+    className: "step-6",
     image1: "",
     image2: ""
   }
@@ -257,6 +295,15 @@ const currentStepClass = computed(() => currentStep.value.className);
 const currentStepImage1 = computed(() => currentStep.value.image1);
 const currentStepImage2 = computed(() => currentStep.value.image2);
 const currentStepImageCaption = computed(() => currentStep.value.imageCaption);
+
+// New method to handle canvas clicks during tutorial
+const handleCanvasClickDuringTutorial = () => {
+  if (currStep.value > 0 && currStep.value != 3) { // Only show message for tutorial steps 1 and 2
+    displayPatienceMessage();
+  } else if (currStep.value === 2) {
+    displayNotYetMessage(); // Keep existing logic for step 2 if needed
+  }
+};
 
 // Make sure they don't try and submit things to early
 const handleSubmitClick = (alignment) => {
@@ -324,6 +371,27 @@ const endTutorial = async () => {
 };
 
 const setMode = (newMode) => {
+  // If currStep is 3, only allow 'dot' mode. For other modes, show patience message.
+  if (currStep.value === 3) {
+    if (newMode !== 'dot'  && newMode !== 'erase' && newMode !== 'edit') {
+      displayPatienceMessage();
+      return; // Prevent changing the mode to anything other than 'dot'
+    }
+  }
+  // If currStep is 4, only allow 'line' mode. For other modes, show patience message.
+  if (currStep.value === 4  && newMode !== 'erase' && newMode !== 'edit') {
+    if (newMode !== 'line') {
+      displayPatienceMessage();
+      return; // Prevent changing the mode to anything other than 'line'
+    }
+  }
+  // If currStep is 5, only allow 'circle' mode. For other modes, show patience message.
+  if (currStep.value === 5  && newMode !== 'erase' && newMode !== 'edit') {
+    if (newMode !== 'circle') {
+      displayPatienceMessage();
+      return; // Prevent changing the mode to anything other than 'circle'
+    }
+  }
   mode.value = newMode;
   if (canvasMapRef.value) {
     canvasMapRef.value.setDrawingMode(newMode);
@@ -505,5 +573,13 @@ const drawExampleCanvas = () => {
   ctxExample.fillText("minimum sizes", 10, 60)
 };
 
+watch(currStep, (newStep, oldStep) => {
+  if (newStep !== oldStep) {
+    mode.value = null; // Deselect any active tool button
+    if (canvasMapRef.value) {
+      canvasMapRef.value.setDrawingMode(null); // Clear the drawing mode on the canvas as well
+    }
+  }
+});
 
 </script>
