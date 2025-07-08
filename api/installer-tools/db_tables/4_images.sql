@@ -16,7 +16,7 @@ CREATE TABLE `images` (
       `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       `favorites_count` int(10) unsigned NOT NULL DEFAULT '0',
 PRIMARY KEY (`id`),
-UNIQUE KEY `images_name_unique` (`name`),
+      KEY `images_name_unique` (`name`),
       KEY `images_image_set_id_foreign` (`image_set_id`),
       KEY `images_on_done` (`done`),
       KEY `images_application_id_index` (`application_id`),
