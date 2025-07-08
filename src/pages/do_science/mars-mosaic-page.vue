@@ -153,11 +153,6 @@ onMounted(async () => {
 
 });
 
-const redoTutorial =() => {
-  // Redirect to the tutorial page
-  router.push('/tutorials/mars-mosaic-tutorial');
-};
-
 // If someone clicks the submitGood button, send the response to the server and get a new image
 const submitGood = () => {
   setLoadingImages();

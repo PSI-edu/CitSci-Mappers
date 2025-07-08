@@ -115,10 +115,12 @@ import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref } from 'vue';
 import apiClient from '@/api/axios';
+import {useRouter} from 'vue-router';
 
 const isNoFingers = useIsNoFingers();
 
 const { user } = useAuth0();
+const router = useRouter(); // Initialize useRouter
 
 const imageUrl = ref(null);
 const mode = ref(null);
