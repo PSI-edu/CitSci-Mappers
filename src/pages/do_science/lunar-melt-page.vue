@@ -2,7 +2,7 @@
 
 <template v-if="isNoFingers">
   <PageLayout title=": Lunar Melt" >
-    <div class="content-layout">
+    <div class="content-layout" v-if="pageReady">
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
           <button
@@ -135,8 +135,9 @@ const rocksInfo = ref("Click in the centers of rocks to mark their locations.");
 const eraseTitle = ref("Erasing");
 const eraseInfo = ref("Click on a mark to delete it.");
 const exampleImages = ref([]);
-const editTitle = ref("Editing Marks");
-const editInfo = ref("Click on a mark to move or (if appropriate) resize.");
+
+const pageReady = ref(false);
+
 
 const exampleMarks = ref(null);
 
@@ -278,6 +279,23 @@ onMounted(async () => {
     localStorage.setItem('email',user.value.email);
   } catch (error) {
     console.log(error);
+  }
+
+  // Check if this user has done the tutorial
+  try {
+    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-tutorial.php", {
+      user_id: localStorage.getItem('user_id'),
+      app_id: 3,
+      task: "check"
+    });
+    if (response.data === "FALSE") {
+      router.push('/tutorials/lunar-melt-tutorial');
+    } else {
+      pageReady.value = true;
+    }
+    console.log("Tutorial status checked:", response.data);
+  } catch (error) {
+    console.error("Error checking tutorial status:", error);
   }
 
   // Now get the first image

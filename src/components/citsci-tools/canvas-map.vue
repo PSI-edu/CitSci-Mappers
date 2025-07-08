@@ -421,23 +421,60 @@ const handleMouseUp = (event) => {
 
 
 const handleCanvasClick = (event) => {
-  // --- Erase mode: delete highlighted line ---
+  const clickX = event.offsetX;
+  const clickY = event.offsetY;
+
   if (props.mode === 'erase') {
+    // Priority 1: Handle deletion of highlighted lines (from mousemove)
     const highlightIndex = handleMouseMove._highlightIndex;
     if (highlightIndex !== undefined && highlightIndex !== -1) {
       emit('clearDrawing', highlightIndex);
       // Clear highlight after deletion
       handleMouseMove._highlightIndex = -1;
-      if (annCtx.value) {
-        annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-        props.drawings.forEach(drawing => drawShape(annCtx.value, drawing, -1));
+      // Redraw immediately after deletion to reflect changes
+      redrawAnnotations();
+      return; // Exit if a highlighted line was deleted
+    }
+
+    // Priority 2: Handle deletion of other shapes (circles, dots, non-highlighted lines)
+    if (!props.drawings || props.drawings.length === 0) return;
+
+    // Iterate backwards to ensure removing from the end doesn't mess up indices
+    for (let i = props.drawings.length - 1; i >= 0; i--) {
+      const drawing = props.drawings[i];
+      let hit = false;
+      const data = drawing.data;
+
+      if (drawing.type === 'circle') {
+        if (distance({ x: clickX, y: clickY }, { x: data.x, y: data.y }) < data.radius + 5) { // Added +5 for a bit more hit area
+          hit = true;
+        }
+      } else if (drawing.type === 'line' || drawing.type === 'red-line') {
+        // Use the pointToLineSegmentDistance for lines
+        if (pointToLineSegmentDistance(clickX, clickY, data.x1, data.y1, data.x2, data.y2) < 5) { // 5 is tolerance
+          hit = true;
+        }
+      } else if (drawing.type === 'dot') {
+        // Dot hit detection: check distance from click to dot center
+        const dotRadius = 5; // As defined in drawShape
+        if (distance({ x: clickX, y: clickY }, { x: data.x, y: data.y }) < dotRadius + 2) { // Add a small buffer for easier clicking
+          hit = true;
+        }
+      }
+
+      if (hit) {
+        emit('clearDrawing', i);
+        // Redraw immediately after deletion to reflect changes
+        redrawAnnotations();
+        break; // Stop after deleting the first shape found
       }
     }
-    return;
+    return; // Exit erase mode logic
   }
   if (props.mode === 'red-line') {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
+
     if (!isDrawing.value) {
       // First click: set start point
       startPoint.value = { x: mouseX, y: mouseY };
@@ -464,8 +501,6 @@ const handleCanvasClick = (event) => {
     }
     return;
   }
-  const clickX = event.offsetX;
-  const clickY = event.offsetY;
 
   if (props.mode === 'edit') {
     // Selection is handled by mousedown. Click might be used to deselect if no shape is hit.

@@ -22,9 +22,18 @@ const props = defineProps({
   mode: String,
   drawings: Array,
   currStep: Number,
+  correctRockLocations: Array,
+  correctBoulderLocations: Array,
+  correctCraterLocations: Array
 });
 
-const emit = defineEmits(['draw', 'clearDrawing', 'updateDrawing', 'canvas-click-during-tutorial']); // Added 'canvas-click-during-tutorial'
+const emit = defineEmits([
+    'draw',
+    'clearDrawing',
+    'updateDrawing',
+    'canvas-click-during-tutorial',
+    'validation-message'
+]);
 
 const canvas__map = ref(null);
 const annotationCanvas = ref(null);
@@ -32,12 +41,12 @@ const canvasWidth = ref(0);
 const canvasHeight = ref(0);
 const bgCtx = ref(null);
 const annCtx = ref(null);
-const isDrawing = ref(false); // For creating new shapes
+const isDrawing = ref(false);
 const startPoint = ref(null);
 const currentDrawing = ref(null);
-const MINSIZE = 25; // Corrected typo from MINESIZE
+const MINSIZE = 25;
 
-// --- New state for editing ---
+
 const selectedShapeIndex = ref(-1);
 const isEditing = ref(false); // True if dragging or resizing an existing shape
 const editHandle = ref(null); // e.g., 'body', 'radius', 'p1', 'p2'
@@ -47,18 +56,6 @@ const originalShapeData = ref(null); // To store shape data at the start of an e
 const HANDLE_SIZE = 8; // Size of resize handles
 const HANDLE_COLOR = 'rgba(0, 100, 255, 0.8)';
 const SELECTION_COLOR = 'rgba(0, 100, 255, 0.5)';
-
-const canvasCursor = computed(() => {
-  if (props.mode === 'edit') {
-    // Logic to change cursor over shapes/handles can be added here later
-    // For now, a general 'grab' or 'pointer' might be fine.
-    // This requires checking mouse position against shapes constantly,
-    // which can be complex for performance. Start with a default.
-    return 'default'; // Or 'pointer'
-  }
-  return 'crosshair';
-});
-
 
 const setDrawingMode = (newMode) => {
   isDrawing.value = false;
@@ -219,12 +216,7 @@ const handleMouseMove = (event) => {
     }
     annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
     props.drawings.forEach((drawing, idx) => {
-      if (idx === highlightIndex && (drawing.type === 'line' || drawing.type === 'red-line')) {
-        // Draw highlighted in blue
-        drawShape(annCtx.value, { ...drawing, color: 'blue' }, -1);
-      } else {
         drawShape(annCtx.value, drawing, -1);
-      }
     });
     // Store for click
     handleMouseMove._highlightIndex = highlightIndex;
@@ -431,31 +423,128 @@ const handleMouseUp = (event) => {
   isDrawing.value = false;
   startPoint.value = null;
   currentDrawing.value = null;
+
+  // Add validation calls for boulders (lines) and craters (circles) here
+  if (props.currStep === 4 && finalDrawing.type === 'line') {
+    validateBoulderDrawing(finalDrawing);
+  } else if (props.currStep === 5 && finalDrawing.type === 'circle') {
+    validateCraterDrawing(finalDrawing);
+  }
 };
+const validateBoulderDrawing = (drawnLine) => {
+  const { x1: dl_x1, y1: dl_y1, x2: dl_x2, y2: dl_y2 } = drawnLine.data;
+  // make sure x1 < x2 and reverse points if necessary
+  let x1 = dl_x1, y1 = dl_y1, x2 = dl_x2, y2 = dl_y2;
+  if (x1 > x2 || (x1 === x2 && y1 > y2)) {
+    [x1, y1, x2, y2] = [x2, y2, x1, y1]; // Swap points
+  }
+  // check if x1 us near the first point on any boulders in the correctBoulderLocations array
+  let minDistance1 = Infinity;
+  let minDistance2 = Infinity;
+  for (const boulder of props.correctBoulderLocations) {
+    const dist = distance({ x: x1, y: y1 }, { x: boulder.x1, y: boulder.y1 });
+    // If the distance is less than 50, check the other end
+    if (dist < minDistance1) {
+      minDistance1 = dist;
+      if (minDistance1 < 50) {
+        // Check the other end of the boulder
+        const dist2 = distance({ x: x2, y: y2 }, { x: boulder.x2, y: boulder.y2 });
+        if (dist2 < 50) {
+          minDistance2 = dist2;
+        }
+      }
+    }
+  }
+  // Put together feedback message based on distance
+  let message = "";
+  if ((minDistance1 <= 10 || minDistance2 <= 10) && (minDistance1+minDistance2 < 20)) {
+    message = "Well done!";
+  } else if (minDistance1 <= 50 && minDistance2 <= 50) {
+    message = "Close, but not quite. Try the move tool.";
+  } else {
+    message = "That isn't near a known boulder. Delete the line and try again.";
+  }
+  emit('validation-message', message); // Emit the validation message
+}
 
-
-
-
-const handleCanvasClick = (event) => {
-  // Emit event if tutorial is active and mapping is not yet allowed
-  if (props.currStep > 0 && props.currStep < 3) {
-    emit('canvas-click-during-tutorial');
-    return; // Prevent any drawing or editing action during these steps
+const validateCraterDrawing = (drawnCircle) => {
+  const { x, y, radius } = drawnCircle.data;
+  // check if the center of the circle is near any craters in the correctCraterLocations array
+  let minDistance = Infinity;
+  let minRadius = Infinity;
+  for (const crater of props.correctCraterLocations) {
+    const dist = distance({ x, y }, { x: crater.x, y: crater.y });
+    if (dist < minDistance) {
+      minDistance = dist;
+      // check if the radii are similar
+      if (Math.abs(radius - crater.radius) < 50) { // Allow a small tolerance for radius
+        minRadius = Math.abs(radius - crater.radius);
+      }
+    }
   }
 
-  // --- Erase mode: delete highlighted line ---
+  // Put together feedback message based on distance and radius
+  let message = "";
+  if (minDistance <= 10 && minRadius < 10) {
+    message = "Well done!";
+  } else if (minDistance <= 50 && minRadius < 50) {
+    message = "Close, but not quite. Try the move tool.";
+  } else {
+    message = "That isn't near a known crater. Delete the circle and try again.";
+  }
+  emit('validation-message', message); // Emit the validation message
+}
+
+const handleCanvasClick = (event) => {
+  const clickX = event.offsetX;
+  const clickY = event.offsetY;
+
   if (props.mode === 'erase') {
+    // Priority 1: Handle deletion of highlighted lines (from mousemove)
     const highlightIndex = handleMouseMove._highlightIndex;
     if (highlightIndex !== undefined && highlightIndex !== -1) {
       emit('clearDrawing', highlightIndex);
       // Clear highlight after deletion
       handleMouseMove._highlightIndex = -1;
-      if (annCtx.value) {
-        annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-        props.drawings.forEach(drawing => drawShape(annCtx.value, drawing, -1));
+      // Redraw immediately after deletion to reflect changes
+      redrawAnnotations();
+      return; // Exit if a highlighted line was deleted
+    }
+
+    // Priority 2: Handle deletion of other shapes (circles, dots, non-highlighted lines)
+    if (!props.drawings || props.drawings.length === 0) return;
+
+    // Iterate backwards to ensure removing from the end doesn't mess up indices
+    for (let i = props.drawings.length - 1; i >= 0; i--) {
+      const drawing = props.drawings[i];
+      let hit = false;
+      const data = drawing.data;
+
+      if (drawing.type === 'circle') {
+        if (distance({ x: clickX, y: clickY }, { x: data.x, y: data.y }) < data.radius + 5) { // Added +5 for a bit more hit area
+          hit = true;
+        }
+      } else if (drawing.type === 'line' || drawing.type === 'red-line') {
+        // Use the pointToLineSegmentDistance for lines
+        if (pointToLineSegmentDistance(clickX, clickY, data.x1, data.y1, data.x2, data.y2) < 5) { // 5 is tolerance
+          hit = true;
+        }
+      } else if (drawing.type === 'dot') {
+        // Dot hit detection: check distance from click to dot center
+        const dotRadius = 5; // As defined in drawShape
+        if (distance({ x: clickX, y: clickY }, { x: data.x, y: data.y }) < dotRadius + 2) { // Add a small buffer for easier clicking
+          hit = true;
+        }
+      }
+
+      if (hit) {
+        emit('clearDrawing', i);
+        // Redraw immediately after deletion to reflect changes
+        redrawAnnotations();
+        break; // Stop after deleting the first shape found
       }
     }
-    return;
+    return; // Exit erase mode logic
   }
   if (props.mode === 'red-line') {
     const mouseX = event.offsetX;
@@ -486,8 +575,6 @@ const handleCanvasClick = (event) => {
     }
     return;
   }
-  const clickX = event.offsetX;
-  const clickY = event.offsetY;
 
   if (props.mode === 'edit') {
     // Selection is handled by mousedown. Click might be used to deselect if no shape is hit.
@@ -497,14 +584,34 @@ const handleCanvasClick = (event) => {
   }
 
   if (props.mode === 'dot') {
-    // ... (original dot logic)
     const dotDrawing = { type: 'dot', data: { x: clickX, y: clickY }};
     emit('draw', dotDrawing);
-    console.log(clickX, clickY);
+    console.log('Dot drawn at:', clickX, clickY);
+
+    // check if the point is within a valid area
+    let minDistance = Infinity;
+    // find the closest dot in the comparison array
+    for (const rock of props.correctRockLocations) {
+      const dist = distance({x: clickX, y: clickY}, rock);
+      if (dist < minDistance) {
+        minDistance = dist;
+      }
+    }
+    // Put together feedback message based on distance
+    let message = "";
+    if (minDistance <= 10) {
+      message = "Well done!";
+    } else if (minDistance <= 50) {
+      message = "Close, but not quite. Try the move tool.";
+    } else {
+      message = "That isn't near a known rock. Delete the dot and try again.";
+    }
+    emit('validation-message', message); // Emit the validation message
     return;
   }
 
   if (props.mode === 'erase') {
+    console.log("here");
     // ... (original erase logic)
     if (!props.drawings || props.drawings.length === 0) return;
     // Consider using getShapeAtPoint for more consistent hit detection if desired
@@ -534,6 +641,7 @@ const getCurrentShapeData = (x2, y2) => {
     const radius = Math.sqrt(dx * dx + dy * dy);
     return { x: startPoint.value.x, y: startPoint.value.y, radius };
   } else if (props.mode === 'line' && startPoint.value) {
+
     return { x1: startPoint.value.x, y1: startPoint.value.y, x2, y2 };
   }
   return {};

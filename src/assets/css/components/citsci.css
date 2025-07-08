@@ -30,7 +30,7 @@
 }
 
 .button-selected {
-    background-color: var(--aluminium);
+    background-color: var(--brown);
 }
 
 #citsci-blurb {
@@ -359,7 +359,7 @@
 }
 
 #tutorial h3 {
-    float: center;
+    text-align: center;
     width: 100%;
     margin-bottom: 0.2em;
 }
@@ -587,19 +587,96 @@
     height: auto;
 }
 
-.not-yet-message {
+#moon #tutorial.step-2 .image-caption {
+    position: absolute;
+    bottom: 50px;
+    left: 30px;
+    width: 80%;
+}
+
+#moon #tutorial.step-3 .image-caption {
+    position: absolute;
+    top: 285px;
+    left: 80px;
+    width: 70%;
+}
+
+#moon #tutorial.step-4 .image-caption{
+    position: absolute;
+    top: 285px;
+    left: 80px;
+    width: 75%;
+}
+
+#moon #tutorial.step-5 .image-caption {
+    position: absolute;
+    top: 285px;
+    left: 100px;
+    width: 65%;
+}
+
+#moon #tutorial.step-6 .image-caption {
+    position: absolute;
+    top: 285px;
+    left: 20px;
+    width: 90%;
+}
+
+#moon #tutorial.step-2 .image-caption p,
+#moon #tutorial.step-3 .image-caption p,
+#moon #tutorial.step-4 .image-caption p,
+#moon #tutorial.step-5 .image-caption p,
+#moon #tutorial.step-6 .image-caption p {
+    font-style: italic;
+    font-weight: bold;
+    color: var(--blue) !important;
+    text-align: center;
+}
+
+#moon #tutorial.step-3 img,
+#moon #tutorial.step-4 img,
+#moon #tutorial.step-5 .tutorial-image1 {
+    width: 50px;
+    height: auto;
+    position: absolute;
+    bottom: 93px;
+    left: 20px;
+    border-radius: 10px;
+    background: var(--brown);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+#moon #tutorial.step-5 .tutorial-image2 {
+    float: right;
+    width: 104px;
+    top: 200px;
+    transform: none;
+    padding: 5px;
+    background: var(--white);
+    border-radius: 5px;
+}
+
+.not-yet-message, .feedback {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 0, 0, 0.8);
     color: white;
     padding: 15px 25px;
     border-radius: 8px;
     z-index: 1000;
-    font-size: 1.2em;
     text-align: center;
+    font-size: 1.5em;
 }
+
+.not-yet-message {
+    background-color: var(--orange);
+}
+
+.feedback {
+    background-color: var(--indigo);
+}
+
 
 @keyframes fadeOut {
     0% { opacity: 1; }

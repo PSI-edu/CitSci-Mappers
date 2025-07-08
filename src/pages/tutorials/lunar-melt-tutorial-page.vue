@@ -41,30 +41,36 @@
 
 
             <div id="citsci-buttons-panel">
+              <h4>Tools</h4>
               <button
                   @click="setMode('circle'); setText(craterTitle, craterInfo); setExamples('circle')"
                   :class="{'button-not-selected': mode !== 'circle', 'button-selected': mode === 'circle'}"
                   style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png'); background-size: contain;"
+                  title="Crater Tool"
               ></button>
               <button
                   @click="setMode('line'); setText(boulderTitle, boulderInfo); setExamples('line')"
                   :class="{'button-not-selected': mode !== 'line', 'button-selected': mode === 'line'}"
                   style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png'); background-size: contain;"
+                  title="Boulder Tool"
               ></button>
               <button
                   @click="setMode('dot'); setText(rocksTitle, rocksInfo); setExamples('dot')"
                   :class="{'button-not-selected': mode !== 'dot', 'button-selected': mode === 'dot'}"
                   style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-rocks.png'); background-size: contain;"
+                  title="Rock Tool"
               ></button>
               <button
                   @click="setMode('erase'); setText(eraseTitle, eraseInfo); setExamples('erase')"
                   :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
                   style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
+                  title="Erase Tool"
               ></button>
               <button
                   @click="setMode('edit'); setText(eraseTitle, eraseInfo); setExamples('erase')"
                   :class="{'button-not-selected': mode !== 'edit', 'button-selected': mode === 'edit'}"
                   style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png');background-size: contain;"
+                  title="Move / Resize Tool"
               ></button>
             </div>
             <div id="citsci-mapping-panel">
@@ -79,12 +85,17 @@
                   @updateDrawing="handleUpdateDrawing"
                   :currStep="currStep"
                   @canvas-click-during-tutorial="handleCanvasClickDuringTutorial"
+                  :correctRockLocations="correctRockLocations"
+                  :correctBoulderLocations="correctBoulderLocations"
+                  :correctCraterLocations="correctCraterLocations"
+                  @validation-message="displayValidationMessage"
               />
-              <div v-if="showNotYetMessage" class="not-yet-message">
-                Not yet! Please wait for Step 3 to mark rocks.
-              </div>
+
               <div v-if="showPatienceMessage" class="not-yet-message">
-                Patience - We'll get to mapping in a moment.
+                Please follow the instructions.
+              </div>
+              <div v-if="showValidationMessage" class="feedback">
+                {{ validationMessage }}
               </div>
             </div>
             <div class="citsci-info-panel melt">
@@ -123,7 +134,10 @@
               </div>
             </div>
             <button
-                @click="saveResponse()" class="submit-button" id="submit-button"
+                @click="endTutorial()"
+                class="submit-button"
+                id="submit-button"
+                :disabled="currStep !== 6"
             >Submit
             </button>
             <button
@@ -165,6 +179,7 @@ import CanvasMap from "@/components/citsci-tools/tutorial-canvas-map.vue";
 import {useAuth0} from "@auth0/auth0-vue";
 import {computed, onMounted, ref, watch} from 'vue';
 import apiClient from '@/api/axios';
+import {useRouter} from 'vue-router';
 
 const isNoFingers = useIsNoFingers();
 
@@ -185,22 +200,16 @@ const rocksInfo = ref("Click in the centers of rocks to mark their locations.");
 const eraseTitle = ref("Erasing");
 const eraseInfo = ref("Click on a mark to delete it.");
 const exampleImages = ref([]);
-const editTitle = ref("Editing Marks");
-const editInfo = ref("Click on a mark to move or (if appropriate) resize.");
+
 
 const exampleMarks = ref(null);
 
 // Tutorial Logic
 const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
-const showNotYetMessage = ref(false);
 const showPatienceMessage = ref(false); // New state variable
-
-const displayNotYetMessage = () => {
-  showNotYetMessage.value = true;
-  setTimeout(() => {
-    showNotYetMessage.value = false;
-  }, 3000); // Message disappears after 3 seconds
-};
+const validationMessage = ref(null); // NEW: Reactive variable for validation message
+const showValidationMessage = ref(false); // NEW: State for showing validation message
+const router = useRouter();
 
 const displayPatienceMessage = () => {
   showPatienceMessage.value = true;
@@ -209,6 +218,34 @@ const displayPatienceMessage = () => {
   }, 3000); // Message disappears after 3 seconds
 };
 
+// NEW: Function to display validation messages
+const displayValidationMessage = (message) => {
+  validationMessage.value = message;
+  showValidationMessage.value = true;
+  setTimeout(() => {
+    showValidationMessage.value = false;
+    validationMessage.value = null; // Clear message after hiding
+  }, 3000); // Message disappears after 6 seconds
+};
+
+
+// NEW: Define correct rock locations
+const correctRockLocations = ref([
+  { x: 201, y: 329 },
+  { x: 209, y: 312 },
+  { x: 209, y: 298 },
+  { x: 223, y: 284 },
+  { x: 269, y: 281 }
+]);
+
+const correctBoulderLocations = ref([
+  { x1: 43, y1: 217, x2: 54, y2: 273 },
+  { x1: 100, y1: 277, x2: 160, y2: 302 }
+]);
+
+const correctCraterLocations = ref([
+  { x: 171, y: 94, radius: 24 }
+]);
 
 const tutorialSteps = [
   { // Step 0: Hidden/Inactive state for the tutorial
@@ -241,50 +278,56 @@ const tutorialSteps = [
   {
     id: 2,
     title: "You're mapping this image's rocks, boulders, & craters",
-    content: "In this activity, we are marking rocks, measuring boulders, and outlining craters larger than the minimum size.<br><br>" +
-        "There are examples of each type of mark below. When you select a mapping tool on the left, we'll show you more examples " +
-        "specific to that tool.<br><br>" +
-        "<strong>Try it!</strong> Go ahead and press the different buttons to see the examples change.",
+    content: "You'll use the Tools on the left to mark rocks with a dot, measure the longest part of a boulder with a line, " +
+        "and outline craters larger than the minimum size. You can also erase bad marks, and move things if you make " +
+        "a mistake. <br><br>" +
+        "When you select a mapping tool, we'll show you more examples " +
+        "specific to that tool.<br><br>",
     className: "step-2",
     image1: "",
-    image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png"
+    image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png",
+    imageCaption: "Try it! Click the buttons on the left to see the examples change."
   },
   {
     id: 3,
     title: "Got Rocks?",
-    content: "Let's go ahead and mark the rocks in this image. <strong>Click the button with 3 rocks marked with blue dots.</strong><Br><br>" +
-        "Can you click on atleast 5 rocks in this image? If you want to mark more, that's great! Let the examples" +
-        "below guide you. We'll give you feedback as we go.",
+    content: "Can you mark on at least 5 rocks in this image? Let the examples " +
+        "below guide you. We'll give you initial feedback each time you mark a rock.",
     className: "step-3",
-    image1: "",
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-rocks.png",
     image2: "",
-    imageCaption: ""
+    imageCaption: "Try it! Click the 'Rocks' button and then click on the image where you see rocks. "
   },
   {
     id: 4,
-    title: "Boulders",
-    content: "",
+    title: "Measure Boulders",
+    content: "These large chunks of rock are worth measuring! Use the drawing tool to put a line along the longest " +
+        "axis of the 2 big boulders in this image. <br><br>" +
+    "Remember to click the boulder button first to select your tool! <br><br>" ,
     className: "step-4",
-    image1: "",
-    image2: ""
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png",
+    image2: "",
+    imageCaption: "Try it! Click the 'Boulders' button, and then click & drag along the longest axis of each boulder."
   },
   {
     id: 5,
-    title: "Craters",
-    content: "",
+    title: "Trace Craters",
+    content: "There are lots of craters on the Moon! Lucky for you (and us), we are only interested in craters " +
+        "more than 24 pixels across. <br><br> Can you mark this image's largest crater? <br><br>",
     className: "step-5",
-    image1: "",
-    image2: ""
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png",
+    image2: "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act1-minsize.png",
+    imageCaption: "Try it! Click the 'Craters' button, and then click in the center of the crater and drag out to its edges."
   },
   {
     id: 6,
-    title: "There is no going back!",
-    content: "When you're happy with your marks, go ahead and click [Submit] below. <br><br>" +
-        "Make sure you're happy with everything first, and check that you got everything you wanted to mark! " +
-        "Once you submit, you can't go back and change your marks.<br><br>",
+    title: "Let's do some science!",
+    content: "Together we can map more of the Moon than any one of us could do alone. Let's get clicking " +
+        "(and dragging). There are discoveries to make working together!<br><br>",
     className: "step-6",
     image1: "",
-    image2: ""
+    image2: "",
+    imageCaption: "Ready? Click the 'Submit' button below & let's do some science!"
   }
 ];
 
@@ -298,37 +341,8 @@ const currentStepImageCaption = computed(() => currentStep.value.imageCaption);
 
 // New method to handle canvas clicks during tutorial
 const handleCanvasClickDuringTutorial = () => {
-  if (currStep.value > 0 && currStep.value != 3) { // Only show message for tutorial steps 1 and 2
+  if (currStep.value > 0 && currStep.value !== 3 && currStep.value !== 4 && currStep.value !== 5) { // Updated to allow specific tools in 3, 4, 5
     displayPatienceMessage();
-  } else if (currStep.value === 2) {
-    displayNotYetMessage(); // Keep existing logic for step 2 if needed
-  }
-};
-
-// Make sure they don't try and submit things to early
-const handleSubmitClick = (alignment) => {
-  if (currStep.value < 5) {
-    showNotYetMessage.value = true;
-    setTimeout(() => {
-      showNotYetMessage.value = false;
-    }, 5000); // Hide message after 5 seconds
-    return;
-  }
-  if (currStep.value === 5) {
-    if (alignment === 'bad') {
-      submissionMade.value = true;
-      setTimeout(() => {
-        endTutorial();
-      }, 3000);
-      console.log('here');
-    } else {
-      showAreYouSure.value = true;
-      setTimeout(() => {
-        showAreYouSure.value = false;
-      }, 3000);
-      console.log('nope');
-    }
-    // You can add your data submission logic here
   }
 };
 
@@ -359,7 +373,7 @@ const endTutorial = async () => {
       // Send user_id to the tutorial completion endpoint
       const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-tutorial.php', {
         user_id: localStorage.getItem('user_id'),
-        app_id: 2,
+        app_id: 3,
         task: "add"
       });
       console.log('Successfully marked tutorial as complete for user.', response.data);
@@ -460,65 +474,6 @@ const clearDrawing = (index) => {
   }
 };
 
-const saveResponse = async () => {
-
-  // hide submit button and show busy button
-  const submitButton = document.getElementById('submit-button');
-  const busyButton = document.getElementById('busy-button');
-  if (submitButton) {
-    submitButton.style.display = 'none';
-  }
-  if (busyButton) {
-    busyButton.style.display = 'inline';
-  }
-
-  if (!localStorage.getItem('user_id') || !localStorage.getItem('image_id')) {
-    console.error("User ID or Image ID not found in local storage.");
-    return;
-  }
-  const payload = {
-    user_id: localStorage.getItem('user_id'),
-    image_id: localStorage.getItem('image_id'),
-    app_id: 3,
-    drawings: drawings.value.map(drawing => ({
-      type: drawing.type,
-      data: drawing.data,
-    })),
-  };
-
-  console.log("Submitting drawings:", payload);
-
-  try {
-    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", payload);
-    console.log("Submission Successful:", response.data);
-    await getNewImage();
-
-  } catch (error) {
-    console.error("Error submitting drawings:", error);
-    // Show the submit button and hide the busy button in case of error
-    if (submitButton) {
-      submitButton.style.display = 'inline';
-    }
-    if (busyButton) {
-      busyButton.style.display = 'none';
-    }
-  } finally {
-    // Clear drawings after submission
-    drawings.value = [];
-    if (canvasMapRef.value) {
-      canvasMapRef.value.redrawCanvas();
-    }
-  }
-
-  // Show the submit button and hide the busy button
-  if (submitButton) {
-    submitButton.style.display = 'inline';
-  }
-  if (busyButton) {
-    busyButton.style.display = 'none';
-  }
-};
-
 onMounted(async () => {
   // First get the user_id.
   try {
@@ -532,7 +487,7 @@ onMounted(async () => {
   }
 
   // Now get tutorial image
-  imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Lowell_Crater/M105192594LE_final/M105192594LE_final_1215-405.png";
+  imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act1-TutorialImage.png";
 
   // Draw the example marks
   drawExampleCanvas();
