@@ -377,7 +377,7 @@ const endTutorial = async () => {
         task: "add"
       });
       console.log('Successfully marked tutorial as complete for user.', response.data);
-      router.push('/do_science/mars-mosaic');
+      router.push('/do_science/lunar-melt');
     } catch (error) {
       console.error('Failed to send tutorial completion status:', error);
     }
