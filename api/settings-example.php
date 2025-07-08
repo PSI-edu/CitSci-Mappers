@@ -30,4 +30,4 @@ $vue_url ="http://localhost:4040";
 $auth0_audience = "set this in auth0";
 $auth0_domain = ""; // e.g. "dev-12345678.us.auth0.com"
 $auth0_api_secret = ""; // 32 random characters, used to verify the API requests
-$auth_client_id = ""; // Your Auth0 Client ID
+$auth0_client_id = ""; // Your Auth0 Client ID
