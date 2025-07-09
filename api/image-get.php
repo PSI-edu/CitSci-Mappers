@@ -112,7 +112,38 @@ if ($data !== null &&
             echo json_encode(['error' => 'No matching image set found.']);
         }
 
+    } else {
+        $sql = "SELECT i.id, i.file_location
+        FROM images i
+        WHERE 
+            i.application_id = ?
+        AND i.done = 0
+        AND i.id NOT IN (
+            SELECT iu.image_id
+            FROM image_users iu
+            WHERE iu.user_id = ?
+        )
+        ORDER BY i.id ASC
+        LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $app_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $response = [
+                'id' => $row['id'],
+                'file_location' => $row['file_location'] // Decode JSON
+            ];
+            echo json_encode($response); // Return as JSON
+            $stmt->close();
+        } else {
+            echo json_encode(['error' => 'No matching image found.']); // Return error as JSON
+        }
     }
+
     $conn->close();
 
 } else {
