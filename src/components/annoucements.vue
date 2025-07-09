@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="annoucements">
-      <div class="updated">Updated: 29 June 2025</div>
+      <div class="updated">Updated: 8 July 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
         <p>This site is in Beta! Play. Give feedback. Get a preview of what's coming. (Please note,
@@ -9,13 +9,14 @@
 
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
-          <li>Mosaics Tutorial is mis-formatted in Safari</li>
+          <li>none?</li>
         </ul>
 
         <h4>&#129513; Features in Progress</h4>
         <ul>
-          <li>Maintenance Mode</li>
-          <li>Stats/Achievements on Profile Page</li>
+          <li>add Lunar Melt pages to "learn" subsite</li>
+          <li>implement Lunar Melt Activity 2: Flows, Faults, and more</li>
+          <li>implement Stats/Achievements on Profile Page</li>
         </ul>
       </div>
       <div class="text-block">

@@ -260,15 +260,15 @@ const tutorialSteps = [
     id: 1,
     title: "Welcome to Lunar Melt!",
     content: "Ready to get mapping? " +
-        "Your work will accelerate research into how asteroid impacts changed the Moon's surface.  Our research" +
-        "might even help humans find water and stay safe when humans return to the lunar surface.<br><br>" +
+        "Your work will accelerate research into how asteroid impacts changed the Lunar surface.  Our research " +
+        "might even help humans find water and stay safe when we one day return to the Moon.<br><br>" +
 
         "This tutorial will guide you through the process of marking craters, boulders, and rocks in the melt. Our " +
         "team of researchers will use your work analyze Little Lowell crater and potentially to train " +
         "machine learning algorithms to automate this process in the future.<br><br>" +
         "Today, computers can't do this work, and your efforts  " +
-        "helo us focus more of our limited time on data analysis. Thank you! We'll share all our research with you on this site." +
-        "You can also sign up for our news in your inbox on your profile page. <br></br>" +
+        "help us focus more of our limited time on data analysis. Thank you! We'll share all our research with you on this site " +
+        "or signup on the profile page to get news in your inbox. <br><br>" +
         "Let's get started!",
     className: "step-1",
     image1: "",
@@ -286,7 +286,7 @@ const tutorialSteps = [
     className: "step-2",
     image1: "",
     image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png",
-    imageCaption: "Try it! Click the buttons on the left to see the examples change."
+    imageCaption: "Try it! Click the buttons on the left to see the examples below change."
   },
   {
     id: 3,
