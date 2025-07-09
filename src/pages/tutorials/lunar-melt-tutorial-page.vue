@@ -261,7 +261,8 @@ const tutorialSteps = [
     title: "Welcome to Lunar Melt!",
     content: "Ready to get mapping? " +
         "Your work will accelerate research into how asteroid impacts changed the Lunar surface.  Our research " +
-        "might even help humans find water and stay safe when we one day return to the Moon.<br><br>" +
+        "might even help humans find the best, most rare rock types to unlock the history of both the Earth " +
+        "and the Moon.<br><br>" +
 
         "This tutorial will guide you through the process of marking craters, boulders, and rocks in the melt. Our " +
         "team of researchers will use your work analyze Little Lowell crater and potentially to train " +
