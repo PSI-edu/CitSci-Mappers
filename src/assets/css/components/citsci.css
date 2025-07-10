@@ -323,7 +323,6 @@
     transform: translate(50%, 0);
     width: 800px;
     height: 500px;
-    overflow: scroll;
     background: var(--white);
     border-radius: 5px;
     z-index: 1001;
