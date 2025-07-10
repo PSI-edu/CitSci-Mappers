@@ -9,7 +9,7 @@
 
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
-          <li>none?</li>
+          <li>Unconfirmed emails don't get added to the DB. Need to add step.</li>
         </ul>
 
         <h4>&#129513; Features in Progress</h4>
