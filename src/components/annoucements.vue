@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="annoucements">
-      <div class="updated">Updated: 8 July 2025</div>
+      <div class="updated">Updated: 13 July 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
         <p>This site is in Beta! Play. Give feedback. Get a preview of what's coming. (Please note,
@@ -10,10 +10,12 @@
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
           <li>Unconfirmed emails don't get added to the DB. Need to add step.</li>
+          <li>Hamburger menu on mobile has issues</li>
         </ul>
 
         <h4>&#129513; Features in Progress</h4>
         <ul>
+          <li>Add Sci starter links</li>
           <li>add Lunar Melt pages to "learn" subsite</li>
           <li>implement Lunar Melt Activity 2: Flows, Faults, and more</li>
           <li>implement Stats/Achievements on Profile Page</li>
