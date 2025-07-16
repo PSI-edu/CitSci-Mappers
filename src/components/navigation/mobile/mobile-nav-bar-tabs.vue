@@ -1,10 +1,11 @@
 <template>
   <div class="mobile-nav-bar__tabs">
+    <MobileNavBarTab path="/" label="Home" />
+    <MobileNavBarTab path="/Learn" label="Learn" />
     <template v-if="isAuthenticated">
-      <MobileNavBarTab path="/" label="Home" />
       <MobileNavBarTab path="/profile" label="Profile" />
-      <MobileNavBarTab path="/lunar-melt" label="Lunar Melt" />
-      <MobileNavBarTab path="/mars-mosaic" label="Mars Mosaics" />
+      <MobileNavBarTab path="/do_science/lunar-melt" label="Lunar Melt" />
+      <MobileNavBarTab path="/do_science/mars-mosaic" label="Mars Mosaics" />
     </template>
   </div>
 </template>
