@@ -59,11 +59,11 @@
           </div>
           <div class="content">
             <p>
-              <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-team" target="_blank">The Team </a>
+              <a href="https://mappers.psi.edu/learn/lunar-melt/lm-the-team" target="_blank">The Team </a>
               *
-              <a href="https://mappers.psi.edu/learn/mars-mosiacs/" target="_blank">Science </a>
+              <a href="https://mappers.psi.edu/learn/lunar-melt/" target="_blank">Science </a>
               *
-              <a href="https://mappers.psi.edu/learn/mars-mosiacs/mm-the-data/" target="_blank">Data</a>
+              <a href="https://mappers.psi.edu/learn/lunar-melt/lm-the-data/" target="_blank">Data</a>
               *
               <a href="/tutorials/lunar-melt-tutorial" target="_blank">Tutorial</a>
             </p>

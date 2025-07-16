@@ -85,6 +85,10 @@ a different setup than production, so you will need to do this twice, once for e
 
 ```
 exports.onExecutePostLogin = async (event, api) => {
+  // Check if the email is verified
+  if (!event.user.email_verified) {
+    api.access.deny(`Please verify your email before continuing.`);
+  }
   const { consentGiven } = event.user.user_metadata || {};
   // redirect to consent form if user has not yet consented
   if (!consentGiven && api.redirect.canRedirect()) {
