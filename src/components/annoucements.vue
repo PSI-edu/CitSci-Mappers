@@ -9,7 +9,7 @@
 
         <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
         <ul>
-          <li><strong>Severe!</strong> Unvalidated emails sometimes aren't added to the database even though people can confirm consent.</li>
+          <li><strong>Fixed?</strong> Emails sometimes aren't added to the database even though people can confirm consent.</li>
         </ul>
 
         <h4>&#129513; Features in Progress</h4>

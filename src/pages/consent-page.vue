@@ -3,7 +3,7 @@
     <div class="content-layout">
       <h1 id="page-title" class="content__title">Informed Consent & GDPR Disclosures</h1>
       <div class="content__body">
-        <form id="consentForm" action="/consent" method="POST" @submit="addEmail">
+        <form id="consentForm" action="/consent" method="POST" @submit.prevent="handleSubmit">
           <p>This site invites you to participate in science projects by reviewing images
             and either mapping their features or indicating aspects of their content. We
             require an email address from you, and will use it to email you whenever your
@@ -30,7 +30,9 @@
 
           <input type="checkbox" name="confirm" value="yes" required> I consent.
           <br>
-          <button type="submit">Submit</button>
+          <button type="submit" :disabled="isLoading">
+            {{ isLoading ? 'Processing...' : 'Submit' }}
+          </button>
         </form>
       </div>
     </div>
@@ -42,9 +44,9 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import PageLayout from "@/components/page-layout.vue";
 
-const formAction = ref('');
+const isLoading = ref(false);
 const urlParams = new URLSearchParams(window.location.search);
-const state = urlParams.get('state');
+
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -53,25 +55,40 @@ onMounted(() => {
 
   const consentForm = document.getElementById('consentForm');
 
-  consentForm.action = baseUrl;
+  if (consentForm) {
+    consentForm.action = baseUrl;
+  }
 });
 
-const addEmail = () => {
+const addEmail = async () => {
   const email = urlParams.get('email');
+  try {
+    const response = await axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-new.php',
+        { email: email },
+        {
+          headers: {
+            'Authorization': 'Bearer ' + import.meta.env.VITE_MAPPERS_API_KEY
+          }
+        });
+    localStorage.setItem('userID', response.data);
+    console.log('Success:', response.data);
+    return true; // Indicate success
+  } catch (error) {
+    console.error('Error:', error);
+    return false; // Indicate failure
+  }
+};
 
-  axios.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-new.php',
-      { email: email },
-  {
-        headers: {
-          'Authorization': 'Bearer ' + import.meta.env.VITE_MAPPERS_API_KEY
-        }
-      })
-      .then(response => {
-        localStorage.setItem('userID', response.data);
-        console.log('Success:', response.data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+const handleSubmit = async () => {
+  isLoading.value = true; // Set loading to true when submission starts
+
+  const isEmailAdded = await addEmail();
+
+  if (isEmailAdded) {
+    document.getElementById('consentForm').submit();
+  } else {
+    alert('Failed to add email. Please try again.');
+    isLoading.value = false; // Reset loading if submission fails
+  }
 };
 </script>
