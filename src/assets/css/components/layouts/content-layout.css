@@ -9,7 +9,7 @@
 
   /* responsive */
 
-  padding: 48px;
+  padding: var(--page-padding);
 }
 
 .content__title {

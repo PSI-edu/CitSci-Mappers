@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="annoucements">
-      <div class="updated">Updated: 17 July 2025</div>
+      <div class="updated">Updated: 5 Aug 2025</div>
       <div class="text-block">
         <h4>&#128227; Announcements</h4>
         <p>This site is in Beta! Play. Give feedback. Get a preview of what's coming. (Please note,

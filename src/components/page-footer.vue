@@ -3,11 +3,19 @@
     <div class="page-footer-grid">
       <div class="page-footer-grid__info">
         <div class="page-footer-info__message">
+          <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/NASA-Grantee.png"
+               class="left" style="height: 70px; margin-right: 10px;">
           <p class="page-footer-message__headline">
             This project is supported by the National
             Aeronautics and Space Administration (NASA) grants 23-CSSFP23-0014 and NNH21ZDA001N-PDART. Any
             opinions, findings, conclusions or recommendations expressed in this material are those
             of the author and do not necessarily reflect the views of NASA.
+          </p>
+          <p>
+            Learn more about NASA Citizen Science and find other projects to explore at
+            <a href="https://science.nasa.gov/citizen-science">science.nasa.gov/citizen-science</a>. You can also
+            check out other ways to get involved with NASA science at
+            <a href="https://www.nasa.gov/get-involved/%20">nasa.gov/get-involved</a>.
           </p>
         </div>
 

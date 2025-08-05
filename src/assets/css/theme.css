@@ -78,5 +78,6 @@
   --font-secondary: "Lexand", sans-serif;
   --font-mono: "Fira Code", monospace;
 
-  --page-width:  120rem;
+  --page-width:  1200px;
+  --page-padding: 24px;
 }

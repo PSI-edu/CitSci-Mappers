@@ -1,10 +1,10 @@
 <template>
   <PageLayout>
-    <div class="content-layout">
+    <div class="content-layout main-content">
       <h1 id="page-title" class="content__title">Profile Page</h1>
       <div class="content__body">
         <p id="page-description">
-          This page will allow people to submit their publishable name.
+          This page will allows you to tell us what name to use in publications.
         </p>
         <br/>
         <h4>Profile</h4>

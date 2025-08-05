@@ -83,7 +83,7 @@ onMounted(async () => {
       apiError.value = '';
       successMessage.value = '';
       if (response.data.username == 'not set' && response.data.publishable_name == 'not set') {
-        successMessage.value = 'Welcome unnamed human - please set some values.';
+        successMessage.value = 'Welcome human - please set some values so we know who you are.';
       }
     } else {
       apiError.value = 'Your account wasn\'t added to the DB correctly. Please alert Pamela on the Discord or email her at plg@psi.edu';
