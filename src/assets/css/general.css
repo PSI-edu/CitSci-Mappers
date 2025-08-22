@@ -243,6 +243,7 @@ button:disabled {
 
 .icon-div {
   width: 10%;
+  min-width: 9rem;
   float: left;
   height:12rem;
 }
@@ -250,7 +251,7 @@ button:disabled {
   min-height:12rem;
   float:left;
   margin-bottom: 1rem;
-  width: 90%;
+  flex: 1;
 }
 
 .darken {
@@ -282,5 +283,13 @@ button:disabled {
 @media only screen and (max-width: 640px) {
   .mobile-scroll-lock {
     overflow: hidden;
+  }
+  .icon {
+    width: 7rem;
+    height: 7rem;
+  }
+  .icon-div {
+    width: 20%;
+    min-width: 5rem;
   }
 }

@@ -23,7 +23,7 @@ services:
       MYSQL_PASSWORD: Ch4ngeM3
       MYSQL_ROOT_PASSWORD: Ch4ngeM32,plz.
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
 

@@ -1,8 +1,8 @@
 <template>
   <PageLayout>
-    <div class="content-layout">
+    <div class="content-layout main-content">
       <h1 id="page-title" class="content__title">Privacy Policy</h1>
-      <div class="content__body">
+
         <p id="page-description">
           Your data is important to us... for doing science and giving you credit for science done!
         </p>
@@ -10,8 +10,9 @@
         <span class="italic">For information on how we use your science data and website activity,
           please see our <a href="/data" class="underline">Data Page.</a></span>
         </p>
-        <br/>
         <h3>How we use your personally identifying information</h3>
+
+      <div class="content__body">
         <div class="icon-div">
           <img class="icon" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Helmet.png" alt="Astronaut Helmet" />
         </div>
@@ -23,6 +24,8 @@
           but it is a goal. Claim your username now to be ready!
         </p>
         </div>
+      </div>
+      <div class="content__body">
         <div class="icon-div">
           <img class="icon" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Email.png" alt="Email Icon" />
         </div>
@@ -33,6 +36,8 @@
           make sure you have a valid email address in your profile. Again, we will never share your email.
         </p>
         </div>
+      </div>
+      <div class="content__body">
         <div class="icon-div">
           <img class="icon" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Signature.png" alt="Signature Icon" />
         </div>
@@ -44,6 +49,8 @@
           appear in a research product.
         </p>
         </div>
+      </div>
+      <div class="content__body">
         <div class="icon-div">
           <img class="icon" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Wind.png" alt="Wind Icon" />
         </div>

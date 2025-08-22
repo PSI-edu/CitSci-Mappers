@@ -8,6 +8,7 @@
             and either mapping their features or indicating aspects of their content.</p>
 
           <p>
+            <strong>Email</strong><br>
             We require an email address from you, and will use it to email you whenever your
             contributions are used in a research product (paper, catalogue, trained machine
             learning algorithm, etc). We will
@@ -18,15 +19,18 @@
             links in the footer. That information will be kept current as new projects are added.
           </p>
           <p>
+            <strong>Cookies</strong><br>
             This website uses cookies to track if you are logged in and store information about
             your login. We manage logins and login data tracking using Auth0 by Okta.
             This is required so we can give you credit for the science you do.
           </p>
           <p>
+            <strong>Attribution</strong><br>
             After you are logged in, you will be given the opportunity to set up a username and
             publishable name. These are optional. If you don't enter anything, your data will
             be attributed to Anonymous (but you will still be notified if we use your contributions.</p>
           <p>
+            <strong>What you're consenting too</strong><br>
             By checking the box below, you are consenting to the use of your email address for
             the purposes described above. You are also consenting to our use of cookies to track
             that you have logged in and to store information about your account. You are also
