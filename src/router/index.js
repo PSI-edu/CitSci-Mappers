@@ -64,19 +64,16 @@ const routes = [
     path: "/tutorials/mars-mosaic-tutorial",
     name: "mars-mosaic-tutorial",
     component: MarsMosaicTutorialPage,
-    beforeEnter: authGuard,
   },
   {
     path: "/do_science/lunar-melt",
     name: "lunar-melt",
     component: LunarMeltPage,
-    beforeEnter: authGuard,
   },
   {
     path: "/tutorials/lunar-melt-tutorial",
     name: "lunar-melt-tutorial",
     component: LunarMeltTutorialPage,
-    beforeEnter: authGuard,
   },
   {
     path: "/do_science/lunar-melt-flows",

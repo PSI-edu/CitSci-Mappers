@@ -1,8 +1,10 @@
 <template>
   <div class="nav-bar__brand">
-    <router-link to="/">
-      World Mappers{{ title }}
-    </router-link>
+    <div class="noFlex">
+      <router-link to="/">
+      World Mappers</router-link>
+      {{ title }}
+    </div>
   </div>
 </template>
 

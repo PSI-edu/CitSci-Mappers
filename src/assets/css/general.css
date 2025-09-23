@@ -285,6 +285,7 @@ button:disabled {
   padding: 3.2rem;
   margin: 0 auto;
   font-size: 1.6em;
+  z-index: 1000;
 }
 .loginDiv p {
   margin: 1em 0;

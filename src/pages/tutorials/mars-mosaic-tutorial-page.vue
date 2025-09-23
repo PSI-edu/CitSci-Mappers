@@ -1,7 +1,16 @@
 <template>
   <div class="darken" v-if="currStep==1"></div>
   <PageLayout title=": Mars Mosaic">
-    <div class="content-layout">
+    <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
+      <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200812/Mars-150x150.png" alt="Mars Mosaics Logo"/>
+      <h2>Please Log In</h2>
+      <p>We want to give you credit for everything you contribute to. We can only
+        do that if you log in first.</p>
+      <p>If you'd like to learn more about Mars Mosaics before you register, please
+        <a href="/learn/">check out our learning site</a>.</p>
+      <button @click="handleLogin">Log In</button>
+    </div>
+    <div v-else-if="isAuthenticated" class="content-layout">
 
       <div id="citsci-main-panel">
         <div id="mars" >
@@ -153,7 +162,7 @@ import {onMounted, ref, computed} from 'vue';
 import apiClient from '@/api/axios';
 import {useRouter} from 'vue-router';
 
-const {user} = useAuth0();
+const {user, isAuthenticated, loginWithRedirect, isLoading} = useAuth0();
 const router = useRouter();
 
 const imageUrl = ref(null);
@@ -163,6 +172,11 @@ const diffUrl = ref(null);
 const showNotYetMessage = ref(false);
 const submissionMade = ref(false);
 const showAreYouSure = ref(false);
+
+// Login check
+const handleLogin = () => {
+  loginWithRedirect();
+};
 
 // Tutorial Logic
 const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet

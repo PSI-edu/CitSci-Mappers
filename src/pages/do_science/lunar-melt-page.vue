@@ -1,7 +1,15 @@
 <template>
-
 <template v-if="isNoFingers">
   <PageLayout title=": Lunar Melt" >
+    <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
+      <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200746/Moon-150x150.png" alt="Moon Logo"/>
+      <h2>Please Log In</h2>
+      <p>We want to give you credit for everything you contribute to. We can only
+        do that if you log in first.</p>
+      <p>If you'd like to learn more about Lunar Melt before you register, please
+        <a href="/learn/">check out our learning site</a>.</p>
+      <button @click="handleLogin">Log In</button>
+    </div>
     <div class="content-layout" v-if="pageReady">
       <div id="citsci-main-panel">
         <div id="citsci-buttons-panel">
@@ -119,7 +127,7 @@ import {useRouter} from 'vue-router';
 
 const isNoFingers = useIsNoFingers();
 
-const { user } = useAuth0();
+const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
 const router = useRouter(); // Initialize useRouter
 
 const imageUrl = ref(null);
@@ -142,6 +150,10 @@ const pageReady = ref(false);
 
 
 const exampleMarks = ref(null);
+
+const handleLogin = () => {
+  loginWithRedirect();
+};
 
 const setMode = (newMode) => {
   mode.value = newMode;
