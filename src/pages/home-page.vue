@@ -4,8 +4,8 @@
     <MobileNavBar />
     <div class="page-layout__content">
       <HeroBanner></HeroBanner>
-      <Quickstart></Quickstart>
       <Blurbs/>
+      <Quickstart></Quickstart>
       <Announcements/>
     </div>
     <PageFooter />

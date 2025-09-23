@@ -1,5 +1,17 @@
 #quickstart {
-    background: red;
-    width: 100%;
-    height: 10vh;
+    background: var(--light-blue);
+    min-height: 10vh;
+    border-radius: 10px;
+    margin: 20px;
+}
+.fourSteps {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 25%;
+    min-width:10em;
+    color: var(--black);
+    font-size: 1.6em;
+    padding: 1em 0;
+    float: left;
 }
