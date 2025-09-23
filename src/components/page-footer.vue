@@ -15,7 +15,7 @@
             Learn more about NASA Citizen Science and find other projects to explore at
             <a href="https://science.nasa.gov/citizen-science">science.nasa.gov/citizen-science</a>. You can also
             check out other ways to get involved with NASA science at
-            <a href="https://www.nasa.gov/get-involved/%20">nasa.gov/get-involved</a>.
+            <a href="https://www.nasa.gov/get-involved/">nasa.gov/get-involved</a>.
           </p>
         </div>
 

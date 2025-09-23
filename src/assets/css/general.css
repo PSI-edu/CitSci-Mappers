@@ -280,6 +280,21 @@ button:disabled {
     vertical-align: middle;
 }
 
+.loginDiv {
+  width: 50rem;
+  padding: 3.2rem;
+  margin: 0 auto;
+  font-size: 1.6em;
+}
+.loginDiv p {
+  margin: 1em 0;
+}
+.loginDiv img {
+  float: left;
+    width: 11rem;
+  margin-right: 1em;
+}
+
 @media only screen and (max-width: 640px) {
   .mobile-scroll-lock {
     overflow: hidden;

@@ -4,6 +4,7 @@
     <MobileNavBar />
     <div class="page-layout__content">
       <HeroBanner></HeroBanner>
+      <Quickstart></Quickstart>
       <Blurbs/>
       <Announcements/>
     </div>
@@ -18,4 +19,5 @@ import Announcements from "@/components/annoucements.vue";
 import MobileNavBar from "@/components/navigation/mobile/mobile-nav-bar.vue";
 import NavBar from "@/components/navigation/desktop/nav-bar.vue";
 import PageFooter from "@/components/page-footer.vue";
+import Quickstart from "@/components/quickstart.vue";
 </script>

@@ -1,7 +1,15 @@
 <template>
   <PageLayout title=": Mars Mosaic">
-    <div class="content-layout mars" v-if="pageReady">
-
+    <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
+      <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200812/Mars-150x150.png" alt="Mars Mosaics Logo"/>
+      <h2>Please Log In</h2>
+      <p>We want to give you credit for everything you contribute to. We can only
+      do that if you log in first.</p>
+      <p>If you'd like to learn more about Mars Mosaics before you register, please
+        <a href="/learn/">check out our learning site</a>.</p>
+      <button @click="handleLogin">Log In</button>
+    </div>
+    <div v-else-if="isAuthenticated" class="content-layout mars" v-if="pageReady">
       <div id="citsci-main-panel">
         <div style="width:480px; float:left;">
           <div class="citsci-info-panel mosaic">
@@ -94,7 +102,7 @@ import {onMounted, ref} from 'vue';
 import apiClient from '@/api/axios';
 import {useRouter} from 'vue-router';
 
-const {user, isAuthenticated, isLoading: auth0IsLoading} = useAuth0(); // Destructure isAuthenticated and auth0IsLoading
+const {user, isAuthenticated, loginWithRedirect, isLoading: auth0IsLoading} = useAuth0(); // Destructure isAuthenticated and auth0IsLoading
 const router = useRouter(); // Initialize useRouter
 
 const imageUrl = ref(null);
@@ -102,6 +110,10 @@ const controlUrl = ref(null);
 const diffUrl = ref(null);
 
 const pageReady = ref(false);
+
+const handleLogin = () => {
+  loginWithRedirect();
+};
 
 function setLoadingImages() {
   const controlButtons = document.getElementById('control-buttons');

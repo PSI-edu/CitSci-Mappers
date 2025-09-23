@@ -74,8 +74,8 @@
     var(--yellow) 102.78%
   );
 
-  --font-primary: "Poiret One", sans-serif;
-  --font-secondary: "Lexand", sans-serif;
+  --font-primary: "Open Sans", sans-serif;
+  --font-secondary: "Poiret One", sans-serif;
   --font-mono: "Fira Code", monospace;
 
   --page-width:  1200px;
