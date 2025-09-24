@@ -1,27 +1,34 @@
 <template>
   <div class="main-content">
     <div class="annoucements">
-      <div class="updated"></div>
+      <div class="updated">Updated: 5 Aug 2025</div>
       <div class="text-block">
-        <h3>How to get started</h3>
+        <h4>&#128227; Announcements</h4>
+        <p>This site is in Beta! Play. Give feedback. Get a preview of what's coming. (Please note,
+        we are saving your data, but you may get asked to redo images after future updates.)</p>
 
-        <h4>&#128271; Login & Agree to Terms</h4>
-        <p>We want to give you credit for everything you contribute to. We can only
-        do that if you log in & <a href="/consent-review">consent for your data to be used.</a> (We also need to make sure you took the tutorials.)</p>
-        <h4>&#128205; Pick a project</h4>
-        <p>Just click a project above. You can visit as many worlds you want, and contribute as much or as little as you have time for. There
-        is no end to the help scientists need!</p>
-        <h4>&#128214; Take the tutorial</h4>
-        <p>We believe anyone can be part of science, but everyone has to take time to learn some basics. We
-        make it easy with interactive tutorials you'll when you click on a project.</p>
-        <h4>&#128640; Start contributing</h4>
-        <p> This is crowd-sourced science! The buttons you press and the planetary features you mark are all stored in a database. We have
-        multiple people look at every image because misclicks and mistakes are generally unique while the right
-        answers are things several people will agree on. </p>
+        <h4>&#128027; Known Bugs <span style="font-size: small">email <a href="mailto:plg@psi.edu">plg@psi.edu</a> or mention on Discord</span></h4>
+        <ul>
+          <li><strong>Fixed?</strong> Emails sometimes aren't added to the database even though people can confirm consent.</li>
+        </ul>
 
-        <h4>&#128227; Stay tuned for Science Announcements</h4>
-        <p>Watch this space and sign up for our
-          newsletter.</p>
+        <h4>&#129513; Features in Progress</h4>
+        <ul>
+          <li>Add Sci starter links</li>
+          <li>add Lunar Melt pages to "learn" subsite</li>
+          <li>implement Lunar Melt Activity 2: Flows, Faults, and more</li>
+          <li>implement Stats/Achievements on Profile Page</li>
+        </ul>
+      </div>
+      <div class="text-block">
+        <h4>&#128250; Catch our streams</h4>
+        <p>Join our partners at CosmoQuest Tuesday - Thursday at 2pm Eastern on
+           <a href="https://twitch.tv/CosmoQuestX">Twitch</a> to hear about updates,
+           report issues, and gab while we map other worlds. Follow to be notified about ninja streams
+           and rocket launch coverage.
+        </p>
+        <p>Join our <a href="https://discord.gg/3MCQRsu5DW">Discord</a> to chat with us and other testers.
+        </p>
       </div>
     </div>
     <div class="socials">

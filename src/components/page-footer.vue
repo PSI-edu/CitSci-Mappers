@@ -61,6 +61,10 @@ const resourceList = [
     label: "Privacy policy",
   },
   {
+    path: "/consent-review",
+    label: "Consent policy",
+  },
+  {
     path: "/team",
     label: "Meet the Team",
   },

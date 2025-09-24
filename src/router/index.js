@@ -5,6 +5,7 @@ import CallbackPage from "@/pages/callback-page.vue";
 
 const NotFoundPage = () => import("@/pages/not-found-page.vue");
 const ConsentPage = () => import("@/pages/consent-page.vue");
+const ConsentReviewPage = () => import("@/pages/consent-review-page.vue");
 const ProfilePage = () => import("@/pages/profile-page.vue");
 const ProtectedPage = () => import("@/pages/protected-page.vue");
 const DataPage = () => import("@/pages/data-page.vue");
@@ -27,6 +28,11 @@ const routes = [
     path: "/consent",
     name: "consent",
     component: ConsentPage,
+  },
+  {
+    path: "/consent-review",
+    name: "consent-review",
+    component: ConsentReviewPage,
   },
   {
     path: "/profile",

@@ -5,7 +5,6 @@
     <div class="page-layout__content">
       <HeroBanner></HeroBanner>
       <Blurbs/>
-      <Quickstart></Quickstart>
       <Announcements/>
     </div>
     <PageFooter />

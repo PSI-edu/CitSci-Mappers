@@ -65,6 +65,7 @@
   left: 50%;
   transform: translateX(30px);
   width: 150px;
+  display: none;
 }
 
 @media only screen and (max-width: 540px) {
