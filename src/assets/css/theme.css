@@ -76,7 +76,7 @@
 
   --font-primary: "Open Sans", sans-serif;
   --font-secondary: "Poiret One", sans-serif;
-  --font-mono: "Fira Code", monospace;
+  --font-mono: monospace;
 
   --page-width:  1200px;
   --page-padding: 24px;

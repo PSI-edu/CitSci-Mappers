@@ -448,7 +448,7 @@
 }
 
 #mars #tutorial.step-2 img {
-    width: 50px;
+    width: 25px;
     height: auto;
     float: left;
     margin-right: 10px;
@@ -582,7 +582,7 @@
     position: absolute;
     top: 60px;
     left: 10px;
-    width: 50px;
+    width: 40px;
     height: auto;
 }
 
@@ -616,7 +616,7 @@
 
 #moon #tutorial.step-6 .image-caption {
     position: absolute;
-    top: 285px;
+    top: 270px;
     left: 20px;
     width: 90%;
 }
