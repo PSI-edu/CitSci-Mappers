@@ -115,7 +115,7 @@ const diffUrl = ref(null);
 
 const pageReady = ref(false);
 
-let imagesAvailable = ref(true);
+const imagesAvailable = ref(true);
 
 const handleLogin = () => {
   loginWithRedirect();
