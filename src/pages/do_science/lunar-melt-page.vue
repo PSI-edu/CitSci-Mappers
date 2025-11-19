@@ -86,6 +86,12 @@
                 width="100" height="75">
             </canvas>
           </div>
+          <div id="citsci-imageid-panel">
+            <h4>Image ID: {{imageID}}</h4>
+            <p><span class="small">
+              <a :href="imageUrl">view</a>,
+              <a href="https://discord.com/channels/443490369443856384/1392324456869007460" target="_blank">discuss on Discord</a></span></p>
+          </div>
         </div>
         <button
             @click="saveResponse()" class="submit-button" id = "submit-button"
@@ -145,6 +151,7 @@ const rocksInfo = ref("Click in the centers of rocks to mark their locations.");
 const eraseTitle = ref("Erasing");
 const eraseInfo = ref("Click on a mark to delete it.");
 const exampleImages = ref([]);
+const imageID = ref(localStorage.getItem('image_id') || 'N/A');
 
 const pageReady = ref(false);
 
@@ -332,6 +339,7 @@ const getNewImage = async () => {
     });
     imageUrl.value = response.data.file_location;
     localStorage.setItem('image_id',response.data.id);
+    imageID.value = response.data.id;
     console.log("Image URL: " + imageUrl.value);
   } catch (error) {
     console.log(error);

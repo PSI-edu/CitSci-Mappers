@@ -83,6 +83,26 @@
     color: var(--dark-aluminium);
 }
 
+#citsci-imageid-panel {
+    position: absolute;
+    top: 305px;
+    left: 120px;
+    width: 250px;
+    height: 75px;
+    border-radius: 5px;
+    background: var(--white);
+    color: var(--dark-aluminium);
+    padding: 10px;
+}
+
+#citsci-imageid-panel a {
+    color: var(--dark-aluminium);
+}
+
+#citsci-imageid-panel .small a {
+    color: var(--orange);
+}
+
 #citsci-no-images {
     position: absolute;
     width: 850px;
