@@ -87,7 +87,7 @@
             </div>
           </div>
         </div>
-        <div id="citsci-no-images" >
+        <div id="citsci-no-images" v-if="!imagesAvailable">
           <h2>Thank you for your contributions!</H2>
           <p>There are currently no more images available to classify. Please check back later.</p>
           <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Out_of_Images-Mars.png">
@@ -240,7 +240,7 @@ const getNewImage = async () => {
 
   } catch (error) {
     console.log(error);
-    imagesAvailable = ref(false);
+    imagesAvailable.value = false;
     console.log('not good');
   }
   // make image one the background of the div #image1
