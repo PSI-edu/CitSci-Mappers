@@ -87,7 +87,7 @@
             </div>
           </div>
         </div>
-        <div id="citsci-no-images" v-if="!imagesAvailable" >
+        <div id="citsci-no-images" >
           <h2>Thank you for your contributions!</H2>
           <p>There are currently no more images available to classify. Please check back later.</p>
           <img src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Out_of_Images-Mars.png">
@@ -115,7 +115,7 @@ const diffUrl = ref(null);
 
 const pageReady = ref(false);
 
-const imagesAvailable = ref(true);
+let imagesAvailable = ref(true);
 
 const handleLogin = () => {
   loginWithRedirect();
@@ -237,10 +237,11 @@ const getNewImage = async () => {
       imageUrl.value = response.data[1].file_location;
       localStorage.setItem('image_id', response.data[1].id);
     }
+
   } catch (error) {
     console.log(error);
     imagesAvailable = ref(false);
-    console.log('note: ', imagesAvailable);
+    console.log('not good');
   }
   // make image one the background of the div #image1
   const image1Div = document.getElementById('image1');
