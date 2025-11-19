@@ -83,9 +83,26 @@
     color: var(--dark-aluminium);
 }
 
+#citsci-no-images {
+    position: absolute;
+    width: 850px;
+    height: 530px;
+    margin: 50px 50px;
+    z-index: 2999;
+    background: var(--white) !important;
+    color: var(--dark-aluminium);
+    padding: 15px 25px;
+    border-radius: 5px;
+}
+
+#citsci-no-images img {
+    position: relative;
+height: 400px;
+    margin: 10px 200px;
+}
+
 #canvas__map, #canvas__compare {
     position: relative;
-    float: left;
     height: 450px;
     width: 450px;
     border-radius: 5px;

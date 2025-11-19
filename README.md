@@ -1,6 +1,12 @@
 # CitSci-Mappers
 Software to support web-based image annotation.
 
+# Reminder: Quickstart of existing dev systems
+`npm install
+npm run build
+docker-compose build --no-cache; docker-compose up -d --no-build; docker-compose exec api composer install`
+
+
 # Before you get started
 ### Images
 - A logo (150 x 150) for the login screen. (This will need to be publicly hosted)
