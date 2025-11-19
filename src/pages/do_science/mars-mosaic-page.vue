@@ -236,8 +236,10 @@ const getNewImage = async () => {
       localStorage.setItem('control_id', response.data[0].id);
       imageUrl.value = response.data[1].file_location;
       localStorage.setItem('image_id', response.data[1].id);
+    } else {
+      imagesAvailable.value = false;
+      console.log('images not good');
     }
-
   } catch (error) {
     imagesAvailable.value = false;
     console.log('images not good');
