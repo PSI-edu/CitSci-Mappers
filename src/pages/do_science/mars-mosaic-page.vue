@@ -239,9 +239,8 @@ const getNewImage = async () => {
     }
 
   } catch (error) {
-    console.log(error);
     imagesAvailable.value = false;
-    console.log('not good');
+    console.log(error, 'not good');
   }
   // make image one the background of the div #image1
   const image1Div = document.getElementById('image1');
