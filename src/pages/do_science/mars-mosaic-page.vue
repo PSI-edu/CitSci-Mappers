@@ -115,7 +115,7 @@ const diffUrl = ref(null);
 
 const pageReady = ref(false);
 
-let imagesAvailable = ref(true);
+const imagesAvailable = ref(true);
 
 const handleLogin = () => {
   loginWithRedirect();
@@ -163,7 +163,7 @@ onMounted(async () => {
     } else {
       pageReady.value = true;
     }
-    console.log("Tutorial status checked:", response.data);
+    console.log("Tutorial status checked:", response.data); // mars-mosaic-page-BCsVJluN.js:1
   } catch (error) {
     console.error("Error checking tutorial status:", error);
   }
@@ -240,7 +240,7 @@ const getNewImage = async () => {
 
   } catch (error) {
     imagesAvailable.value = false;
-    console.log(error, 'not good');
+    console.log('images not good');
   }
   // make image one the background of the div #image1
   const image1Div = document.getElementById('image1');
