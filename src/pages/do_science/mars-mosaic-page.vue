@@ -20,7 +20,7 @@
             </div>
             <div class="content">
               <p>Let's verify new algorithms make accurate Mars mosaics that provide clear views & pixel perfect
-                coordinates.</p>
+                coordinates. New images added regularly.</p>
             </div>
             <div class="label">
               <p>Links:</p>
