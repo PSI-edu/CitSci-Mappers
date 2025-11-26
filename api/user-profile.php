@@ -44,11 +44,15 @@ if ($data !== null && $data['email'] !== null && isset($data['email'])) {
         if ($row["publishable_name"] == "" || $row["publishable_name"] == null) {
             $row["publishable_name"] = "not set";
         }
+        if ($row["roles"] == "" || $row["roles"] == null) {
+            $row["publishable_name"] = "none";
+        }
 
         $response = array(
                 "username" => $row["username"],
                 "publishable_name" => $row["publishable_name"],
-                "public_name" => $row["public_name"]
+                "public_name" => $row["public_name"],
+                "roles" => $row["roles"]
         );
         // return the response
         echo json_encode($response);

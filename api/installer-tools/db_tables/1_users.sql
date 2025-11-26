@@ -1,6 +1,7 @@
 CREATE TABLE `users` (
      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
      `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+     `roles` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
      `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
      `publishable_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
      `details` text COLLATE utf8_unicode_ci,

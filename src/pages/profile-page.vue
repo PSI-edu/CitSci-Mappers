@@ -8,6 +8,7 @@
         </p>
         <br/>
         <h4>Profile</h4>
+        <p>email:  {{ email }}</p>
 
         <UpdateProfileForm
             :email="email"
@@ -26,7 +27,7 @@
 
 <script setup>
 import PageLayout from "@/components/page-layout.vue";
-import UpdateProfileForm from "@/components/update-profile-form.vue";
+import UpdateProfileForm from "@/components/profile/update-profile-form.vue";
 import MailchimpSignupForm from "@/components/MailchimpSignupForm.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref } from 'vue';
@@ -36,6 +37,7 @@ const { user } = useAuth0();
 
 const email = ref(null);
 const userId = ref(null);
+const roles = ref(null);
 
 
 onMounted(async () => {
@@ -49,5 +51,6 @@ onMounted(async () => {
   } catch (error) {
     console.log(error);
   }
+  console.log("User info:", user.value);
 });
 </script>

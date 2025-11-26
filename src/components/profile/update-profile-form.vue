@@ -1,6 +1,11 @@
 <template>
   <div>
-    <label>email: </label> {{ email }}<br />
+    <p>roles: {{ form.roles }}</p>
+
+    <div v-if="hasAdminRole">
+      <p>Admin Menu</p>
+    </div>
+
     <form @submit.prevent="submitForm">
       <div>
         <label for="username">username:</label>
@@ -52,12 +57,15 @@ const props = defineProps({
 const form = reactive({
   username: '',
   publishable_name: '',
+  roles: '',
 });
 
 const usernameError = ref('');
 const apiError = ref('');
 const successMessage = ref('');
 const isSubmitting = ref(false);
+
+const hasAdminRole = ref(false);
 
 // Get user ID and email from local storage
 const id = props.userId;
@@ -73,12 +81,19 @@ onMounted(async () => {
   try {
     const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-profile.php", {
       id: id,
-      email: email,
+      email: email
     });
 
     if (response.data) {
       form.username = response.data.username;
       form.publishable_name = response.data.publishable_name || '';
+      form.roles = response.data.roles || 'none';
+
+      // Stuff related to Roles
+      hasAdminRole.value = form.roles.split(',').includes('admin');
+
+
+      // Stuff Related to Form
       usernameError.value = ''; // Clear any previous username error
       apiError.value = '';
       successMessage.value = '';
