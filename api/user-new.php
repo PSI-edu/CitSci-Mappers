@@ -4,9 +4,7 @@ global $vue_url, $auth0_domain, $localhost_dev, $auth0_api_secret;
 require_once("settings.php");
 require_once("helper-functions.php");
 
-
-    header("Access-Control-Allow-Origin: " . $vue_url);
-
+header("Access-Control-Allow-Origin: " . $vue_url);
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
@@ -16,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // check for authentication key
-
     $headers = getallheaders();
     $authorizationHeader = isset($headers['Authorization']) ? $headers['Authorization'] : '';
 

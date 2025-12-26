@@ -1,10 +1,6 @@
 <template>
   <div>
-    <p>roles: {{ form.roles }}</p>
-
-    <div v-if="hasAdminRole">
-      <p>Admin Menu</p>
-    </div>
+    <p><strong>special roles:</strong> {{ form.roles }}</p>
 
     <form @submit.prevent="submitForm">
       <div>
@@ -66,6 +62,7 @@ const successMessage = ref('');
 const isSubmitting = ref(false);
 
 const hasAdminRole = ref(false);
+const hasSciRole = ref(false);
 
 // Get user ID and email from local storage
 const id = props.userId;
@@ -88,10 +85,6 @@ onMounted(async () => {
       form.username = response.data.username;
       form.publishable_name = response.data.publishable_name || '';
       form.roles = response.data.roles || 'none';
-
-      // Stuff related to Roles
-      hasAdminRole.value = form.roles.split(',').includes('admin');
-
 
       // Stuff Related to Form
       usernameError.value = ''; // Clear any previous username error

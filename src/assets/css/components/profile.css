@@ -1,0 +1,33 @@
+#stats-container {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 1em;
+}
+
+.stats-box {
+    background: var(--light-aluminium);
+    color: black;
+    padding: 1em;
+    margin: 10px;
+    width: 25%;
+    float: left;
+    border-radius: 10px;
+}
+
+.stats-box img {
+    display: block;
+    float: left;
+    margin: 0 auto 10px auto;
+    width: 3em;
+    height: 3em;
+}
+
+.stats-box h3 {
+    margin: 0.5em 0 ;
+    font-family: var(--font-primary), sans-serif;
+    text-align: center;
+    line-height: 1.5em;
+}
+.stats-box small {
+    font-style: italic;
+}

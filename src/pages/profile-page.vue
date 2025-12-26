@@ -1,14 +1,15 @@
 <template>
   <PageLayout>
     <div class="content-layout main-content">
-      <h1 id="page-title" class="content__title">Profile Page</h1>
+      <h1 id="page-title" class="content__title">Account Page</h1>
       <div class="content__body">
         <p id="page-description">
-          This page will allows you to tell us what name to use in publications.
+          This page allows you to tell us what name to use in publications.
         </p>
         <br/>
-        <h4>Profile</h4>
-        <p>email:  {{ email }}</p>
+        <h3>Profile</h3>
+        <hr>
+        <p><strong>email:</strong>  {{ email }}</p>
 
         <UpdateProfileForm
             :email="email"
@@ -16,9 +17,13 @@
         />
 
         <br/>
-        <h4>Stats</h4>
-        <p>Coming Soon</p>
+        <h3>Stats</h3><hr>
+        <Stats
+            :email="email"
+            :userId="userId" v-if="userId"
+        />
         <br/>
+        <h3>Communications</h3><hr>
         <MailchimpSignupForm />
       </div>
     </div>
@@ -28,6 +33,7 @@
 <script setup>
 import PageLayout from "@/components/page-layout.vue";
 import UpdateProfileForm from "@/components/profile/update-profile-form.vue";
+import Stats from "@/components/profile/stats.vue";
 import MailchimpSignupForm from "@/components/MailchimpSignupForm.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { onMounted, ref } from 'vue';
@@ -37,8 +43,6 @@ const { user } = useAuth0();
 
 const email = ref(null);
 const userId = ref(null);
-const roles = ref(null);
-
 
 onMounted(async () => {
   try {
@@ -51,6 +55,5 @@ onMounted(async () => {
   } catch (error) {
     console.log(error);
   }
-  console.log("User info:", user.value);
 });
 </script>
