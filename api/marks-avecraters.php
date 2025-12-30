@@ -1,4 +1,5 @@
 <?php
+
 // Basic setup
 require_once ("helper-functions.php");
 require_once("settings.php");
@@ -18,9 +19,8 @@ $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 $sql = "SELECT DISTINCT i.*
         FROM images i
         JOIN marks m ON i.id = m.image_id
-        WHERE i.application_id = 3 AND i.done = 1 
-        AND m.type = 'crater'
-        LIMIT 1;";
+        WHERE i.application_id = 3 AND i.done = 1
+        AND m.type = 'crater' ;";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -30,19 +30,24 @@ $stmt->close();
 $images = [];
 while ($row = $result->fetch_object()) {
     $images[] = $row->id;
-    echo $row->file_location;
 }
 
 // STEP 2: FOR EACH IMAGE, GET ALL THE CRATERS IN THAT IMAGE
 $sql = "SELECT id, x1, y1, diameter, user_id, confirmed
         FROM marks
-        WHERE image_id = ? AND type='crater'
+        WHERE image_id = ? AND type='crater' AND confirmed IS NULL
         ORDER BY x1, y1;";
 $stmt = $conn->prepare($sql);
 $marks = [];
 $matched = [];
 $maxDiff=10;
 $maxDiffAve=2/3*$maxDiff;
+
+$sql_shared ="INSERT INTO shared_marks 
+              (image_id, application_id, x1, y1, diameter, confidence, type, details)
+              VALUES
+              (?, 3, ?,?,?,?, 'crater', ?)";
+$stmt_shared = $conn->prepare($sql_shared);
 
 foreach($images as $image) {
 
@@ -81,19 +86,45 @@ foreach($images as $image) {
 
                     $aveCraterCheck = findCraterMatchesAve($matchedCheck);
                     $N = count($matchedCheck);
-                    echo "averaged (N=$N): ";
-                    printCrater($aveCraterCheck);
+                    $stdDev = findCraterStdDev($matchedCheck, $aveCraterCheck);
                 }
 
                 // is our original crater in that set of marks if not, flag as no matches)
                 if ($N<=1) {
                     echo "NOT MATCHED - MUST FLAG<br>";
+                    $sql_update ="UPDATE marks
+                                              SET confirmed = -1
+                                              WHERE id = ".$matchThis['id'].";";
+                    echo $sql_update."<br>";
+
+                    if ($conn->query($sql_update) === TRUE) {
+                        echo "ok<br>";
+                    }
+
+                    // Remove from list of things to match
                     $confirmed[] = $matchThis['id'];
-                    // set update $doneCrater['id'] to confirmed = 0
+
                 } else {
+                    echo "MATCHED<br>";
+                    // ok, so matches were found and averaged Crater was created. Let's stick into Database
+                    $confidence = sqrt($stdDev['x1']*$stdDev['x1']+$stdDev['y1']*$stdDev['y1']+$stdDev['diameter']*$stdDev['diameter']);
+                    $details = '{"N":'.$N.',"x1_stdev":'.$stdDev['x1'].',"y1_stdev":'.$stdDev['y1'].',"diameter_stdev":'.$stdDev['diameter'].'}';
+
+                    $stmt_shared->bind_param("iiiddb", $image, $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
+                    $stmt_shared->execute();
+                    $last_id = $conn->insert_id;
+
+                    // Now let's update all the members
                     foreach($matchedCheck as $doneCrater) {
-                        // Insert the matched crater into shared_marks table and get the id
+                        // add shared_mark_id and update confirmed
+                        $sql_update ="UPDATE marks
+                                                      SET confirmed = 1, shared_mark_id = $last_id
+                                                      WHERE id = ".$doneCrater['id'].";";
+                        if ($conn->query($sql_update) === TRUE) { echo "ok<br>"; }
+
+                        // Make sure it doesn't get redone
                         $confirmed[] = $doneCrater['id'];
+
                     }
                 }
             }
@@ -114,8 +145,11 @@ foreach($images as $image) {
 
 }
 
+$stmt->close();
+$stmt_shared->close();
 $conn->close();
 
+// FUNCTIONS
 function printCrater($crater) {
     echo "id: ".$crater['id']." position: (".$crater['x1'].", ".$crater['y1'].") diameter: ".$crater['diameter']." confirmed: ".$crater['confirmed']."<br/>";
 }
@@ -167,4 +201,30 @@ function findCraterMatchesAve($matched) {
     $ave['diameter'] /= $N;
 
     return $ave;
+}
+
+function findCraterStdDev($matchArr, $aveCrater) {
+
+    // StdDev = sqrt( 1/N sum (X - aveX)^2 )
+
+    $std = [];
+    $N = 0;
+
+    foreach($matchArr as $match) {
+        $std['x1'] += pow($match['x1'] - $aveCrater['x1'], 2);
+        $std['y1'] += pow($match['y1'] - $aveCrater['y1'], 2);
+        $std['diameter'] += pow($match['diameter'] - $aveCrater['diameter'], 2);
+        $N++;
+    }
+
+    $std['x1'] /= $N;
+    $std['y1'] /= $N;
+    $std['diameter'] /= $N;
+
+    $std['x1'] = sqrt($std['x1']);
+    $std['y1'] = sqrt($std['y1']);
+    $std['diameter'] = sqrt($std['diameter']);
+
+    return $std;
+
 }

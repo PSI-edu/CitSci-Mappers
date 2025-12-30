@@ -14,7 +14,6 @@ CREATE TABLE `shared_marks` (
     `verified` tinyint(1) NOT NULL DEFAULT '0',
     `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
     `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `application_id` int(10) unsigned NOT NULL,
 PRIMARY KEY (`id`),
     KEY `shared_marks_application_id_foreign` (`application_id`),
     KEY `shared_marks_image_id_foreign` (`image_id`)
