@@ -1,8 +1,11 @@
 CREATE TABLE `shared_marks` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `image_id` int(10) unsigned NOT NULL,
-    `x` double(8,2) NOT NULL,
-    `y` double(8,2) NOT NULL,
+    `application_id` int(10) unsigned NOT NULL,
+    `x1` double(8,2) DEFAULT NULL,
+    `y1` double(8,2) DEFAULT NULL,
+    `x2` double(8,2) DEFAULT NULL,
+    `y2` double(8,2) DEFAULT NULL,
     `diameter` double(8,2) DEFAULT NULL,
     `confidence` double(8,2) DEFAULT NULL,
     `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -13,5 +16,6 @@ CREATE TABLE `shared_marks` (
     `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `application_id` int(10) unsigned NOT NULL,
 PRIMARY KEY (`id`),
+    KEY `shared_marks_application_id_foreign` (`application_id`),
     KEY `shared_marks_image_id_foreign` (`image_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
