@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p><strong>special roles:</strong> {{ form.roles }}</p>
 
     <form @submit.prevent="submitForm">
       <div>

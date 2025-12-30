@@ -9,11 +9,9 @@
         <br/>
         <h3>How we use your submitted data</h3>
 
-        <div class="icon-div">
-            <img class="icon" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/Mars.png" alt="Mars Icon" />
-        </div>
         <div class="text-blurb">
           <p>
+            <img class="icon" src="https://cosmoquest.s3.us-east-1.amazonaws.com/data/mosaics/Mars.png" alt="Mars Icon" />
            <strong>Mars Mosaics:</strong> Our science team has a new algorithm to merge images from the Mars
             Reconnaissance Orbiter (MRO) Context Camera (CTX). You are helping us understand where this algorithm
             works well and where it does not. Improved mosaics will allow researchers to better understand the
@@ -24,11 +22,10 @@
           </p>
         </div>
         <div class="clear"></div>
-        <div class="icon-div">
-          <img class="icon" src="https://moon-mappers.s3.us-east-2.amazonaws.com/Moon.png" alt="Moon Icon" />
-        </div>
+
         <div class="text-blurb">
           <p>
+            <img class="icon" src="https://moon-mappers.s3.us-east-2.amazonaws.com/Moon.png" alt="Moon Icon" />
            <strong>Lunar Melt:</strong> Our science team is working to understand the geology in and around impact
             craters with significant Lunar impact melt. The images come from the Lunar Reconnaissance Orbiter (LRO) and its
             Narrow Angle Camera (NAC). You are helping us understand where the melt is and how it relates to newer
@@ -45,11 +42,9 @@
 
         </div>
         <div class="clear"></div>
-        <div class="icon-div">
-          <img class="icon" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Rocket.png" alt="Rocket Icon" />
-        </div>
         <div class="text-blurb">
           <p>
+            <img class="icon" src="https://wm-web-assets.s3.us-east-2.amazonaws.com/Rocket.png" alt="Rocket Icon" />
            <strong>General Interactions:</strong> How you use this site is up to you. Map for a few minutes or a
             few hours. You can map a few images or a few thousand. You can come back tomorrow, next week, or next
             year. What you decide to do is actually super interesting to us, and we may perform research on how people
