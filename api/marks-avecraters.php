@@ -149,26 +149,20 @@ function findCraterMatch($matchArr, $toMatch, $maxDiff) {
     $matched = [];
 
     foreach ($matchArr as $toCheck) {
-        // Remember the marks are sorted by X and abort loop as needed
         $xDist = abs($toCheck['x1'] - $toMatch['x1']);
-        if ($xDist > $maxDiff) break;
-
-        // Check other facets
         $yDist = abs($toCheck['y1'] - $toMatch['y1']);
+
+        $totDist = sqrt($xDist*$xDist+$yDist*$yDist);
         $diaDist = abs($toCheck['diameter'] - $toMatch['diameter']);
 
-        //what max diameter should I use
-        if ($toMatch['diameter']*0.2 > $maxDiff) $maxDiaDiff = $maxDiff;
-        else if ($toMatch['diameter']*0.2 < 5) $maxDiaDiff = 5;
-        else $maxDiaDiff = $toMatch['diameter']*0.2;
-
         // Does it match?
-        if ($yDist < $maxDiff && $diaDist < $maxDiaDiff) {
+        if ($totDist < $maxDiff && $diaDist < $maxDiff) {
             // Add the match to the matched array
             $matched[] = $toCheck;
         }
     }
     return $matched;
+
 }
 
 function findCraterMatchesAve($matched) {
