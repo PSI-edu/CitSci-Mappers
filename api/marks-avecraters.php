@@ -102,7 +102,7 @@ foreach($images as $image) {
                     echo $details;
 
                     $details = "fred";
-                    $stmt_shared->bind_param("iiiddb", $image, $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
+                    $stmt_shared->bind_param("iiidds", $image, $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
                     $stmt_shared->execute();
                     $last_id = $conn->insert_id;
 
