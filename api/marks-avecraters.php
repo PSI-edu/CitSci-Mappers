@@ -101,6 +101,7 @@ foreach($images as $image) {
                     $details = '{"N":'.$N.',"x1_stdev":'.$stdDev['x1'].',"y1_stdev":'.$stdDev['y1'].',"diameter_stdev":'.$stdDev['diameter'].'}';
                     echo $details;
 
+                    $details = "fred";
                     $stmt_shared->bind_param("iiiddb", $image, $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
                     $stmt_shared->execute();
                     $last_id = $conn->insert_id;
