@@ -22,7 +22,7 @@ $sql = "SELECT DISTINCT i.*
         FROM images i
         JOIN marks m ON i.id = m.image_id
         WHERE i.application_id = 3 AND i.done = 1
-        and m.confirmed IS NULL AND m.type = 'crater'";
+        and m.confirmed IS NULL AND m.type = 'crater' LIMIT 5;";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -96,8 +96,10 @@ foreach($images as $image) {
                     $stdDev = findCraterStdDev($matchedCheck, $aveCraterCheck);
 
                     // Insert the shared mark into the database and get its id number
+                    $N = count($matchedCheck);
                     $confidence = sqrt($stdDev['x1']*$stdDev['x1']+$stdDev['y1']*$stdDev['y1']+$stdDev['diameter']*$stdDev['diameter']);
                     $details = '{"N":'.$N.',"x1_stdev":'.$stdDev['x1'].',"y1_stdev":'.$stdDev['y1'].',"diameter_stdev":'.$stdDev['diameter'].'}';
+                    echo $details;
 
                     $stmt_shared->bind_param("iiiddb", $image, $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
                     $stmt_shared->execute();
@@ -109,7 +111,7 @@ foreach($images as $image) {
                         $sql_update ="UPDATE marks
                                                 SET confirmed = 1, shared_mark_id = $last_id
                                                 WHERE id = ".$matchedCrater['id'].";";
-                        $conn->query($sql_update);
+                        //$conn->query($sql_update);
                     }
 
                     // if N<=1, flag as unconfirmed
@@ -118,7 +120,7 @@ foreach($images as $image) {
                     $confirmed[] = $matchThis;
                     // Mark it as unconfirmed in the database
                     $sql_update = "UPDATE marks SET confirmed = -1 WHERE id = ".$matchThis['id'].";";
-                    $conn->query($sql_update);
+                    //$conn->query($sql_update);
                 }
 
             }
