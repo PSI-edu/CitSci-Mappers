@@ -14,23 +14,34 @@ $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 // For Images that are Done find the averaged craters
 
 // This will eventually run whenever an image is marked as done, but for now we will just run it manually. Let's get all the images that are done
+//
+echo "'name', 'image_id', 'type', 'x', 'y', 'diameter', 'details (json)'<br>";
 
 // STEP 1: GET THE IMAGES THAT ARE DONE AND HAVE CRATERS
 $sql = "SELECT DISTINCT i.*
         FROM images i
         JOIN marks m ON i.id = m.image_id
         WHERE i.application_id = 3 AND i.done = 1
-        AND m.type = 'crater' ;";
+        and m.confirmed IS NULL AND m.type = 'crater'";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
+
+$Nimages = mysqli_num_rows($result);
+echo "Number of rows: $Nimages";
+
 $stmt->close();
 
 $images = [];
-while ($row = $result->fetch_object()) {
-    $images[] = $row->id;
+while ($row = $result->fetch_assoc()) {
+    $images[] = $row;
 }
+
+$Nimages = count($images);
+
+// How many images is that?
+echo " Checksum $Nimages <br>";
 
 // STEP 2: FOR EACH IMAGE, GET ALL THE CRATERS IN THAT IMAGE
 $sql = "SELECT id, x1, y1, diameter, user_id, confirmed
@@ -49,64 +60,42 @@ $sql_shared ="INSERT INTO shared_marks
               (?, 3, ?,?,?,?, 'crater', ?)";
 $stmt_shared = $conn->prepare($sql_shared);
 
+$Nimages=0;
 foreach($images as $image) {
+    echo $Nimages." = image_id ".$image['id'];
+    $Nimages++;
 
     // Setup that Image
-    echo "Now doing: ".$image."<br>";
-    $stmt->bind_param("i", $image);
+    $stmt->bind_param("i", $image['id']);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
-
         // Put each mark into the array
         $marks = $result->fetch_all(MYSQLI_ASSOC);
 
+        $Ncraters = count($marks);
+        echo ", contains $Ncraters craters<br>";
+
         // find anything that is roughly the same size and same place (big error)
         // REMEMBER: These are sorted by X and then Y
-        //
 
         $confirmed=[];
         foreach ($marks as $matchThis) {
-
-            // Make sure this crater isn't already confirmed, then look for matches
-            if (!in_array($matchThis['id'], $confirmed) ) $flag=TRUE;
-            else $flag=FALSE;
-
-            if($flag) {
-                // Look for things within maxDiff of  what you're matching
+            // When a crater is confirmed, it goes in the confirmed array and should then be ignored
+            // Only check things NOT in the confirmed array
+            if (!in_array($matchThis['id'], $confirmed)) {
+                // Look for things within maxDiff of what you're matching
                 $matched = findCraterMatch($marks, $matchThis, $maxDiff);
                 $N = count($matched);
 
-                // If N>1, refine the center and make sure nothing was missed.
-                if ($N>1) {
+                // if N>1, find average and look around the average to make sure nothing is missed
+                if ($N > 1) {
                     $aveCrater = findCraterMatchesAve($matched);
-                    $N = count($matched);
-                    // Refine things - recheck using the averaged value and maxDiffAve
-                    $matchedCheck = findCraterMatch($marks, $aveCrater, $maxDiffAve);
-
+                    $matchedCheck = findCraterMatch($marks, $aveCrater, $maxDiff);
                     $aveCraterCheck = findCraterMatchesAve($matchedCheck);
-                    $N = count($matchedCheck);
                     $stdDev = findCraterStdDev($matchedCheck, $aveCraterCheck);
-                }
 
-                // is our original crater in that set of marks if not, flag as no matches)
-                if ($N<=1) {
-                    echo "NOT MATCHED - MUST FLAG<br>";
-                    $sql_update ="UPDATE marks
-                                              SET confirmed = -1
-                                              WHERE id = ".$matchThis['id'].";";
-                    echo $sql_update."<br>";
-
-                    if ($conn->query($sql_update) === TRUE) {
-                        echo "ok<br>";
-                    }
-
-                    // Remove from list of things to match
-                    $confirmed[] = $matchThis['id'];
-
-                } else {
-                    echo "MATCHED<br>";
-                    // ok, so matches were found and averaged Crater was created. Let's stick into Database
+                    // Insert the shared mark into the database and get its id number
                     $confidence = sqrt($stdDev['x1']*$stdDev['x1']+$stdDev['y1']*$stdDev['y1']+$stdDev['diameter']*$stdDev['diameter']);
                     $details = '{"N":'.$N.',"x1_stdev":'.$stdDev['x1'].',"y1_stdev":'.$stdDev['y1'].',"diameter_stdev":'.$stdDev['diameter'].'}';
 
@@ -114,36 +103,36 @@ foreach($images as $image) {
                     $stmt_shared->execute();
                     $last_id = $conn->insert_id;
 
-                    // Now let's update all the members
-                    foreach($matchedCheck as $doneCrater) {
-                        // add shared_mark_id and update confirmed
+                    // and mark everything in this group as confirmed
+                    foreach ($matchedCheck as $matchedCrater) {
+                        $confirmed[] = $matchedCrater['id'];
                         $sql_update ="UPDATE marks
-                                                      SET confirmed = 1, shared_mark_id = $last_id
-                                                      WHERE id = ".$doneCrater['id'].";";
-                        if ($conn->query($sql_update) === TRUE) { echo "ok<br>"; }
-
-                        // Make sure it doesn't get redone
-                        $confirmed[] = $doneCrater['id'];
-
+                                                SET confirmed = 1, shared_mark_id = $last_id
+                                                WHERE id = ".$matchedCrater['id'].";";
+                        $conn->query($sql_update);
                     }
+
+                    // if N<=1, flag as unconfirmed
+                } else {
+                    // Remove it from list of things to check
+                    $confirmed[] = $matchThis;
+                    // Mark it as unconfirmed in the database
+                    $sql_update = "UPDATE marks SET confirmed = -1 WHERE id = ".$matchThis['id'].";";
+                    $conn->query($sql_update);
                 }
+
             }
-            $matched=[];
-            $pop = array_search($matchThis, $marks);
-            unset($marks[$pop]);
-            $N = 0;
         }
 
-
-    } else {
-        echo "WHY NO MARKS??<br>";
     }
 
-    // print_r($marks);
-    $marks = [];
-    $matched = [];
 
 }
+
+
+echo "check again $Nimages";
+
+
 
 $stmt->close();
 $stmt_shared->close();
