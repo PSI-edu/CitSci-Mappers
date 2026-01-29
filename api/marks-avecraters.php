@@ -14,8 +14,6 @@ $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 // For Images that are Done find the averaged craters
 
 // This will eventually run whenever an image is marked as done, but for now we will just run it manually. Let's get all the images that are done
-//
-echo "'name', 'image_id', 'type', 'x', 'y', 'diameter', 'details (json)'<br>";
 
 // STEP 1: GET THE IMAGES THAT ARE DONE AND HAVE CRATERS
 $sql = "SELECT DISTINCT i.*
@@ -29,8 +27,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 $Nimages = mysqli_num_rows($result);
-echo "Number of rows: $Nimages";
-
 $stmt->close();
 
 $images = [];
@@ -41,7 +37,7 @@ while ($row = $result->fetch_assoc()) {
 $Nimages = count($images);
 
 // How many images is that?
-echo " Checksum $Nimages <br>";
+//echo " Checksum $Nimages <br>";
 
 // STEP 2: FOR EACH IMAGE, GET ALL THE CRATERS IN THAT IMAGE
 $sql = "SELECT id, x1, y1, diameter, user_id, confirmed
@@ -62,7 +58,7 @@ $stmt_shared = $conn->prepare($sql_shared);
 
 $Nimages=0;
 foreach($images as $image) {
-    echo $Nimages." = image_id ".$image['id'];
+    //echo $Nimages." = image_id ".$image['id'];
     $Nimages++;
 
     // Setup that Image
@@ -74,7 +70,7 @@ foreach($images as $image) {
         $marks = $result->fetch_all(MYSQLI_ASSOC);
 
         $Ncraters = count($marks);
-        echo ", contains $Ncraters craters<br>";
+        //echo ", contains $Ncraters craters<br>";
 
         // find anything that is roughly the same size and same place (big error)
         // REMEMBER: These are sorted by X and then Y
@@ -129,11 +125,6 @@ foreach($images as $image) {
 
 
 }
-
-
-echo "check again $Nimages";
-
-
 
 $stmt->close();
 $stmt_shared->close();
