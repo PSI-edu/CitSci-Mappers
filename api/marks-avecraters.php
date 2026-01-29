@@ -20,7 +20,7 @@ $sql = "SELECT DISTINCT i.*
         FROM images i
         JOIN marks m ON i.id = m.image_id
         WHERE i.application_id = 3 AND i.done = 1
-        and m.confirmed IS NULL AND m.type = 'crater';";
+        and m.confirmed IS NULL AND m.type = 'crater' limit 1;";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -96,7 +96,7 @@ foreach($images as $image) {
                     $confidence = sqrt($stdDev['x1']*$stdDev['x1']+$stdDev['y1']*$stdDev['y1']+$stdDev['diameter']*$stdDev['diameter']);
                     $details = '{"N":'.$N.',"x1_stdev":'.$stdDev['x1'].',"y1_stdev":'.$stdDev['y1'].',"diameter_stdev":'.$stdDev['diameter'].'}';
 
-                    $stmt_shared->bind_param("iiidds", $image['image_id'], $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
+                    $stmt_shared->bind_param("iiidds", $image['id'], $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
                     $stmt_shared->execute();
                     $last_id = $conn->insert_id;
 
