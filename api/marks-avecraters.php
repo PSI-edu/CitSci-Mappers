@@ -20,7 +20,7 @@ $sql = "SELECT DISTINCT i.*
         FROM images i
         JOIN marks m ON i.id = m.image_id
         WHERE i.application_id = 3 AND i.done = 1
-        and m.confirmed IS NULL AND m.type = 'crater' limit 1;";
+        and m.confirmed IS NULL AND m.type = 'crater';";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
