@@ -96,7 +96,7 @@ foreach($images as $image) {
                     $confidence = sqrt($stdDev['x1']*$stdDev['x1']+$stdDev['y1']*$stdDev['y1']+$stdDev['diameter']*$stdDev['diameter']);
                     $details = '{"N":'.$N.',"x1_stdev":'.$stdDev['x1'].',"y1_stdev":'.$stdDev['y1'].',"diameter_stdev":'.$stdDev['diameter'].'}';
 
-                    $stmt_shared->bind_param("iiidds", $image, $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
+                    $stmt_shared->bind_param("iiidds", $image['image_id'], $aveCrater['x1'], $aveCrater['y1'], $aveCrater['diameter'], $confidence, $details);
                     $stmt_shared->execute();
                     $last_id = $conn->insert_id;
 
