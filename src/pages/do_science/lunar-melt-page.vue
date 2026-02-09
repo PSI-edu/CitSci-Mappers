@@ -89,7 +89,7 @@
           <div id="citsci-imageid-panel">
             <h4>Image ID: {{imageID}}</h4>
             <p><span class="small">
-              <a :href="imageUrl">view</a>,
+              <a :href="imageUrl" target="_blank">view</a>,
               <a href="https://discord.com/channels/443490369443856384/1392324456869007460" target="_blank">discuss on Discord</a></span></p>
           </div>
         </div>

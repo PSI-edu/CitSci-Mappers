@@ -323,7 +323,8 @@ Usage: ```cd utilities; php 2_upload_imageset.php app_id imageset_name <master_i
 These commands should be the same on both your dev and production servers if you put your images in a place
 both can access. To make life easier, consider putting the compands in a script file. Example provided.
 
-### 3_
+### 3_images-doneblk.php
+Will flag black images in the DB as done. This is important because the software will not show images marked as done to users, and you don't want your users annotating black images.
 
 
 # Extras
