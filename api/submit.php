@@ -184,6 +184,9 @@ function submit_moon_activity_1($data, $user_image_id) {
                 $sql = "INSERT INTO marks (application_id, image_user_id, user_id, image_id, type, x1, y1, x2, y2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("iiiisiiii", $app_id, $user_image_id, $user_id, $image_id, $type, $x1, $y1, $x2, $y2);
+                if (!$stmt->execute()) {
+                    die("Error: " . $sql . "<br>" . $conn->error);
+                }
                 break;
             default:
                 die("Error: Unknown type");
