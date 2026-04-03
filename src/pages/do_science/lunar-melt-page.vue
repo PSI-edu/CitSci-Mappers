@@ -1,6 +1,6 @@
 <template>
 <template v-if="isNoFingers">
-  <PageLayout title=": Lunar Melt" >
+  <PageLayout title=": Lunar Melt Features" >
     <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
       <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200746/Moon-150x150.png" alt="Moon Logo"/>
       <h2>Please Log In</h2>
@@ -52,7 +52,7 @@
           />
         </div>
         <div class="citsci-info-panel melt">
-          <h5>Activity 1:</h5>
+          <h5>Activity 1: Features</h5>
           <h3>Craters, Boulders, Rocks</h3>
           <div class="label">
             <p>Task:</p>
@@ -118,6 +118,7 @@
     <div class="content-layout">
           <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
     </div>
+    <img src="../../../../../Downloads/Untitled (14).png" height="1080" width="1920"/>
   </PageLayout>
 </template>
 </template>

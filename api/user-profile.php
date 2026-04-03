@@ -45,14 +45,19 @@ if ($data !== null && $data['email'] !== null && isset($data['email'])) {
             $row["publishable_name"] = "not set";
         }
         if ($row["roles"] == "" || $row["roles"] == null) {
-            $row["publishable_name"] = "none";
+            $row["roles"] = "none";
+        }
+
+        if ($row["scistarter_email"] == "" || $row["scistarter_email"] == null) {
+            $row["scistarter_email"] = "not set";
         }
 
         $response = array(
                 "username" => $row["username"],
                 "publishable_name" => $row["publishable_name"],
                 "public_name" => $row["public_name"],
-                "roles" => $row["roles"]
+                "roles" => $row["roles"],
+                "scistarter_email" => $row["scistarter_email"],
         );
         // return the response
         echo json_encode($response);

@@ -165,6 +165,12 @@ input[type="text"], input[type="email"] {
   box-sizing: border-box;
 }
 
+.col50 {
+  width: 50%;
+  float: left;
+  min-width: 420px;
+}
+
 .invalid-feedback {
   color: red;
   font-size: 0.8em;

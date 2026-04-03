@@ -4,7 +4,8 @@
     <MobileNavBarTab path="/Learn" label="Learn" />
     <template v-if="isAuthenticated">
       <MobileNavBarTab path="/profile" label="Profile" />
-      <MobileNavBarTab path="/do_science/lunar-melt" label="Lunar Melt" />
+      <MobileNavBarTab path="/do_science/lunar-melt" label="Lunar Melt Features" />
+      <MobileNavBarTab path="/do_science/lunar-melt-flows" label="Lunar Melt Flows" />
       <MobileNavBarTab path="/do_science/mars-mosaic" label="Mars Mosaics" />
     </template>
   </div>

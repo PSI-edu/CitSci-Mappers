@@ -1,6 +1,6 @@
 <?php
 if ($argc != 2) {
-    die("The wrong number of arguments. Usage 'image-chop.php filetochop.png\n");
+    die("The wrong number of arguments. Usage '1_image-chop.php filetochop.png\n");
 } else if (!file_exists($argv[1])) {
     die("The file $argv[1] does not exist.\n");
 }

@@ -9,6 +9,7 @@
         <br/>
         <h3>Profile</h3>
         <hr>
+
         <p><strong>email:</strong>  {{ email }}</p>
 
         <UpdateProfileForm
@@ -17,12 +18,14 @@
         />
 
         <br/>
+
         <h3>Stats</h3><hr>
         <Stats
             :email="email"
             :userId="userId" v-if="userId"
         />
         <br/>
+
         <h3>Communications</h3><hr>
         <MailchimpSignupForm />
       </div>

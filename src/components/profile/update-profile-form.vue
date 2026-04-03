@@ -1,6 +1,7 @@
 <template>
   <div>
 
+
     <form @submit.prevent="submitForm">
       <div>
         <label for="username">username:</label>
@@ -23,6 +24,21 @@
         />
       </div>
 
+      <div>
+        <br>
+        <label for="scistarter_email">SciStarter Email:</label>
+        <em class="small">If you'd like to have your contributions linked with an existing
+          SciStarter account, please enter the relevant email below. This will only be used for logging contributions.
+          <a href="https://scistarter.org/login" style="text-decoration: underline;">Join here. </a></em>
+        <input
+            id="scistarter_email"
+            type="email"
+            v-model="form.scistarter_email"
+            placeholder="email@example.com"
+        />
+      </div>
+
+
       <button type="submit" :disabled="isSubmitting">
         {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
       </button>
@@ -32,6 +48,7 @@
 
     </form>
   </div>
+
 </template>
 
 <script setup>
@@ -53,6 +70,7 @@ const form = reactive({
   username: '',
   publishable_name: '',
   roles: '',
+  scistarter_email: '',
 });
 
 const usernameError = ref('');
@@ -84,6 +102,7 @@ onMounted(async () => {
       form.username = response.data.username;
       form.publishable_name = response.data.publishable_name || '';
       form.roles = response.data.roles || 'none';
+      form.scistarter_email = response.data.scistarter_email || '';
 
       // Stuff Related to Form
       usernameError.value = ''; // Clear any previous username error
@@ -149,6 +168,7 @@ const submitForm = async () => {
       email: email,
       username: form.username,
       publishable_name: form.publishable_name,
+      scistarter_email: form.scistarter_email,
     });
 
     if (response.data && response.data.success) {

@@ -1,53 +1,58 @@
 <template>
   <template v-if="isNoFingers">
-    <PageLayout title=": Lunar Melt" >
+    <PageLayout title=": Lunar Melt Flows" >
       <div class="content-layout">
         <div id="citsci-main-panel">
           <div id="citsci-buttons-panel">
             <button
-              @click="setMode('red-line')"
-              :class="{'button-selected': mode === 'red-line', 'button-not-selected': mode !== 'red-line'}"
-              style="background-color: white; color: red; border: 2px solid red; width: 48px; height: 48px; border-radius: 8px; margin: 6px; font-size: 2em; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"
-              title="Draw Red Line"
-            >
-              <svg width="32" height="32" viewBox="0 0 32 32">
-                <line x1="4" y1="28" x2="28" y2="4" stroke="red" stroke-width="4" stroke-linecap="round"/>
-              </svg>
-            </button>
-            <button
-              @click="setMode('erase')"
-              :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'erase'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png'); background-size: contain; width: 48px; height: 48px; border: none; border-radius: 8px; margin: 6px;"
-              title="Erase/Delete"
+                @click="setMode('margin')"
+                :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'margin'}"
+                style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-margin.png'); background-size: contain;"
+                title="Flows and Channels"
             ></button>
             <button
-              @click="setMode('edit')"
-              :class="{'button-selected': mode === 'edit', 'button-not-selected': mode !== 'edit'}"
-              style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png'); background-size: contain; width: 48px; height: 48px; border: none; border-radius: 8px; margin: 6px;"
-              title="Move/Edit"
+                @click="setMode('crack')"
+                :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'crack'}"
+                style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crack.png'); background-size: contain;"
+                title="Cracks"
+            ></button>
+            <button
+                @click="setMode('ridge')"
+                :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'ridge'}"
+                style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png'); background-size: contain;"
+                title="Erase/Delete"
+            ></button>
+            <button
+                @click="setMode('erase')"
+                :class="{'button-selected': mode === 'erase', 'button-not-selected': mode !== 'erase'}"
+                style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png'); background-size: contain;"
+                title="Erase/Delete"
+            ></button>
+            <button
+                @click="setMode('edit')"
+                :class="{'button-selected': mode === 'edit', 'button-not-selected': mode !== 'edit'}"
+                style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png'); background-size: contain;"
+                title="Move/Edit"
             ></button>
           </div>
           <div id="citsci-mapping-panel">
             <CanvasMap
-              ref="canvasMapRef"
-              :mode="mode"
-              :drawings="drawings"
-              :image-name="imageUrl"
-              @draw="handleDraw"
-              @clearDrawing="clearDrawing"
-              @updateDrawing="handleUpdateDrawing"
+                ref="canvasMapRef"
+                :mode="mode"
+                :drawings="drawings"
+                :image-name="imageUrl"
+                @draw="handleDraw"
+                @clearDrawing="clearDrawing"
+                @updateDrawing="handleUpdateDrawing"
             />
           </div>
           <div class="citsci-info-panel melt">
-            <h5>Activity 1:</h5>
-            <h3>Craters, Boulders, Rocks</h3>
+            <h5>Activity 2: Flows</h5>
+            <h3>Fractures, Flows and Channels, Ridges</h3>
             <p>We are mapping geologic features related to flowing impact melt in the Moon's Little Lowell & Tycho craters. Long ago, the heat of asteroid impacts melted the regions you're mapping. Your work helps us understand how the melt flowed & when it cooled. </p>
             <br/>
             <h4>{{ infoTitle }}</h4>
             <p>{{ infoText }}</p>
-            <div id="ex-canvas">
-              <canvas ref="exampleMarks" id="exampleMarks" width="100" height="75"></canvas>
-            </div>
           </div>
           <button @click="saveResponse()" class="submit-button" id="submit-button">Submit</button>
           <button class="busy-button" id="busy-button">Working....</button>
@@ -60,7 +65,7 @@
     </PageLayout>
   </template>
   <template v-else>
-    <PageLayout title=": Lunar Melt BETA" >
+    <PageLayout title=": Lunar Melt Flows" >
       <div class="content-layout">
         <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
       </div>
