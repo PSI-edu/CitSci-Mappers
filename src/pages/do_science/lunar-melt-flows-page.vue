@@ -5,18 +5,18 @@
         <div id="citsci-main-panel">
           <div id="citsci-buttons-panel">
             <button
-                @click="setMode('zigzag'); setText(marginTitle, marginInfo); setExamples('margin')"
-                :class="{'button-not-selected': mode !== 'zigzag', 'button-selected': mode === 'zigzag'}"
+                @click="setMode('zigzag-dotted'); setText(marginTitle, marginInfo); setExamples('margin')"
+                :class="{'button-not-selected': mode !== 'zigzag-dotted', 'button-selected': mode === 'zigzag-dotted'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-margin.png'); background-size: contain;"
             ></button>
             <button
-                @click="setMode('cracks'); setText(cracksTitle, cracksInfo); setExamples('cracks')"
-                :class="{'button-not-selected': mode !== 'cracks', 'button-selected': mode === 'cracks'}"
+                @click="setMode('zigzag-solid'); setText(cracksTitle, cracksInfo); setExamples('cracks')"
+                :class="{'button-not-selected': mode !== 'zigzag-solid', 'button-selected': mode === 'zigzag-solid'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crack.png'); background-size: contain;"
             ></button>
             <button
-                @click="setMode('ridge'); setText(ridgeTitle, ridgeInfo); setExamples('ridge')"
-                :class="{'button-not-selected': mode !== 'ridge', 'button-selected': mode === 'ridge'}"
+                @click="setMode('zigzag-dash'); setText(ridgeTitle, ridgeInfo); setExamples('zigzag-dash')"
+                :class="{'button-not-selected': mode !== 'zigzag-dash', 'button-selected': mode === 'zigzag-dash'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png'); background-size: contain;"
             ></button>
             <button

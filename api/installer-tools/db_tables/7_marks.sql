@@ -16,7 +16,7 @@ CREATE TABLE `marks` (
          `score` double(8,2) DEFAULT NULL,
          `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
          `sub_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-         `details` blob,
+         `details` longtext,
          `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
          `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`),

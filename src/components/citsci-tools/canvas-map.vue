@@ -52,13 +52,13 @@ const SELECTION_COLOR = 'rgba(0, 100, 255, 0.5)';
 
 // Add Listener for Keyboard and doubleclick
 const handleKeyDown = (event) => {
-  if (event.key === 'Escape' && props.mode === 'zigzag' && activeZigzagPoints.value.length > 0) {
+  if (event.key === 'Escape' && (props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') && activeZigzagPoints.value.length > 0) {
     finalizeZigzag();
   }
 };
 
 const handleDoubleClick = (event) => {
-  if (props.mode === 'zigzag' && activeZigzagPoints.value.length > 0) {
+  if ((props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') && activeZigzagPoints.value.length > 0) {
     // The dblclick event is preceded by a 'click' event.
     // To prevent the double-click from adding an extra point at the end,
     // we remove the point that was just added by the last click.
@@ -73,7 +73,7 @@ const handleDoubleClick = (event) => {
 const finalizeZigzag = () => {
   if (activeZigzagPoints.value.length > 1) {
     emit('draw', {
-      type: 'zigzag',
+      type: props.mode,
       data: { points: [...activeZigzagPoints.value] }
     });
   }
@@ -138,7 +138,7 @@ function getShapeAtPoint(x, y) {
         if (isPointInRect(x, y, data.x2 - HANDLE_SIZE / 2, data.y2 - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE)) {
           return { index: i, handle: 'p2' };
         }
-      } else if (drawing.type === 'zigzag') {
+      } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
         for (let j = 0; j < data.points.length; j++) {
           const p = data.points[j];
           if (isPointInRect(x, y, p.x - HANDLE_SIZE / 2, p.y - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE)) {
@@ -159,7 +159,7 @@ function getShapeAtPoint(x, y) {
       if (distToLine < HANDLE_SIZE) { // Tolerance for line selection
         return { index: i, handle: 'body' };
       }
-    } else if (drawing.type === 'zigzag') {
+    } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
       const points = data.points;
       for (let j = 0; j < points.length - 1; j++) {
         const distToLine = pointToLineSegmentDistance(x, y, points[j].x, points[j].y, points[j+1].x, points[j+1].y);
@@ -217,7 +217,7 @@ const handleMouseDown = (event) => {
   // Original drawing mode logic
   if (!props.mode || props.mode === 'erase' || props.mode === 'dot') return;
 
-  if (props.mode === 'zigzag') {
+  if (props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') {
     isDrawing.value = true;
     activeZigzagPoints.value.push({ x: mouseX, y: mouseY });
     return; // Exit early so it doesn't run the single-shape setup below
@@ -245,7 +245,7 @@ const handleMouseMove = (event) => {
           highlightIndex = i;
           break;
         }
-      } else if (drawing.type === 'zigzag') {
+      } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
         const points = drawing.data.points;
         for (let j = 0; j < points.length - 1; j++) {
           const dist = pointToLineSegmentDistance(
@@ -263,7 +263,7 @@ const handleMouseMove = (event) => {
     }
     annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
     props.drawings.forEach((drawing, idx) => {
-      if (idx === highlightIndex && (drawing.type === 'line' || drawing.type === 'zigzag')) {
+      if (idx === highlightIndex && (drawing.type === 'line' || drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash')) {
         // Draw highlighted in blue
         drawShape(annCtx.value, { ...drawing, color: 'blue' }, -1);
       } else {
@@ -295,7 +295,7 @@ const handleMouseMove = (event) => {
         currentData.y1 += dy;
         currentData.x2 += dx;
         currentData.y2 += dy;
-      } else if (selectedDrawing.type === 'zigzag') {
+      } else if (selectedDrawing.type === 'zigzag-dotted' || selectedDrawing.type === 'zigzag-solid' || selectedDrawing.type === 'zigzag-dash') {
         currentData.points = originalShapeData.value.points.map(p => ({
           x: p.x + dx,
           y: p.y + dy
@@ -335,7 +335,7 @@ const handleMouseMove = (event) => {
   const currentY = event.offsetY;
 
   // ZIGZAG PREVIEW BLOCK
-  if (props.mode === 'zigzag' && activeZigzagPoints.value.length > 0) {
+  if ((props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash' ) && activeZigzagPoints.value.length > 0) {
     annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
 
     // Redraw existing background shapes
@@ -347,10 +347,17 @@ const handleMouseMove = (event) => {
 
     // Draw the active zigzag segments
     annCtx.value.save();
-    annCtx.value.strokeStyle = '#c58336';
-    annCtx.value.fillStyle = '#c58336';
+    if (props.mode === 'zigzag-dotted') {
+      annCtx.value.strokeStyle = '#c58336';
+      annCtx.value.setLineDash([3, 3]);
+    } else if (props.mode === 'zigzag-solid') {
+      annCtx.value.strokeStyle = '#29336c';
+      annCtx.value.setLineDash([]);
+    } else if (props.mode === 'zigzag-dash') {
+      annCtx.value.strokeStyle = '#6f6e2a';
+      annCtx.value.setLineDash([10, 3]);
+    }
     annCtx.value.lineWidth = 3;
-    annCtx.value.setLineDash([3, 3]);
 
     annCtx.value.beginPath();
     annCtx.value.moveTo(activeZigzagPoints.value[0].x, activeZigzagPoints.value[0].y);
@@ -412,7 +419,7 @@ const handleMouseUp = (event) => {
         finalData.y1 += dy;
         finalData.x2 += dx;
         finalData.y2 += dy;
-      } else if (selectedType === 'zigzag') {
+      } else if (selectedType === 'zigzag-dotted' || selectedType === 'zigzag-solid' || selectedType === 'zigzag-dash' ) {
         finalData.points = originalShapeData.value.points.map(p => ({
           x: p.x + dx,
           y: p.y + dy
@@ -457,7 +464,7 @@ const handleMouseUp = (event) => {
   }
 
   // If zigzag mode, do nothing on mouse up
-  if (props.mode === 'zigzag') return;
+  if (props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') return;
 
   if (!isDrawing.value || !currentDrawing.value || props.mode === 'dot' || props.mode === 'erase') {
     isDrawing.value = false;
@@ -573,7 +580,7 @@ const canvasClick = (event) => {
         if (distance({x: clickX, y: clickY}, drawing.data) < drawing.data.radius + 5) hit = true;
       } else if (drawing.type === 'line') {
         if (pointToLineSegmentDistance(clickX, clickY, drawing.data.x1, drawing.data.y1, drawing.data.x2, drawing.data.y2) < 5) hit = true;
-      } else if (drawing.type === 'zigzag') {
+      } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
         const points = data.points;
         for (let j = 0; j < points.length - 1; j++) {
           if (pointToLineSegmentDistance(clickX, clickY, points[j].x, points[j].y, points[j + 1].x, points[j + 1].y) < 5) {
@@ -633,7 +640,7 @@ const drawShape = (context, drawing, index) => {
     context.stroke();
     context.fill();
   } else if (drawing.type === 'line' ) {
-    // --- Begin red-line rendering ---
+    // --- Outer Line ---
     let colorOverride = drawing.color;
     const isRed = drawing.type === 'red-line' || colorOverride === 'red';
     const isBlue = colorOverride === 'blue';
@@ -659,36 +666,51 @@ const drawShape = (context, drawing, index) => {
     context.stroke();
     // --- End red-line rendering ---
 
-  } else if (drawing.type === 'zigzag') {
+  } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
     if (!drawing.data.points || drawing.data.points.length < 2) return;
 
-    // Set color
     const isHighlighted = drawing.color === 'blue';
-    context.strokeStyle = isHighlighted ? 'blue' : '#c58336';
-    context.fillStyle = isHighlighted ? 'blue' : '#c58336';
 
-    // Draw lines
+    // --- Determine Style Based on Type ---
+    let strokeColor = '#c58336'; // Default orange
+    let dashPattern = [];        // Default solid
+
+    if (drawing.type === 'zigzag-dotted') {
+      strokeColor = '#c58336';   // Orange
+      dashPattern = [3, 3];
+    } else if (drawing.type === 'zigzag-solid') {
+      strokeColor = '#29336c';   // Same dark blue as dots
+      dashPattern = [];          // Solid
+    } else if (drawing.type === 'zigzag-dash') {
+      strokeColor = '#6f6e2a';   // Same green as lines
+      dashPattern = [10, 3];
+    }
+
+    // Override color if hovered/selected for erase/edit
+    context.strokeStyle = isHighlighted ? 'blue' : strokeColor;
+    context.fillStyle = isHighlighted ? 'blue' : strokeColor;
+
+    // --- Draw the Line ---
     context.lineWidth = 3;
-    context.setLineDash([3, 3])
+    context.setLineDash(isHighlighted ? [] : dashPattern); // Remove dash if highlighted for better visibility
 
     context.beginPath();
     context.moveTo(drawing.data.points[0].x, drawing.data.points[0].y);
-
     for (let i = 1; i < drawing.data.points.length; i++) {
       context.lineTo(drawing.data.points[i].x, drawing.data.points[i].y);
     }
     context.stroke();
 
-    // draw corners
+    // --- Draw the Anchor Dots ---
     context.setLineDash([]);
-    context.fillStyle = drawing.color === 'blue' ? 'blue' : '#c58336';
-    const anchorRadius = 2; // Small anchor dots
-
+    const anchorRadius = 2;
     drawing.data.points.forEach(point => {
       context.beginPath();
-      // Draw a circle (dot) at each point
       context.arc(point.x, point.y, anchorRadius, 0, 2 * Math.PI);
       context.fill();
+      // Use white stroke for anchors to make them pop against darker colors
+      context.strokeStyle = isHighlighted ? 'blue' : 'white';
+      context.lineWidth = 1;
       context.stroke();
     });
   } else if (drawing.type === 'dot') {
@@ -723,7 +745,7 @@ const drawShape = (context, drawing, index) => {
       context.fillRect(handleX - HANDLE_SIZE / 2, handleY - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
       context.strokeRect(handleX - HANDLE_SIZE / 2, handleY - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
 
-    } else if (drawing.type === 'zigzag') {
+    } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
       context.beginPath();
       context.moveTo(drawing.data.points[0].x, drawing.data.points[0].y);
       for (let i = 1; i < drawing.data.points.length; i++) {

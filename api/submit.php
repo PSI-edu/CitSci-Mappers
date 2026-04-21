@@ -83,6 +83,9 @@ if ($data !== null && $data['app_id'] !== null && isset($data['app_id'])) {
         case 3:
             submit_moon_activity_1($data, $last_id);
             break;
+        case 4:
+            submit_moon_activity_2($data, $last_id);
+            break;
         default:
             echo "error: App not found";
     }
@@ -195,6 +198,49 @@ function submit_moon_activity_1($data, $user_image_id) {
         }
     }
 
+}
+
+function submit_moon_activity_2($data, $user_image_id) {
+    global $conn;
+
+    $app_id = clean_inputs($data["app_id"]);
+    $user_id = clean_inputs($data["user_id"]);
+    $image_id = clean_inputs($data["image_id"]);
+
+    // Figure out how many elements are in $data['data']['points']
+    if(!isset($data["drawings"]) || $data["drawings"] == null) {
+        die("This image had no marks to record;");
+    }
+
+    foreach ($data["drawings"] as $drawing) {
+        $type = clean_inputs($drawing["type"]);
+
+        switch ($type) {
+            case "zigzag-dotted":
+                $type = "margin";
+                $drawing["type"] = "margin";
+                break;
+            case "zigzag-solid":
+                $type = "cracks";
+                $drawing["type"] = "cracks";
+                break;
+            case "zigzag-dash":
+                $type = "wrinkle";
+                $drawing["type"] = "wrinkle";
+                break;
+            default:
+                die("Error: Unknown type");
+        }
+        $details = json_encode($drawing);
+
+        // setup the mysql to insert into the marks table
+        $sql = "INSERT INTO marks (application_id, image_user_id, user_id, image_id, type, details) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiiiss", $app_id, $user_image_id, $user_id, $image_id, $type, $details);
+        if (!$stmt->execute()) {
+            die("Error: " . $sql . "<br>" . $conn->error);
+        }
+    }
 }
 
 function submitSciStarter($conn, $user_id, $app_id) {
