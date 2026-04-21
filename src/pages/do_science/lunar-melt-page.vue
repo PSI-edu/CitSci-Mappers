@@ -34,7 +34,7 @@
               style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
           ></button>
           <button
-              @click="setMode('edit'); setText(eraseTitle, eraseInfo); setExamples('erase')"
+              @click="setMode('edit'); setText(editTitle, editInfo); setExamples('erase')"
               :class="{'button-not-selected': mode !== 'edit', 'button-selected': mode === 'edit'}"
               style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png');background-size: contain;"
           ></button>
@@ -137,10 +137,15 @@ const isNoFingers = useIsNoFingers();
 const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
 const router = useRouter(); // Initialize useRouter
 
+// Image and example state
 const imageUrl = ref(null);
+
+//Drawing State
 const mode = ref(null);
 const drawings = ref([]);
 const canvasMapRef = ref(null);
+
+// Info panel state
 const infoTitle = ref("Ready?");
 const infoText = ref("Welcome to the lunar surface. Select a tool to begin marking features.");
 const boulderTitle = ref("Now Mapping: Boulders");
@@ -149,8 +154,11 @@ const craterTitle = ref("Now Mapping: Craters");
 const craterInfo = ref("Click in the center of a crater and drag the cursor out to mark its edges.");
 const rocksTitle = ref("Now Mapping: Rocks");
 const rocksInfo = ref("Click in the centers of rocks to mark their locations.");
-const eraseTitle = ref("Erasing");
+const eraseTitle = ref("Erasing Mark");
 const eraseInfo = ref("Click on a mark to delete it.");
+const editTitle = ref("Editing Mark");
+const editInfo = ref("Click on a mark to change it.");
+
 const exampleImages = ref([]);
 const imageID = ref(localStorage.getItem('image_id') || 'N/A');
 

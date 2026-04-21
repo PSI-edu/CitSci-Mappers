@@ -16,6 +16,7 @@ const MarsMosaicTutorialPage = () => import("@/pages/tutorials/mars-mosaic-tutor
 const LunarMeltPage = () => import("@/pages/do_science/lunar-melt-page.vue");
 const LunarMeltTutorialPage = () => import("@/pages/tutorials/lunar-melt-tutorial-page.vue");
 const LunarMeltFlowsPage = () => import("@/pages/do_science/lunar-melt-flows-page.vue");
+const TestProjectPage = () => import("@/pages/do_science/test-project-page.vue")
 const MasterImagePage = () => import("@/pages/master-image-page.vue");
 const ScienceDashboardPage = () => import("@/pages/dashboards/science-dashboard-page.vue");
 
@@ -86,6 +87,12 @@ const routes = [
     path: "/do_science/lunar-melt-flows",
     name: "lunar-melt-flows",
     component: LunarMeltFlowsPage,
+    beforeEnter: authGuard,
+  },
+  {
+    path: "/do_science/test-project-page",
+    name: "test-project-page",
+    component: TestProjectPage,
     beforeEnter: authGuard,
   },
   {

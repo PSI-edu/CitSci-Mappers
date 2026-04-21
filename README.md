@@ -4,6 +4,7 @@ Software to support web-based image annotation.
 # Reminder: Quickstart of existing dev systems
 ```
 npm install
+npm audit fix 
 npm run dev
 docker-compose build --no-cache; docker-compose up -d --no-build; docker-compose exec api composer install
 ```

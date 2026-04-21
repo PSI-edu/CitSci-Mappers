@@ -66,6 +66,8 @@ if ($data !== null &&
         }
         $stmt->close();
 
+        submitSciStarter($conn, $user_id, $app_id);
+
     } else {
         die("Error:User ID or Image ID not set");
     }
@@ -120,7 +122,7 @@ function submit_mars_mosaic($data, $user_image_id) {
 function submit_moon_activity_1($data, $user_image_id) {
     global $conn;
 
-    print_r($data["drawings"]);
+ //   print_r($data["drawings"]);
 
     // set values that get reused
     $app_id = clean_inputs($data["app_id"]);
@@ -193,4 +195,50 @@ function submit_moon_activity_1($data, $user_image_id) {
         }
     }
 
+}
+
+function submitSciStarter($conn, $user_id, $app_id) {
+    // Join users and applications to get the email and the project slug/key
+    $sql = "SELECT u.scistarter_email, a.title as project_slug, a.scistarter_project_apikey 
+            FROM users u, applications a 
+            WHERE u.id = ? AND a.id = ? 
+            LIMIT 1";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $user_id, $app_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        // Only proceed if we have BOTH an email and an API key
+        if (!empty($row['scistarter_email']) && !empty($row['scistarter_project_apikey'])) {
+
+            // Replace spaces in the project_slug with -
+            $project_slug = strtolower(str_replace(" ", "-", $row['project_slug']));
+            $hashed = hash("sha256", strtolower(trim($row['scistarter_email'])));
+            $apikey = $row['scistarter_project_apikey'];
+
+            // Prepare the URL
+            $url = "https://scistarter.org/api/participation/hashed/" . $project_slug . "?key=" . $apikey;
+
+            // Prepare the POST data
+            $postData = http_build_query([
+                "hashed" => $hashed,
+                "type" => "classification",
+                "duration" => 300
+            ]);
+            // Use CURL to send the request
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/x-www-form-urlencoded'
+            ]);
+
+            curl_exec($ch);
+            curl_close($ch);
+        }
+    }
+    $stmt->close();
 }
