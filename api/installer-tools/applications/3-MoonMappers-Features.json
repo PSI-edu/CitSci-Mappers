@@ -1,8 +1,8 @@
 {
-    "name": "lunar-melt",
-    "title": "Lunar Melt",
+    "name": "lunar-features",
+    "title": "Lunar Features",
     "description": "Help us map out ancient geologies on the Moon.",
     "background_url": "",
     "icon_url": "https://moon-mappers.s3.us-east-2.amazonaws.com/Moon.png",
-    "scistarter_project_id": -1
+    "scistarter_project_apikey": -1
 }
