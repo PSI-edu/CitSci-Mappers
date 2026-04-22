@@ -197,15 +197,6 @@ const setExamples = (tool) => {
     for (let i = 1; i <= 6; i++) {
       exampleImages.value.push(prefix + `example-rock-${i}.png`);
     }
-  } else if (tool === 'erase') {
-    exampleImages.value = [
-      prefix + 'example-crater-1.png',
-      prefix + 'example-crater-2.png',
-      prefix + 'example-boulder-1.png',
-      prefix + 'example-boulder-2.png',
-      prefix + 'example-rock-1.png',
-      prefix + 'example-rock-2.png',
-    ];
   } else {
     // Initial state or if no tool is selected
     exampleImages.value = [

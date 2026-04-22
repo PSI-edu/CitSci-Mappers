@@ -15,7 +15,7 @@
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crack.png'); background-size: contain;"
             ></button>
             <button
-                @click="setMode('zigzag-dash'); setText(ridgeTitle, ridgeInfo); setExamples('zigzag-dash')"
+                @click="setMode('zigzag-dash'); setText(ridgeTitle, ridgeInfo); setExamples('ridge')"
                 :class="{'button-not-selected': mode !== 'zigzag-dash', 'button-selected': mode === 'zigzag-dash'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png'); background-size: contain;"
             ></button>
@@ -188,12 +188,26 @@ const setText = (text1, text2) => {
 function setExamples(tool) {
   const prefix = "https://moon-mappers.s3.us-east-2.amazonaws.com/examples/";
   exampleImages.value = [];
-  // For now, just show a default set
-  exampleImages.value = [
-    prefix + 'example-margin-1-marked.png',
-    prefix + 'example-cracks-2-marked.png',
-    prefix + 'example-ridge-1-marked.png',
-  ];
+  if (tool === 'margin') {
+    for (let i = 1; i <= 3; i++) {
+      exampleImages.value.push(prefix + `example-margin-${i}-marked.png`);
+    }
+  } else if (tool === 'cracks') {
+    for (let i = 1; i <= 3; i++) {
+      exampleImages.value.push(prefix + `example-cracks-${i}-marked.png`);
+    }
+  } else if (tool === 'ridge') {
+    for (let i = 1; i <= 3; i++) {
+      exampleImages.value.push(prefix + `example-ridge-${i}-marked.png`);
+    }
+  }else {
+    // For now, just show a default set
+    exampleImages.value = [
+      prefix + 'example-margin-1-marked.png',
+      prefix + 'example-cracks-2-marked.png',
+      prefix + 'example-ridge-1-marked.png',
+    ];
+  }
 }
 
 const handleDraw = (drawing) => {
