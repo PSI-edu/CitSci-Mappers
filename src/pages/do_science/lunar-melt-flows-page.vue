@@ -108,6 +108,21 @@
           <button @click="saveResponse()" class="submit-button" id="submit-button">Submit</button>
           <button class="busy-button" id="busy-button">Working....</button>
           <div class="LunarMelt citsci-examples-larger">
+            <div style="float: right; padding-right: 25px;">
+              Show Marks:
+              <input
+                  type="radio"
+                  :value="true"
+                  v-model="showMarks"
+                  @change="setExamples()"
+              > on
+              <input
+                  type="radio"
+                  :value="false"
+                  v-model="showMarks"
+                  @change="setExamples()"
+              > off
+            </div>
             <h4>Examples</h4>
             <img v-for="example in exampleImages" :key="example" :src="example" style="margin-right: 5px;" alt="Example Image" />
           </div>
@@ -143,6 +158,8 @@ const currentContextUrl = ref('');
 // Image and example state
 const imageUrl = ref(null);
 const exampleMarks = ref(null);
+const showMarks = ref(true);
+const currentTool = ref('default');
 
 // Drawing State
 const mode = ref('');
@@ -185,30 +202,38 @@ const setText = (text1, text2) => {
 };
 
 // Put setExamples here TODO
-function setExamples(tool) {
+function setExamples(tool = currentTool.value) {
+  currentTool.value = tool;
   const prefix = "https://moon-mappers.s3.us-east-2.amazonaws.com/examples/";
+  const suffix = showMarks.value ? "-marked.png" : ".png";
+
   exampleImages.value = [];
   if (tool === 'margin') {
     for (let i = 1; i <= 3; i++) {
-      exampleImages.value.push(prefix + `example-margin-${i}-marked.png`);
+      exampleImages.value.push(prefix + `example-margin-${i}${suffix}`);
     }
   } else if (tool === 'cracks') {
     for (let i = 1; i <= 3; i++) {
-      exampleImages.value.push(prefix + `example-cracks-${i}-marked.png`);
+      exampleImages.value.push(prefix + `example-cracks-${i}${suffix}`);
     }
   } else if (tool === 'ridge') {
     for (let i = 1; i <= 3; i++) {
-      exampleImages.value.push(prefix + `example-ridge-${i}-marked.png`);
+      exampleImages.value.push(prefix + `example-ridge-${i}${suffix}`);
     }
   }else {
     // For now, just show a default set
     exampleImages.value = [
-      prefix + 'example-margin-1-marked.png',
-      prefix + 'example-cracks-2-marked.png',
-      prefix + 'example-ridge-1-marked.png',
+      `${prefix}example-margin-1${suffix}`,
+      `${prefix}example-cracks-2${suffix}`,
+      `${prefix}example-ridge-1${suffix}`,
     ];
   }
 }
+
+const toggleMarks = (val) => {
+  showMarks.value = val;
+  setExamples(); // Refresh images with the current tool and new suffix
+};
 
 const handleDraw = (drawing) => {
   drawings.value.push(drawing);
