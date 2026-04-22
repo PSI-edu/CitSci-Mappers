@@ -74,7 +74,7 @@ for ($x = 0; $x < $width - $overlap; $x += $stampSize - $overlap) {
         $im = imagecreatefrompng($argv[1]);
         $im1 = imagecreatetruecolor($stampSize+2*$contextMargin, $stampSize+2*$contextMargin);
         imagecopy($im1, $im, $xOffset, $yOffset, $x1, $y1, $delX, $delY);
-        imagepng($im1, "scratch/" . $rootFilename . "_context_$x-$y.png");
+        imagepng($im1, "scratch/" . $rootFilename . "_$x-$y"."_context.png");
         imagedestroy($im1);
         imagedestroy($im);
 

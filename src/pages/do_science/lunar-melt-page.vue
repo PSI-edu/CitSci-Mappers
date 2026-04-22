@@ -1,6 +1,6 @@
 <template>
 <template v-if="isNoFingers">
-  <PageLayout title=": Lunar Melt Features" >
+  <PageLayout title=": Lunar Features" >
     <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
       <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200746/Moon-150x150.png" alt="Moon Logo"/>
       <h2>Please Log In</h2>
@@ -86,7 +86,7 @@
                 width="100" height="75">
             </canvas>
           </div>
-          <div id="citsci-imageid-panel">
+          <div id="citsci-imageid-panel-right">
             <h4>Image ID: {{imageID}}</h4>
             <p><span class="small">
               <a :href="imageUrl" target="_blank">view</a>,

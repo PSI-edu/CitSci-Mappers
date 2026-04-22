@@ -1,4 +1,11 @@
 
+#viewer {
+    width: 1200px;
+    height: 720px;
+    background-color: var(--white);
+    margin: 0 auto;
+    border-radius: 5px;
+}
 #citsci-main-panel, #tutorial-main-panel {
     position: relative;
     width: 950px;
@@ -83,23 +90,34 @@
     color: var(--dark-aluminium);
 }
 
-#citsci-imageid-panel {
+#citsci-imageid-panel-left {
+    position: absolute;
+    top: 320px;
+    left: 10px;
+    width: 160px;
+    height: 60px;
+    border-radius: 5px;
+    background: var(--white);
+    color: var(--dark-aluminium);
+    padding: 5px 10px;
+}
+#citsci-imageid-panel-right {
     position: absolute;
     top: 305px;
-    left: 120px;
-    width: 250px;
+    right: 10px;
+    width: 200px;
     height: 75px;
     border-radius: 5px;
     background: var(--white);
     color: var(--dark-aluminium);
-    padding: 10px;
+    padding: 5px 10px;
 }
 
 #citsci-imageid-panel a {
     color: var(--dark-aluminium);
 }
 
-#citsci-imageid-panel .small a {
+#citsci-imageid-panel-left .small a, #citsci-imageid-panel-right .small a {
     color: var(--orange);
 }
 
@@ -212,15 +230,27 @@ height: 400px;
     text-align: center;
     margin-top: 5px;
 }
+#context-canvas{
+    position: absolute;
+    top: 150px;
+    left: 10px;
+    width: 160px;
+    height: 160px;
+    border-radius: 5px;
+    margin: 0;
+    padding: 0;
+    background: var(--white);
+}
 
 #ex-canvas {
     position: absolute;
     top: 305px;
     left: 10px;
-    height: 75px;
     width: 100px;
+    height: 75px;
     border-radius: 5px;
     margin: 0;
+    padding: 0;
     background: var(--white);
 }
 

@@ -49,9 +49,7 @@
               <p>Task:</p>
             </div>
             <div class="content">
-              <p >We're mapping geologic features from/in flowing impact melt. Long ago, the heat
-                of asteroid impacts melted the regions you're mapping. Your
-                work helps us understand how the melt flowed & when it cooled. </p>
+              <p >We're mapping geologic features from/in flowing impact melts. </p>
             </div>
             <div class="label">
               <p>Links:</p>
@@ -67,10 +65,38 @@
                 <a href="/tutorials/lunar-melt-tutorial" target="_blank">Tutorial</a>
               </p>
             </div>
-            <h4>{{ infoTitle }}</h4>
-            <p>{{ infoText }}</p>
 
-            <div id="citsci-imageid-panel">
+            <div style="float: right; width: 45%; padding-top:10px;">
+              <h4>{{ infoTitle }}</h4>
+              <p>{{ infoText }}</p>
+            </div>
+
+            <div id="context-canvas">
+
+              <canvas
+                  ref="exampleMarks" id="exampleMarks"
+                  width="150" height="150"
+                  @click="openContextWindow"
+                  style="
+                    cursor: pointer;
+                    margin: 5px;
+                  "
+                  title="Click to enlarge context image"
+              >
+              </canvas>
+              <div
+                  style="
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                    z-index: 2999;
+              ">
+                <p style="color: white;">Context</p>
+              </div>
+
+            </div>
+
+            <div id="citsci-imageid-panel-left">
               <h4>Image ID: {{imageID}}</h4>
               <p><span class="small">
               <a :href="imageUrl" target="_blank">view</a>,
@@ -111,9 +137,11 @@ const isNoFingers = useIsNoFingers();
 
 const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
 const router = useRouter(); // Initialize useRouter
+const currentContextUrl = ref('');
 
 // Image and example state
 const imageUrl = ref(null);
+const exampleMarks = ref(null);
 
 // Drawing State
 const mode = ref('');
@@ -122,7 +150,7 @@ const canvasMapRef = ref(null);
 
 // Info panel state
 const infoTitle = ref("Ready?");
-const infoText = ref("Welcome to the lunar surface. Select a tool to begin marking features.");
+const infoText = ref("Select a tool to begin marking features.");
 const marginTitle = ref("Outlining Flow / Channel Margins");
 const marginInfo = ref("Click where a flow starts and along its edge. Done? Press [ESC] or double-click.");
 const cracksTitle = ref("Tracing Cracks");
@@ -285,17 +313,56 @@ onMounted(async () => {
   setExamples();
 });
 
+const drawContextImage = (url) => {
+  if (!exampleMarks.value) return;
+
+  const canvas = exampleMarks.value;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+
+  img.onload = () => {
+    // Clear canvas before drawing
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw image to fill the canvas dimensions (100x75)
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+
+  img.src = url;
+};
+
+const openContextWindow = () => {
+  if (!currentContextUrl.value) return;
+
+  const width = 900;
+  const height = 900;
+
+  // Calculate center of screen (optional, but professional)
+  const left = (window.screen.width / 2) - (width / 2);
+  const top = (window.screen.height / 2) - (height / 2);
+
+  const features = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`;
+
+  window.open(currentContextUrl.value, 'ContextImage', features);
+};
+
 const getNewImage = async () => {
-  // Now get the first image
   try {
     const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-      app_id: 4,
+      app_id: 3,
       user_id: localStorage.getItem('user_id')
     });
+
     imageUrl.value = response.data.file_location;
-    localStorage.setItem('image_id',response.data.id);
+    localStorage.setItem('image_id', response.data.id);
+
+    // Save to our ref so the click handler can see it
+    currentContextUrl.value = response.data.file_location.replace('.png', '.png');
+
     imageID.value = response.data.id;
-    console.log("Image URL: " + imageUrl.value);
+
+    // Draw the thumbnail
+    drawContextImage(currentContextUrl.value);
+
   } catch (error) {
     console.log(error);
   }
