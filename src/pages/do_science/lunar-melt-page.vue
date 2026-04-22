@@ -118,7 +118,6 @@
     <div class="content-layout">
           <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
     </div>
-    <img src="../../../../../Downloads/Untitled (14).png" height="1080" width="1920"/>
   </PageLayout>
 </template>
 </template>
