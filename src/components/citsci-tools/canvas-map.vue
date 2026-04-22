@@ -351,7 +351,7 @@ const handleMouseMove = (event) => {
       annCtx.value.strokeStyle = '#c58336';
       annCtx.value.setLineDash([3, 3]);
     } else if (props.mode === 'zigzag-solid') {
-      annCtx.value.strokeStyle = '#29336c';
+      annCtx.value.strokeStyle = '#635dff';
       annCtx.value.setLineDash([]);
     } else if (props.mode === 'zigzag-dash') {
       annCtx.value.strokeStyle = '#6f6e2a';
@@ -679,7 +679,7 @@ const drawShape = (context, drawing, index) => {
       strokeColor = '#c58336';   // Orange
       dashPattern = [3, 3];
     } else if (drawing.type === 'zigzag-solid') {
-      strokeColor = '#29336c';   // Same dark blue as dots
+      strokeColor = '#635dff';   // indigo
       dashPattern = [];          // Solid
     } else if (drawing.type === 'zigzag-dash') {
       strokeColor = '#6f6e2a';   // Same green as lines

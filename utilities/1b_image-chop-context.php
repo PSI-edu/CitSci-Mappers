@@ -18,7 +18,7 @@ $extlen = strlen(pathinfo(basename($argv[1]), PATHINFO_EXTENSION))+1;
 $rootFilename = substr(basename($argv[1]), 0, -$extlen);
 
 $stampSize = 450;
-$contextMargin = 400;
+$contextMargin = 725;
 $overlap = 0.1 * $stampSize;
 
 // Create a text file with the name of the image.txt

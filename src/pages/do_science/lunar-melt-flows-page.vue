@@ -1,6 +1,6 @@
 <template>
   <template v-if="isNoFingers">
-    <PageLayout title=": Lunar Melt Flows" >
+    <PageLayout title=": Lunar Flows BETA" >
       <div class="content-layout">
         <div id="citsci-main-panel">
           <div id="citsci-buttons-panel">
@@ -43,7 +43,7 @@
             />
           </div>
           <div class="citsci-info-panel melt">
-            <h5>Activity 2: Flows</h5>
+            <h5>Activity 2: Flows <span style="color: #c58336;">BETA</span></h5>
             <h3>Fractures, Flows & Channels, Ridges</h3>
             <div class="label">
               <p>Task:</p>
@@ -91,7 +91,7 @@
                     left: 10px;
                     z-index: 2999;
               ">
-                <p style="color: white;">Context</p>
+                <p style="color: white;">Context Image</p>
               </div>
 
             </div>
@@ -106,7 +106,7 @@
           </div>
           <button @click="saveResponse()" class="submit-button" id="submit-button">Submit</button>
           <button class="busy-button" id="busy-button">Working....</button>
-          <div class="LunarMelt citsci-examples">
+          <div class="LunarMelt citsci-examples-larger">
             <h4>Examples</h4>
             <img v-for="example in exampleImages" :key="example" :src="example" style="margin-right: 5px;" alt="Example Image" />
           </div>
@@ -151,12 +151,12 @@ const canvasMapRef = ref(null);
 // Info panel state
 const infoTitle = ref("Ready?");
 const infoText = ref("Select a tool to begin marking features.");
-const marginTitle = ref("Outlining Flow / Channel Margins");
-const marginInfo = ref("Click where a flow starts and along its edge. Done? Press [ESC] or double-click.");
+const marginTitle = ref("Outlining Flow");
+const marginInfo = ref("Click where a flow starts and follow around its edge. Done? Press [ESC] or double-click.");
 const cracksTitle = ref("Tracing Cracks");
-const cracksInfo = ref("Click where a crack starts, and where it bends. Done? Press [ESC].")
-const ridgeTitle = ref("Tracing Wrinkle Ridges");
-const ridgeInfo = ref("Click where a wrinkle ridge starts, and where it bends.  Done? Press [ESC].");
+const cracksInfo = ref("Click where a crack starts, and where it bends. Done? Press [ESC] or double-click.")
+const ridgeTitle = ref("Tracing Pressure Ridges");
+const ridgeInfo = ref("Trace along the top of the ridge (best guess is ok!).  Done? Press [ESC] or double-click.");
 const eraseTitle = ref("Erasing Mark");
 const eraseInfo = ref("Click on a mark to delete it.");
 const editTitle = ref("Editing Mark");
@@ -189,12 +189,9 @@ function setExamples(tool) {
   exampleImages.value = [];
   // For now, just show a default set
   exampleImages.value = [
-    prefix + 'example-crater-1.png',
-    prefix + 'example-crater-2.png',
-    prefix + 'example-boulder-1.png',
-    prefix + 'example-boulder-2.png',
-    prefix + 'example-rock-1.png',
-    prefix + 'example-rock-2.png',
+    prefix + 'example-margin-1-marked.png',
+    prefix + 'example-cracks-2-marked.png',
+    prefix + 'example-ridge-1-marked.png',
   ];
 }
 
@@ -293,11 +290,12 @@ onMounted(async () => {
   try {
     const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-tutorial.php", {
       user_id: localStorage.getItem('user_id'),
-      app_id: 3,
+      app_id: 4,
       task: "check"
     });
     if (response.data === "FALSE") {
-      router.push('/tutorials/lunar-melt-tutorial');
+      // router.push('/tutorials/lunar-melt-flow-tutorial');
+      pageReady.value = true; // BETA
     } else {
       pageReady.value = true;
     }
@@ -348,7 +346,7 @@ const openContextWindow = () => {
 const getNewImage = async () => {
   try {
     const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-      app_id: 3,
+      app_id: 4,
       user_id: localStorage.getItem('user_id')
     });
 
@@ -356,7 +354,9 @@ const getNewImage = async () => {
     localStorage.setItem('image_id', response.data.id);
 
     // Save to our ref so the click handler can see it
-    currentContextUrl.value = response.data.file_location.replace('.png', '.png');
+    currentContextUrl.value = response.data.file_location.replace('.png', '_context.png');
+
+    console.log(currentContextUrl.value);
 
     imageID.value = response.data.id;
 

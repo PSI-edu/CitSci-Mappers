@@ -4,7 +4,7 @@
         label="Do Science"
         :items="[
               { path: '/do_science/lunar-melt', label: 'Lunar Features' },
-              { path: '/do_science/lunar-melt-flows', label: 'Lunar Melt Flows'},
+              { path: '/do_science/lunar-melt-flows', label: 'Lunar Flows BETA'},
               { path: '/do_science/mars-mosaic', label: 'Mars Mosaics' },
           ]"
     />
