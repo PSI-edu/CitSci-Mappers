@@ -194,6 +194,8 @@ const isNoFingers = useIsNoFingers();
 
 const {user, isAuthenticated, loginWithRedirect, isLoading} = useAuth0();
 
+const router = useRouter();
+
 const imageUrl = ref(null);
 const mode = ref(null);
 const drawings = ref([]);
@@ -218,7 +220,6 @@ const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
 const showPatienceMessage = ref(false); // New state variable
 const validationMessage = ref(null); // NEW: Reactive variable for validation message
 const showValidationMessage = ref(false); // NEW: State for showing validation message
-const router = useRouter();
 
 const handleLogin = () => {
   loginWithRedirect();
@@ -301,7 +302,7 @@ const tutorialSteps = [
   },
   {
     id: 1,
-    title: "Welcome to Lunar Melt!",
+    title: "Welcome to the Lunar Melt project",
     content: "Ready to get mapping? " +
         "Your work will accelerate research into how asteroid impacts changed the Lunar surface.  Our research " +
         "might even help researchers find the geologic features that unlock the history of both the Earth " +
@@ -347,7 +348,7 @@ const tutorialSteps = [
     title: "Measure Boulders",
     content: "These large chunks of rock are worth measuring! Use the drawing tool to put a line along the longest " +
         "axis of the 2 big boulders in this image. <br><br>" +
-    "Remember to click the boulder button first to select your tool! <br><br>" ,
+        "Remember to click the boulder button first to select your tool! <br><br>" ,
     className: "step-4",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png",
     image2: "",

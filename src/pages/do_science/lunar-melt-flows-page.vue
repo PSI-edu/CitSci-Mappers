@@ -1,7 +1,16 @@
 <template>
   <template v-if="isNoFingers">
     <PageLayout title=": Lunar Flows BETA" >
-      <div class="content-layout">
+      <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
+        <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200746/Moon-150x150.png" alt="Moon Logo"/>
+        <h2>Please Log In</h2>
+        <p>We want to give you credit for everything you contribute to. We can only
+          do that if you log in first.</p>
+        <p>If you'd like to learn more about Lunar Melt before you register, please
+          <a href="/learn/">check out our learning site</a>.</p>
+        <button @click="handleLogin">Log In</button>
+      </div>
+      <div class="content-layout" v-if="pageReady">
         <div id="citsci-main-panel">
           <div id="citsci-buttons-panel">
             <button
@@ -62,7 +71,7 @@
                 *
                 <a href="https://mappers.psi.edu/learn/lunar-melt/lm-the-data/" target="_blank">Data</a>
                 *
-                <a href="/tutorials/lunar-melt-tutorial" target="_blank">Tutorial</a>
+                <a href="/tutorials/lunar-melt-flows-tutorial" target="_blank">Tutorial</a>
               </p>
             </div>
 
@@ -334,8 +343,7 @@ onMounted(async () => {
       task: "check"
     });
     if (response.data === "FALSE") {
-      // router.push('/tutorials/lunar-melt-flow-tutorial');
-      pageReady.value = true; // BETA
+      router.push('/tutorials/lunar-melt-flows-tutorial');
     } else {
       pageReady.value = true;
     }
