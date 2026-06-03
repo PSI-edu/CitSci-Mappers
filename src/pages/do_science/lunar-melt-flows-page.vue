@@ -29,7 +29,6 @@
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png'); background-size: contain;"
             ></button>
             <button
-            <button
                 @click="setMode('erase'); setText(eraseTitle, eraseInfo); setExamples('erase')"
                 :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"

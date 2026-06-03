@@ -63,7 +63,6 @@
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png'); background-size: contain;"
             ></button>
             <button
-            <button
                 @click="setMode('erase'); setText(eraseTitle, eraseInfo); setExamples('erase')"
                 :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
@@ -105,7 +104,7 @@
                 *
                 <a href="https://mappers.psi.edu/learn/lunar-melt/lm-the-data/" target="_blank">Data</a>
                 *
-                <a href="/tutorials/lunar-melt-flows-tutorial" target="_blank">Tutorial</a>
+                <a href="" target="_blank">Tutorial</a>
               </p>
             </div>
 
@@ -271,9 +270,8 @@ const tutorialSteps = [
         "might even help researchers find the geologic features that unlock the history of both the Earth " +
         "and the Moon.<br><br>" +
 
-        "This tutorial will guide you through the process of marking craters, boulders, and rocks in the melt. Our " +
-        "team will use your contributions to analyze Little Lowell crater and potentially to train " +
-        "machine learning algorithms to automate mapping other regions in the future.<br><br>" +
+        "This tutorial will guide you through marking features formed by melted rock that flowed, solidified, and " +
+        "sometimes cracked.<br><br>" +
         "Today, computers can't do this work, and your efforts  " +
         "help us focus more of our limited time on data analysis. Thank you! We'll share all our research with you on this site " +
         "or signup on the profile page to get news in your inbox. <br><br>" +
@@ -285,43 +283,49 @@ const tutorialSteps = [
   },
   {
     id: 2,
-    title: "You're mapping this image's rocks, boulders, & craters",
-    content: "You'll use the Tools on the left to mark rocks with a dot, measure the longest part of a boulder with a line, " +
-        "and outline craters larger than the minimum size. You can also erase bad marks, and move things if you make " +
-        "a mistake. <br><br>" +
-        "When you select a mapping tool, we'll show you more examples " +
-        "specific to that tool.<br><br>",
+    title: "Go with the flow",
+    content: "In this project you are mapping where melted rock flowed across the Moon, and the ridges and" +
+        "cracks that formed as the melt cooled and solidified. To understand these features you may need to " +
+        "see them in context, so we have also given you a context image. You can click the context image to " +
+        "open it larger in a new window.<br><br>" +
+        "When you click on a tool, you'll see examples specific to the feature it wants you to map.<br><br>",
     className: "step-2",
     image1: "",
     image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png",
-    imageCaption: "Try it! Click the buttons on the left to see the examples below change."
+    imageCaption: "Try it! Click the buttons on the left to see the examples below change. " +
+        "You can also turn the marks on the examples on and off to see the features."
   },
   {
     id: 3,
-    title: "Got Rocks?",
-    content: "Can you mark on at least 5 rocks in this image? Let the examples " +
-        "below guide you. We'll give you initial feedback each time you mark a rock.",
+    title: "Marking the flow's edge",
+    content: "During an impact, rock can melt and flow like lava across the lunar surface. We want to map " +
+        "the boundary between the melt flow and the surrounding terrain whenever we see it. Just click where the flow" +
+        "near one edge of the image and follow it along to the other edge of the image. When you're done, you'll" +
+        "need to hit [esc] or double click to end the line.<em>Not every image has " +
+        "a visible melt flow.</em>",
     className: "step-3",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-rocks.png",
     image2: "",
-    imageCaption: "Try it! Click the 'Rocks' button and then click on the image where you see rocks. "
+    imageCaption: "Try it! Click the 'Flow Margin' button and then trace the flow's edge. "
   },
   {
     id: 4,
-    title: "Measure Boulders",
-    content: "These large chunks of rock are worth measuring! Use the drawing tool to put a line along the longest " +
-        "axis of the 2 big boulders in this image. <br><br>" +
-        "Remember to click the boulder button first to select your tool! <br><br>" ,
+    title: "Get cracking",
+    content: "Most materials expand when hot and contract when cold, and lunar melt is one of those materials!" +
+        " This change in volume can cause " +
+        "cracks to open in the landscape. Can you mark the three cracks in this image?  <br><br>" ,
+
     className: "step-4",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png",
     image2: "",
-    imageCaption: "Try it! Click the 'Boulders' button, and then click & drag along the longest axis of each boulder."
+    imageCaption: "Try it! Click the 'Cracks' button, and then click along a crack."
   },
   {
     id: 5,
-    title: "Trace Craters",
-    content: "There are lots of craters on the Moon! Lucky for you (and us), we are only interested in craters " +
-        "more than 24 pixels across. <br><br> Can you mark this image's largest crater? <br><br>",
+    title: "Trace Ridges",
+    content: "Between flowing smoothly and solidifying completely, the melt gets gooey and can form " +
+        "ridges where the flow smushes up on itself like partially melted chocolate. <br><br> " +
+        "Can you mark this image's 2 ridges? <br><br>",
     className: "step-5",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png",
     image2: "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act1-minsize.png",
@@ -329,9 +333,10 @@ const tutorialSteps = [
   },
   {
     id: 6,
-    title: "Let's do some science!",
-    content: "Together we can map more of the Moon than any one of us could do alone. Let's get clicking " +
-        "(and dragging). There are discoveries to make working together!<br><br>",
+    title: "Check your work, then get mapping!",
+    content: "We're showing you how we marked the image. How do your marks compare? You can repear this tutorial " +
+        "as many times as you want until you are confident in your work! When you're ready, " +
+        "there are discoveries waiting to be made as we work together!<br><br>",
     className: "step-6",
     image1: "",
     image2: "",
