@@ -264,7 +264,7 @@ const tutorialSteps = [
   },
   {
     id: 1,
-    title: "Welcome to Lunar Melt Flow project",
+    title: "Welcome to Lunar Melt Flow Activity",
     content: "Ready to get mapping? " +
         "Your work will accelerate research into how asteroid impacts changed the Lunar surface.  Our research " +
         "might even help researchers find the geologic features that unlock the history of both the Earth " +
@@ -324,7 +324,7 @@ const tutorialSteps = [
     id: 5,
     title: "Trace Ridges",
     content: "Between flowing smoothly and solidifying completely, the melt gets gooey and can form " +
-        "ridges where the flow smushes up on itself like partially melted chocolate. <br><br> " +
+        "ridges where the flow smushes up on itself like partially melted chocolate. <em>These are rare!</em><br><br> " +
         "Can you mark this image's 2 ridges? <br><br>",
     className: "step-5",
     image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png",
@@ -386,11 +386,11 @@ const endTutorial = async () => {
       // Send user_id to the tutorial completion endpoint
       const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + '/user-tutorial.php', {
         user_id: localStorage.getItem('user_id'),
-        app_id: 3,
+        app_id: 4,
         task: "add"
       });
       console.log('Successfully marked tutorial as complete for user.', response.data);
-      router.push('/do_science/lunar-melt');
+      router.push('/do_science/lunar-melt-flows');
     } catch (error) {
       console.error('Failed to send tutorial completion status:', error);
     }
@@ -534,26 +534,9 @@ onMounted(async () => {
     console.log(error);
   }
 
-  // Check if this user has done the tutorial
-  try {
-    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/user-tutorial.php", {
-      user_id: localStorage.getItem('user_id'),
-      app_id: 4,
-      task: "check"
-    });
-    if (response.data === "FALSE") {
-      // router.push('/tutorials/lunar-melt-flow-tutorial');
-      pageReady.value = true; // BETA
-    } else {
-      pageReady.value = true;
-    }
-    console.log("Tutorial status checked:", response.data);
-  } catch (error) {
-        console.error("Error checking tutorial status:", error);
-  }
-
-  // Now get the first image
-  await getNewImage();
+  // Now get tutorial images
+  imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-TutorialImage.png";
+  currentContextUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-TutorialImage-Context.png";
 
   // Set examples
   setExamples();
