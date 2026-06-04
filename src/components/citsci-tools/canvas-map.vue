@@ -9,7 +9,7 @@
         @mousedown="handleMouseDown"
         @mousemove="handleMouseMove"
         @mouseup="handleMouseUp"
-        @click="canvasClick"
+        @click="handleCanvasClick"
         @dblclick="handleDoubleClick"
     ></canvas>
   </div>
@@ -24,7 +24,11 @@ const props = defineProps({
   drawings: Array,
 });
 
-const emit = defineEmits(['draw', 'clearDrawing', 'updateDrawing']);
+const emit = defineEmits([
+    'draw',
+    'clearDrawing',
+    'updateDrawing'
+]);
 
 const canvas__map = ref(null);
 const annotationCanvas = ref(null);
@@ -33,8 +37,8 @@ const canvasHeight = ref(0);
 const bgCtx = ref(null);
 const annCtx = ref(null);
 
-//States
-const isDrawing = ref(false); // For creating new shapes
+// States
+const isDrawing = ref(false);
 const startPoint = ref(null);
 const currentDrawing = ref(null);
 const activeZigzagPoints = ref([]);
@@ -45,7 +49,7 @@ const editHandle = ref(null); // e.g., 'body', 'radius', 'p1', 'p2'
 const dragStartCoords = ref({ x: 0, y: 0 }); // Mouse position at mousedown for edit
 const originalShapeData = ref(null); // To store shape data at the start of an edit operation
 
-const MINSIZE = 25; // Corrected typo from MINESIZE
+const MINSIZE = 25;
 const HANDLE_SIZE = 8; // Size of resize handles
 const HANDLE_COLOR = 'rgba(0, 100, 255, 0.8)';
 const SELECTION_COLOR = 'rgba(0, 100, 255, 0.5)';
@@ -191,6 +195,12 @@ const handleMouseDown = (event) => {
   const mouseX = event.offsetX;
   const mouseY = event.offsetY;
 
+  // Emit event if tutorial is active and mapping is not yet allowed
+  if (props.currStep > 0 && props.currStep  < 3) {
+    emit('canvas-click-during-tutorial');
+    return; // Prevent any drawing or editing action during these steps
+  }
+
   if (props.mode === 'edit') {
     const { index, handle } = getShapeAtPoint(mouseX, mouseY);
     if (index !== -1) {
@@ -229,6 +239,10 @@ const handleMouseDown = (event) => {
 };
 
 const handleMouseMove = (event) => {
+  // Prevent any drawing or editing action during these steps
+  if (props.currStep > 0 && props.currStep < 3) {
+    return;
+  }
   // --- Erase mode: highlight line to delete ---
   if (props.mode === 'erase') {
     if (!annCtx.value) return;
@@ -472,6 +486,7 @@ const handleMouseUp = (event) => {
   }
   const endPoint = { x: event.offsetX, y: event.offsetY };
   const drawingData = getCurrentShapeData(endPoint.x, endPoint.y);
+
   let isValidDrawing = true;
 
   if (props.mode === 'line' || props.mode === 'circle') {
@@ -503,7 +518,7 @@ const handleMouseUp = (event) => {
   currentDrawing.value = null;
 };
 
-const canvasClick = (event) => {
+const handleCanvasClick = (event) => {
   const clickX = event.offsetX;
   const clickY = event.offsetY;
 
@@ -563,7 +578,6 @@ const canvasClick = (event) => {
   }
 
   if (props.mode === 'dot') {
-    // ... (original dot logic)
     const dotDrawing = { type: 'dot', data: { x: clickX, y: clickY }};
     emit('draw', dotDrawing);
     return;

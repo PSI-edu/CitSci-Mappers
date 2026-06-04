@@ -1,5 +1,6 @@
 <template>
   <template v-if="isNoFingers">
+    <div class="darken" v-if="currStep==1"></div>
     <PageLayout title=": Lunar Flows BETA" >
       <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
         <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200746/Moon-150x150.png" alt="Moon Logo"/>
@@ -48,27 +49,27 @@
           </div>
           <div id="citsci-buttons-panel">
             <button
-                @click="setMode('zigzag-dotted'); setText(marginTitle, marginInfo); setExamples('margin')"
+                @click="setMode('zigzag-dotted');"
                 :class="{'button-not-selected': mode !== 'zigzag-dotted', 'button-selected': mode === 'zigzag-dotted'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-margin.png'); background-size: contain;"
             ></button>
             <button
-                @click="setMode('zigzag-solid'); setText(cracksTitle, cracksInfo); setExamples('cracks')"
+                @click="setMode('zigzag-solid');"
                 :class="{'button-not-selected': mode !== 'zigzag-solid', 'button-selected': mode === 'zigzag-solid'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crack.png'); background-size: contain;"
             ></button>
             <button
-                @click="setMode('zigzag-dash'); setText(ridgeTitle, ridgeInfo); setExamples('ridge')"
+                @click="setMode('zigzag-dash'); "
                 :class="{'button-not-selected': mode !== 'zigzag-dash', 'button-selected': mode === 'zigzag-dash'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png'); background-size: contain;"
             ></button>
             <button
-                @click="setMode('erase'); setText(eraseTitle, eraseInfo); setExamples('erase')"
+                @click="setMode('erase');"
                 :class="{'button-not-selected': mode !== 'erase', 'button-selected': mode === 'erase'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-erase.png');background-size: contain;"
             ></button>
             <button
-                @click="setMode('edit'); setText(editTitle, editInfo); setExamples('erase')"
+                @click="setMode('edit');"
                 :class="{'button-not-selected': mode !== 'edit', 'button-selected': mode === 'edit'}"
                 style="background-image: url('https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-edit.png');background-size: contain;"
             ></button>
@@ -82,7 +83,15 @@
                 @draw="handleDraw"
                 @clearDrawing="clearDrawing"
                 @updateDrawing="handleUpdateDrawing"
+                :currStep="currStep"
+                :tutorialNoMarkSteps="nonMarkingStepsArray"
+                @canvas-click-during-tutorial="handleCanvasClickDuringTutorial"
             />
+
+            <div v-if="showPatienceMessage" class="not-yet-message">
+              Please follow the instructions.
+            </div>
+
           </div>
           <div class="citsci-info-panel melt">
             <h5>Activity 2: Flows <span style="color: #c58336;">BETA</span></h5>
@@ -129,10 +138,12 @@
               </canvas>
               <div
                   style="
+                    font-weight: bold;
+                    text-shadow: 2px 2px #000000;
                     position: absolute;
                     top: 10px;
                     left: 10px;
-                    z-index: 2999;
+                    z-index: 30;
               ">
                 <p style="color: white;">Context Image</p>
               </div>
@@ -147,7 +158,14 @@
             </div>
 
           </div>
-          <button @click="saveResponse()" class="submit-button" id="submit-button">Submit</button>
+          <button
+              @click="endTutorial()"
+              class="submit-button"
+              id="submit-button"
+              :disabled="currStep !== 7"
+          >
+            Submit
+          </button>
           <button class="busy-button" id="busy-button">Working....</button>
           <div class="LunarMelt citsci-examples-larger">
             <div style="float: right; padding-right: 25px;">
@@ -162,7 +180,7 @@
                   type="radio"
                   :value="false"
                   v-model="showMarks"
-                  @change="setExamples()"
+                  @change="setExamples(null)"
               > off
             </div>
             <h4>Examples</h4>
@@ -185,9 +203,9 @@
 <script setup>
 import { useIsNoFingers } from "@/composables/noFingers.js";
 import PageLayout from "@/components/page-layout.vue";
-import CanvasMap from "@/components/citsci-tools/canvas-map.vue";
+import CanvasMap from "@/components/citsci-tools/tutorial-canvas-map.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import apiClient from '@/api/axios';
 import {useRouter} from "vue-router";
 
@@ -231,6 +249,7 @@ const currStep = ref(0); // Start at 0, meaning the tutorial is not active yet
 const showPatienceMessage = ref(false); // New state variable
 const validationMessage = ref(null); // NEW: Reactive variable for validation message
 const showValidationMessage = ref(false); // NEW: State for showing validation message
+const nonMarkingStepsArray = ref([1,2,3,7]);
 
 const handleLogin = () => {
   loginWithRedirect();
@@ -266,78 +285,86 @@ const tutorialSteps = [
     id: 1,
     title: "Welcome to Lunar Melt Flow Activity",
     content: "Ready to get mapping? " +
-        "Your work will accelerate research into how asteroid impacts changed the Lunar surface.  Our research " +
-        "might even help researchers find the geologic features that unlock the history of both the Earth " +
+        "You're accelerating research into how impacts change the Lunar surface, and you may " +
+        "even help researchers find the geologic features that unlock the history of the Earth " +
         "and the Moon.<br><br>" +
 
         "This tutorial will guide you through marking features formed by melted rock that flowed, solidified, and " +
-        "sometimes cracked.<br><br>" +
-        "Today, computers can't do this work, and your efforts  " +
-        "help us focus more of our limited time on data analysis. Thank you! We'll share all our research with you on this site " +
-        "or signup on the profile page to get news in your inbox. <br><br>" +
+        "sometimes cracked. Specifically, you'll map flows, rare ridges, and cracks.<br><br>" +
+        "Today, AI can't do this work. Your efforts  " +
+        "help us focus more of our limited time on data analysis. Thank you! We'll share our results with you here " +
+        "or signup on the profile page to get our newsletter. <br><br>" +
         "Let's get started!",
     className: "step-1",
-    image1: "",
+    image1: "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-Step1-Example.png",
     image2: "",
     imageCaption: ""
   },
   {
     id: 2,
     title: "Go with the flow",
-    content: "In this project you are mapping where melted rock flowed across the Moon, and the ridges and" +
-        "cracks that formed as the melt cooled and solidified. To understand these features you may need to " +
-        "see them in context, so we have also given you a context image. You can click the context image to " +
-        "open it larger in a new window.<br><br>" +
-        "When you click on a tool, you'll see examples specific to the feature it wants you to map.<br><br>",
+    content: "In this project, you're mapping where melted rock flowed across the Moon, and the ridges and " +
+        "cracks that formed as the melt cooled and solidified. We have examples to help you every step " +
+        "of the way!<br><br>" +
+        "When you click on a tool, you'll see specific examples, and can turn the marks on & off.<br><br>",
     className: "step-2",
     image1: "",
     image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-left.png",
-    imageCaption: "Try it! Click the buttons on the left to see the examples below change. " +
-        "You can also turn the marks on the examples on and off to see the features."
+    imageCaption: "Try it! Click the buttons on the left to see the examples change, and try " +
+        "toggling the marks on and off."
   },
   {
     id: 3,
-    title: "Marking the flow's edge",
-    content: "During an impact, rock can melt and flow like lava across the lunar surface. We want to map " +
-        "the boundary between the melt flow and the surrounding terrain whenever we see it. Just click where the flow" +
-        "near one edge of the image and follow it along to the other edge of the image. When you're done, you'll" +
-        "need to hit [esc] or double click to end the line.<em>Not every image has " +
-        "a visible melt flow.</em>",
+    title: "Seeing things in Context",
+    content: "To help you understand the features we've provided a context image. <br><br>",
     className: "step-3",
-    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-rocks.png",
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/arrow-right.png",
     image2: "",
-    imageCaption: "Try it! Click the 'Flow Margin' button and then trace the flow's edge. "
+    imageCaption: "Click the context image to see it open in a new window. "
   },
   {
     id: 4,
-    title: "Get cracking",
-    content: "Most materials expand when hot and contract when cold, and lunar melt is one of those materials!" +
-        " This change in volume can cause " +
-        "cracks to open in the landscape. Can you mark the three cracks in this image?  <br><br>" ,
-
+    title: "Marking the flow's edge",
+    content: "During an impact, rock can melt and flow like lava across the lunar surface. We want to map " +
+        "the boundary between the melt flow and the surrounding terrain whenever we see it. Just click where the flow" +
+        "near one edge of the image and follow it along to the other edge of the image. When you're done,  " +
+        "hit [esc] or double click to end the line.",
     className: "step-4",
-    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-boulder.png",
-    image2: "",
-    imageCaption: "Try it! Click the 'Cracks' button, and then click along a crack."
+    image1: "",
+    image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-margin.png",
+    imageCaption: "Try it! Click the 'Flow Margin' button, click along the flow edge, then click [esc] or double click. "
   },
   {
     id: 5,
-    title: "Trace Ridges",
-    content: "Between flowing smoothly and solidifying completely, the melt gets gooey and can form " +
-        "ridges where the flow smushes up on itself like partially melted chocolate. <em>These are rare!</em><br><br> " +
-        "Can you mark this image's 2 ridges? <br><br>",
+    title: "Get cracking",
+    content: "Most materials expand when hot and contract when cold, and lunar melt is one of those materials!" +
+        " This change in volume can cause " +
+        "cracks to open in the landscape. Can you mark the large vertical crack on the left?  <br><br>" ,
+
     className: "step-5",
-    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crater.png",
-    image2: "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act1-minsize.png",
-    imageCaption: "Try it! Click the 'Craters' button, and then click in the center of the crater and drag out to its edges."
+    image1: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-crack.png",
+    image2: "",
+    imageCaption: "Click the 'Cracks' button, click along the big vertical crack, then " +
+        "click [esc] or double click to end."
   },
   {
     id: 6,
+    title: "Trace Ridges",
+    content: "Between flowing smoothly and solidifying completely, the melt gets gooey and can form " +
+        "ridges where the flow smushes up on itself like partially melted chocolate. <em>These are rare!</em><br><br> " +
+        "Can you mark the top of some of the diagonal ridges? <br><br>",
+    className: "step-6",
+    image1: "",
+    image2: "https://wm-web-assets.s3.us-east-2.amazonaws.com/buttons/button-ridge.png",
+    imageCaption: "Click the 'Ridges' button, and mark them just like you marked the flow boundary & cracks."
+  },
+  {
+    id: 7,
     title: "Check your work, then get mapping!",
     content: "We're showing you how we marked the image. How do your marks compare? You can repear this tutorial " +
         "as many times as you want until you are confident in your work! When you're ready, " +
         "there are discoveries waiting to be made as we work together!<br><br>",
-    className: "step-6",
+    className: "step-7",
     image1: "",
     image2: "",
     imageCaption: "Ready? Click the 'Submit' button below & let's do some science!"
@@ -354,7 +381,7 @@ const currentStepImageCaption = computed(() => currentStep.value.imageCaption);
 
 // New method to handle canvas clicks during tutorial
 const handleCanvasClickDuringTutorial = () => {
-  if (currStep.value > 0 && currStep.value !== 3 && currStep.value !== 4 && currStep.value !== 5) { // Updated to allow specific tools in 3, 4, 5
+  if (currStep.value > 0 && currStep.value !== 3 && currStep.value !== 4 && currStep.value !== 5 && currStep.value !== 6) { // Updated to allow specific tools
     displayPatienceMessage();
   }
 };
@@ -397,11 +424,59 @@ const endTutorial = async () => {
   }
 };
 
+// Set the button background
 const setMode = (newMode) => {
+  // Set which steps allow which modes
+  if (currStep.value === 1 || currStep.value === 3 || currStep.value === 6 || currStep.value === 7 ) {
+    displayPatienceMessage();
+    return;
+  }
+  else if (currStep.value === 4) {
+    if (newMode !== 'zigzag-dotted' && newMode !== 'erase' && newMode !== 'edit') {
+      console.log("in here");
+      displayPatienceMessage();
+      return;
+    }
+  }
+  else if (currStep.value === 5) {
+    if (newMode !== 'zigzag-solid' && newMode !== 'erase' && newMode !== 'edit') {
+      displayPatienceMessage();
+      return;
+    }
+  }
+  else if (currStep.value === 6) {
+    if (newMode !== 'zigzag-dash' && newMode !== 'erase' && newMode !== 'edit') {
+      displayPatienceMessage();
+      return;
+    }
+  }
+
   mode.value = newMode;
   if (canvasMapRef.value) {
     canvasMapRef.value.setDrawingMode(newMode);
+    setExamples(newMode)
+    switch (newMode) {
+      case 'zigzag-dotted':
+        setText(marginTitle, marginInfo);
+        return
+      case 'zigzag-solid':
+        setText(cracksTitle, cracksInfo);
+        return
+      case 'zigzag-dashed':
+        setText(ridgeTitle, ridgeInfo);
+        return
+      case 'erase':
+        setText(eraseTitle, eraseInfo);
+        return
+      case 'edit':
+        setText(eraseTitle, eraseInfo);
+        return
+      default:
+        console.log("how? mode set to unknown value");
+        return;
+    }
   }
+
 };
 
 const setText = (text1, text2) => {
@@ -416,15 +491,15 @@ function setExamples(tool = currentTool.value) {
   const suffix = showMarks.value ? "-marked.png" : ".png";
 
   exampleImages.value = [];
-  if (tool === 'margin') {
+  if (tool === 'zigzag-dotted') {
     for (let i = 1; i <= 3; i++) {
       exampleImages.value.push(prefix + `example-margin-${i}${suffix}`);
     }
-  } else if (tool === 'cracks') {
+  } else if (tool === 'zigzag-solid') {
     for (let i = 1; i <= 3; i++) {
       exampleImages.value.push(prefix + `example-cracks-${i}${suffix}`);
     }
-  } else if (tool === 'ridge') {
+  } else if (tool === 'zigzag-dashed') {
     for (let i = 1; i <= 3; i++) {
       exampleImages.value.push(prefix + `example-ridge-${i}${suffix}`);
     }
@@ -463,64 +538,6 @@ const clearDrawing = (index) => {
   }
 };
 
-const saveResponse = async () => {
-
-  // hide submit button and show busy button
-  const submitButton = document.getElementById('submit-button');
-  const busyButton = document.getElementById('busy-button');
-  if (submitButton) {
-    submitButton.style.display = 'none';
-  }
-  if (busyButton) {
-    busyButton.style.display = 'inline';
-  }
-
-  if (!localStorage.getItem('user_id') || !localStorage.getItem('image_id')) {
-    console.error("User ID or Image ID not found in local storage.");
-    return;
-  }
-  const payload = {
-    user_id: localStorage.getItem('user_id'),
-    image_id: localStorage.getItem('image_id'),
-    app_id: 4,
-    drawings: drawings.value.map(drawing => ({
-      type: drawing.type,
-      data: drawing.data,
-    })),
-  };
-
-  console.log("Submitting drawings:", payload);
-
-  try {
-    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/submit.php", payload);
-    console.log("Submission Successful:", response.data);
-    await getNewImage();
-
-  } catch (error) {
-    console.error("Error submitting drawings:", error);
-    // Show the submit button and hide the busy button in case of error
-    if (submitButton) {
-      submitButton.style.display = 'inline';
-    }
-    if (busyButton) {
-      busyButton.style.display = 'none';
-    }
-  } finally {
-    // Clear drawings after submission
-    drawings.value = [];
-    if (canvasMapRef.value) {
-      canvasMapRef.value.redrawCanvas();
-    }
-  }
-
-  // Show the submit button and hide the busy button
-  if (submitButton) {
-    submitButton.style.display = 'inline';
-  }
-  if (busyButton) {
-    busyButton.style.display = 'none';
-  }
-};
 
 onMounted(async () => {
   // First get the user_id.
@@ -537,6 +554,9 @@ onMounted(async () => {
   // Now get tutorial images
   imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-TutorialImage.png";
   currentContextUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-TutorialImage-Context.png";
+
+  // Draw Context Image
+  drawContextImage(currentContextUrl.value);
 
   // Set examples
   setExamples();
@@ -575,29 +595,13 @@ const openContextWindow = () => {
   window.open(currentContextUrl.value, 'ContextImage', features);
 };
 
-const getNewImage = async () => {
-  try {
-    const response = await apiClient.post(import.meta.env.VITE_MAPPERS_API_SERVER + "/image-get.php", {
-      app_id: 4,
-      user_id: localStorage.getItem('user_id')
-    });
-
-    imageUrl.value = response.data.file_location;
-    localStorage.setItem('image_id', response.data.id);
-
-    // Save to our ref so the click handler can see it
-    currentContextUrl.value = response.data.file_location.replace('.png', '_context.png');
-
-    console.log(currentContextUrl.value);
-
-    imageID.value = response.data.id;
-
-    // Draw the thumbnail
-    drawContextImage(currentContextUrl.value);
-
-  } catch (error) {
-    console.log(error);
+watch(currStep, (newStep, oldStep) => {
+  if (newStep !== oldStep) {
+    mode.value = null; // Deselect any active tool button
+    if (canvasMapRef.value) {
+      canvasMapRef.value.setDrawingMode(null); // Clear the drawing mode on the canvas as well
+    }
   }
-};
+});
 
 </script>

@@ -413,12 +413,12 @@ height: 400px;
 
 #tutorial button {
     margin: 10px 5px;
-    padding: 8px 15px;
+    padding: 8px 8px;
     cursor: pointer;
     border: 1px solid var(--aluminium);
     background-color: var(--light-aluminium);
     border-radius: 4px;
-    width: 40px;
+    width: 30px;
     color: var(--dark-aluminium);
 }
 
@@ -433,6 +433,10 @@ height: 400px;
     color: var(--black);
 }
 
+#tutorial .image-caption p {
+    color: var(--blue) !important;
+}
+
 #tutorial h3 {
     font-size: 2.2em;
     text-align: center;
@@ -443,6 +447,10 @@ height: 400px;
 .tutorial-navigation {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+#tutorial .tutorial-navigation {
     width: 100%;
     justify-content: center;
 }
@@ -492,7 +500,7 @@ height: 400px;
     justify-content: right;
     flex-wrap: wrap;
     float: right;
-    width: 40%;
+    width: 50%;
 }
 
 /* Mars Mosaics formatting */
@@ -511,16 +519,6 @@ height: 400px;
     right: 20px;
     transform: none;
     top: 200px;
-}
-
-#tutorial .tutorial-navigation {
-    width: 100%;
-    justify-content: center;
-}
-
-#tutorial h3 {
-    width: 100%;
-    text-align: center;
 }
 
 #mars #tutorial.step-2 img {
@@ -578,7 +576,9 @@ height: 400px;
     border-radius: 10px;
 }
 
-#mars #tutorial.step-4 img.tutorial-image1, #tutorial.step-5 img.tutorial-image1 {
+#mars #tutorial.step-4 img.tutorial-image1,
+#mars #tutorial.step-5 img.tutorial-image1,
+#moon #tutorial.step-5 img.tutorial-image1 {
     position: absolute;
     bottom: 10px;
     height: 30px;
@@ -613,7 +613,118 @@ height: 400px;
     border-radius: 5px;
 }
 
-/* Moon Melt formatting */
+/* Moon Flow Tutorial */
+
+#moon-flow #tutorial.step-1 img {
+    border-radius: 5px;
+    position: absolute;
+    bottom: 10px;
+    right: 50%;
+    transform: translate(50%, 0);
+}
+
+#moon-flow #tutorial.step-2 {
+    width: 360px;
+    height: 430px;
+    right: 20px;
+    transform: none;
+    top: 20px;
+}
+#moon-flow #tutorial.step-2 img {
+    width: 8%;
+    height: auto;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 80px;
+    left: 30px;
+}
+
+#moon-flow #tutorial.step-2 .image-caption {
+    position: absolute;
+    width: 75%;
+    bottom: 70px;
+    left: 80px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#moon-flow #tutorial.step-3 {
+    width: 360px;
+    height: 280px;
+    left: 180px;
+    transform: none;
+    top: 80px;
+}
+#moon-flow #tutorial.step-3 img {
+    width: 8%;
+    height: auto;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 80px;
+    right: 30px;
+}
+
+#moon-flow #tutorial.step-3 .image-caption {
+    position: absolute;
+    width: 75%;
+    bottom: 70px;
+    left: 50px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#moon-flow #tutorial.step-4,
+#moon-flow #tutorial.step-5,
+#moon-flow #tutorial.step-6 {
+    width: 360px;
+    height: 430px;
+    right: 20px;
+    transform: none;
+    top: 20px;
+}
+
+#moon-flow #tutorial.step-7 {
+    width: 360px;
+    height: 370px;
+    right: 20px;
+    transform: none;
+    top: 20px;
+}
+
+#moon-flow #tutorial.step-4 img,
+#moon-flow #tutorial.step-5 img,
+#moon-flow #tutorial.step-6 img {
+    width: 50px;
+    height: auto;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 90px;
+    left: 25px;
+    background: var(--brown);
+}
+
+#moon-flow #tutorial.step-4 .image-caption,
+#moon-flow #tutorial.step-5 .image-caption,
+#moon-flow #tutorial.step-6 .image-caption {
+    position: absolute;
+    width: 70%;
+    bottom: 75px;
+    left: 90px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#moon-flow #tutorial.step-7 .image-caption {
+    position: absolute;
+    width: 95%;
+    bottom: 75px;
+    left: 10px;
+    text-align: center;
+    font-style: italic;
+    font-weight: bold;
+}
+
+/* Moon formatting */
 #moon #tutorial.step-1 img {
     width: 50%;
     height: auto;
@@ -739,7 +850,7 @@ height: 400px;
     color: white;
     padding: 15px 25px;
     border-radius: 8px;
-    z-index: 1000;
+    z-index: 2000;
     text-align: center;
     font-size: 1.5em;
 }

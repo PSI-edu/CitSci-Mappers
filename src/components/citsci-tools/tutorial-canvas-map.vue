@@ -10,12 +10,13 @@
         @mousemove="handleMouseMove"
         @mouseup="handleMouseUp"
         @click="handleCanvasClick"
+        @dblclick="handleDoubleClick"
     ></canvas>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
+import { ref, onMounted, onUnmounted, watch, defineProps, defineEmits, computed } from 'vue';
 
 const props = defineProps({
   imageName: String,
@@ -24,7 +25,11 @@ const props = defineProps({
   currStep: Number,
   correctRockLocations: Array,
   correctBoulderLocations: Array,
-  correctCraterLocations: Array
+  correctCraterLocations: Array,
+  tutorialNoMarkSteps: { // Add this block
+    type: Array,
+    default: () => [] // Defaults to empty array if not provided by a page
+  }
 });
 
 const emit = defineEmits([
@@ -41,11 +46,12 @@ const canvasWidth = ref(0);
 const canvasHeight = ref(0);
 const bgCtx = ref(null);
 const annCtx = ref(null);
+
+// States
 const isDrawing = ref(false);
 const startPoint = ref(null);
 const currentDrawing = ref(null);
-const MINSIZE = 25;
-
+const activeZigzagPoints = ref([])
 
 const selectedShapeIndex = ref(-1);
 const isEditing = ref(false); // True if dragging or resizing an existing shape
@@ -53,14 +59,57 @@ const editHandle = ref(null); // e.g., 'body', 'radius', 'p1', 'p2'
 const dragStartCoords = ref({ x: 0, y: 0 }); // Mouse position at mousedown for edit
 const originalShapeData = ref(null); // To store shape data at the start of an edit operation
 
+const MINSIZE = 25;
 const HANDLE_SIZE = 8; // Size of resize handles
 const HANDLE_COLOR = 'rgba(0, 100, 255, 0.8)';
 const SELECTION_COLOR = 'rgba(0, 100, 255, 0.5)';
+
+// Add Listener for Keyboard and doubleclick
+const handleKeyDown = (event) => {
+  if (event.key === 'Escape' && (props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') && activeZigzagPoints.value.length > 0) {
+    finalizeZigzag();
+  }
+};
+
+const handleDoubleClick = (event) => {
+  if ((props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') && activeZigzagPoints.value.length > 0) {
+    // The dblclick event is preceded by a 'click' event.
+    // To prevent the double-click from adding an extra point at the end,
+    // we remove the point that was just added by the last click.
+    if (activeZigzagPoints.value.length > 1) {
+      activeZigzagPoints.value.pop();
+    }
+
+    finalizeZigzag();
+  }
+};
+
+const finalizeZigzag = () => {
+  if (activeZigzagPoints.value.length > 1) {
+    emit('draw', {
+      type: props.mode,
+      data: { points: [...activeZigzagPoints.value] }
+    });
+  }
+  activeZigzagPoints.value = [];
+  isDrawing.value = false;
+  redrawAnnotations();
+};
+
+const canvasCursor = computed(() => {
+  if (props.mode === 'edit') {
+
+    return 'default'; // Or 'pointer'
+  }
+  return 'crosshair';
+});
+
 
 const setDrawingMode = (newMode) => {
   isDrawing.value = false;
   startPoint.value = null;
   currentDrawing.value = null;
+  activeZigzagPoints.value = [];
 
   if (newMode !== 'edit') {
     selectedShapeIndex.value = -1;
@@ -103,6 +152,13 @@ function getShapeAtPoint(x, y) {
         if (isPointInRect(x, y, data.x2 - HANDLE_SIZE / 2, data.y2 - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE)) {
           return { index: i, handle: 'p2' };
         }
+      } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
+        for (let j = 0; j < data.points.length; j++) {
+          const p = data.points[j];
+          if (isPointInRect(x, y, p.x - HANDLE_SIZE / 2, p.y - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE)) {
+            return { index: i, handle: `point-${j}` }; // Store the specific point index in the handle name
+          }
+        }
       }
     }
 
@@ -111,11 +167,19 @@ function getShapeAtPoint(x, y) {
       if (distance({ x, y }, { x: data.x, y: data.y }) < data.radius + HANDLE_SIZE / 2) { // Slightly larger hit area
         return { index: i, handle: 'body' };
       }
-    } else if (drawing.type === 'line' || drawing.type === 'red-line') {
+    } else if (drawing.type === 'line') {
       const { x1, y1, x2, y2 } = data;
       const distToLine = pointToLineSegmentDistance(x, y, x1, y1, x2, y2);
       if (distToLine < HANDLE_SIZE) { // Tolerance for line selection
         return { index: i, handle: 'body' };
+      }
+    } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
+      const points = data.points;
+      for (let j = 0; j < points.length - 1; j++) {
+        const distToLine = pointToLineSegmentDistance(x, y, points[j].x, points[j].y, points[j+1].x, points[j+1].y);
+        if (distToLine < HANDLE_SIZE) {
+          return { index: i, handle: 'body' };
+        }
       }
     } else if (drawing.type === 'dot') {
       if (distance({ x, y }, { x: data.x, y: data.y }) < 5 + HANDLE_SIZE / 2) { // 5 is dot radius
@@ -142,15 +206,9 @@ const handleMouseDown = (event) => {
   const mouseY = event.offsetY;
 
   // Emit event if tutorial is active and mapping is not yet allowed
-  if (props.currStep > 0 && props.currStep  < 3) {
+  if ( props.tutorialNoMarkSteps.includes(props.currStep) ) {
     emit('canvas-click-during-tutorial');
     return; // Prevent any drawing or editing action during these steps
-  }
-
-
-  if (props.mode === 'red-line') {
-    // Do nothing on mousedown for two-click logic
-    return;
   }
 
   if (props.mode === 'edit') {
@@ -178,14 +236,13 @@ const handleMouseDown = (event) => {
 
   // Original drawing mode logic
   if (!props.mode || props.mode === 'erase' || props.mode === 'dot') return;
-  // --- Begin red-line mode logic ---
-  if (props.mode === 'red-line') {
+
+  if (props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') {
     isDrawing.value = true;
-    startPoint.value = { x: mouseX, y: mouseY };
-    currentDrawing.value = { type: 'red-line', data: {} };
-    return;
+    activeZigzagPoints.value.push({ x: mouseX, y: mouseY });
+    return; // Exit early so it doesn't run the single-shape setup below
   }
-  // --- End red-line mode logic ---
+
   isDrawing.value = true;
   startPoint.value = { x: mouseX, y: mouseY };
   currentDrawing.value = { type: props.mode, data: {} };
@@ -193,7 +250,7 @@ const handleMouseDown = (event) => {
 
 const handleMouseMove = (event) => {
   // Prevent any drawing or editing action during these steps
-  if (props.currStep > 0 && props.currStep < 3) {
+  if ( props.tutorialNoMarkSteps.includes(props.currStep) ) {
     return;
   }
   // --- Erase mode: highlight line to delete ---
@@ -202,40 +259,46 @@ const handleMouseMove = (event) => {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     let highlightIndex = -1;
-    // Find the topmost line (including red-line) under the cursor
+    // Find the topmost line under the cursor
     for (let i = props.drawings.length - 1; i >= 0; i--) {
       const drawing = props.drawings[i];
-      if ((drawing.type === 'line' || drawing.type === 'red-line')) {
+      if (drawing.type === 'line') {
         const { x1, y1, x2, y2 } = drawing.data;
         const dist = pointToLineSegmentDistance(mouseX, mouseY, x1, y1, x2, y2);
         if (dist < HANDLE_SIZE) {
           highlightIndex = i;
           break;
         }
+      } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
+        const points = drawing.data.points;
+        for (let j = 0; j < points.length - 1; j++) {
+          const dist = pointToLineSegmentDistance(
+              mouseX, mouseY,
+              points[j].x, points[j].y,
+              points[j+1].x, points[j+1].y
+          );
+          if (dist < HANDLE_SIZE) {
+            highlightIndex = i;
+            break; // Found a segment close enough
+          }
+        }
+        if (highlightIndex !== -1) break; // Break the outer drawings loop too
       }
     }
     annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
     props.drawings.forEach((drawing, idx) => {
+      if (idx === highlightIndex && (drawing.type === 'line' || drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash')) {
+        // Draw highlighted in blue
+        drawShape(annCtx.value, { ...drawing, color: 'blue' }, -1);
+      } else {
         drawShape(annCtx.value, drawing, -1);
+      }
     });
     // Store for click
     handleMouseMove._highlightIndex = highlightIndex;
     return;
   }
-  if (props.mode === 'red-line') {
-    if (!isDrawing.value || !startPoint.value || !annCtx.value) return;
-    const mouseX = event.offsetX;
-    const mouseY = event.offsetY;
-    annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-    if (props.drawings) {
-      props.drawings.forEach(existingDrawing => {
-        drawShape(annCtx.value, existingDrawing, -1);
-      });
-    }
-    // Live preview
-    drawShape(annCtx.value, { type: 'red-line', data: { x1: startPoint.value.x, y1: startPoint.value.y, x2: mouseX, y2: mouseY }, color: 'red' }, -1);
-    return;
-  }
+
   const mouseX = event.offsetX;
   const mouseY = event.offsetY;
 
@@ -256,7 +319,16 @@ const handleMouseMove = (event) => {
         currentData.y1 += dy;
         currentData.x2 += dx;
         currentData.y2 += dy;
+      } else if (selectedDrawing.type === 'zigzag-dotted' || selectedDrawing.type === 'zigzag-solid' || selectedDrawing.type === 'zigzag-dash') {
+        currentData.points = originalShapeData.value.points.map(p => ({
+          x: p.x + dx,
+          y: p.y + dy
+        }));
       }
+    } else if (editHandle.value.startsWith('point-')) {
+      const pointIndex = parseInt(editHandle.value.split('-')[1]);
+      currentData.points[pointIndex].x = mouseX;
+      currentData.points[pointIndex].y = mouseY;
     } else if (editHandle.value === 'radius' && selectedDrawing.type === 'circle') {
       const newRadius = distance({ x: currentData.x, y: currentData.y }, { x: mouseX, y: mouseY });
       currentData.radius = Math.max(1, newRadius);
@@ -286,6 +358,57 @@ const handleMouseMove = (event) => {
   const currentX = event.offsetX;
   const currentY = event.offsetY;
 
+  // ZIGZAG PREVIEW BLOCK
+  if ((props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash' ) && activeZigzagPoints.value.length > 0) {
+    annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
+
+    // Redraw existing background shapes
+    if (props.drawings) {
+      props.drawings.forEach(existingDrawing => {
+        drawShape(annCtx.value, existingDrawing, -1);
+      });
+    }
+
+    // Draw the active zigzag segments
+    annCtx.value.save();
+    if (props.mode === 'zigzag-dotted') {
+      annCtx.value.strokeStyle = '#c58336';
+      annCtx.value.setLineDash([3, 3]);
+    } else if (props.mode === 'zigzag-solid') {
+      annCtx.value.strokeStyle = '#635dff';
+      annCtx.value.setLineDash([]);
+    } else if (props.mode === 'zigzag-dash') {
+      annCtx.value.strokeStyle = '#6f6e2a';
+      annCtx.value.setLineDash([10, 3]);
+    }
+    annCtx.value.lineWidth = 3;
+
+    annCtx.value.beginPath();
+    annCtx.value.moveTo(activeZigzagPoints.value[0].x, activeZigzagPoints.value[0].y);
+
+    // Connect committed inflection points
+    for (let i = 1; i < activeZigzagPoints.value.length; i++) {
+      annCtx.value.lineTo(activeZigzagPoints.value[i].x, activeZigzagPoints.value[i].y);
+    }
+
+    // Draw dynamic line to current mouse position
+    annCtx.value.lineTo(currentX, currentY);
+    annCtx.value.stroke();
+
+    // Draw Corners
+    annCtx.value.setLineDash([]);
+    const anchorRadius = 2;
+    activeZigzagPoints.value.forEach(point => {
+      annCtx.value.beginPath();
+      annCtx.value.arc(point.x, point.y, anchorRadius, 0, 2 * Math.PI);
+      annCtx.value.fill();
+      annCtx.value.stroke();
+    });
+
+    annCtx.value.restore();
+    return;
+  }
+
   if (!isDrawing.value || !currentDrawing.value || !annCtx.value || props.mode === 'dot' || props.mode === 'erase') return;
 
   annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
@@ -296,25 +419,17 @@ const handleMouseMove = (event) => {
   }
   const tempData = getCurrentShapeData(currentX, currentY);
   if (currentDrawing.value && currentDrawing.value.type) {
-    // --- Begin red-line live preview ---
-    if (props.mode === 'red-line') {
-      drawShape(annCtx.value, { type: 'red-line', data: tempData }, -1);
-    } else {
-      drawShape(annCtx.value, { type: currentDrawing.value.type, data: tempData }, -1);
-    }
-    // --- End red-line live preview ---
+
+    drawShape(annCtx.value, {type: currentDrawing.value.type, data: tempData}, -1);
   }
 };
 
 const handleMouseUp = (event) => {
   // Prevent any drawing or editing action during these steps
-  if (props.currStep > 0 && props.currStep < 3) {
+  if ( props.tutorialNoMarkSteps.includes(props.currStep) ) {
     return;
   }
-  if (props.mode === 'red-line') {
-    // Do nothing on mouseup for two-click logic
-    return;
-  }
+
   if (props.mode === 'edit' && isEditing.value && selectedShapeIndex.value !== -1) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
@@ -333,7 +448,16 @@ const handleMouseUp = (event) => {
         finalData.y1 += dy;
         finalData.x2 += dx;
         finalData.y2 += dy;
+      } else if (selectedType === 'zigzag-dotted' || selectedType === 'zigzag-solid' || selectedType === 'zigzag-dash' ) {
+        finalData.points = originalShapeData.value.points.map(p => ({
+          x: p.x + dx,
+          y: p.y + dy
+        }));
       }
+    } else if (editHandle.value.startsWith('point-')) {
+      const pointIndex = parseInt(editHandle.value.split('-')[1]);
+      finalData.points[pointIndex].x = mouseX;
+      finalData.points[pointIndex].y = mouseY;
     } else if (editHandle.value === 'radius' && selectedType === 'circle') {
       const newRadius = distance({ x: finalData.x, y: finalData.y }, { x: mouseX, y: mouseY });
       finalData.radius = Math.max(1, newRadius);
@@ -368,6 +492,9 @@ const handleMouseUp = (event) => {
     return;
   }
 
+  // If zigzag mode, do nothing on mouse up
+  if (props.mode === 'zigzag-dotted' || props.mode === 'zigzag-solid' || props.mode === 'zigzag-dash') return;
+
   if (!isDrawing.value || !currentDrawing.value || props.mode === 'dot' || props.mode === 'erase') {
     isDrawing.value = false;
     return;
@@ -376,17 +503,7 @@ const handleMouseUp = (event) => {
   const drawingData = getCurrentShapeData(endPoint.x, endPoint.y);
 
   let isValidDrawing = true;
-  // --- Begin red-line validation ---
-  if (props.mode === 'red-line') {
-    const dx_draw = endPoint.x - startPoint.value.x;
-    const dy_draw = endPoint.y - startPoint.value.y;
-    const length = Math.sqrt(dx_draw * dx_draw + dy_draw * dy_draw);
-    if (length <= MINSIZE) {
-      isValidDrawing = false;
-      console.log('red-line too small');
-    }
-  }
-  // --- End red-line validation ---
+
   if (props.mode === 'line' || props.mode === 'circle') {
     const dx_draw = endPoint.x - startPoint.value.x;
     const dy_draw = endPoint.y - startPoint.value.y;
@@ -408,28 +525,12 @@ const handleMouseUp = (event) => {
     redrawAnnotations();
     return;
   }
-  // --- Begin red-line finalize ---
-  if (props.mode === 'red-line') {
-    const finalDrawing = { type: 'red-line', data: drawingData, color: 'red' };
-    emit('draw', finalDrawing);
-    isDrawing.value = false;
-    startPoint.value = null;
-    currentDrawing.value = null;
-    return;
-  }
-  // --- End red-line finalize ---
+
   const finalDrawing = { type: props.mode, data: drawingData };
   emit('draw', finalDrawing);
   isDrawing.value = false;
   startPoint.value = null;
   currentDrawing.value = null;
-
-  // Add validation calls for boulders (lines) and craters (circles) here
-  if (props.currStep === 4 && finalDrawing.type === 'line') {
-    validateBoulderDrawing(finalDrawing);
-  } else if (props.currStep === 5 && finalDrawing.type === 'circle') {
-    validateCraterDrawing(finalDrawing);
-  }
 };
 const validateBoulderDrawing = (drawnLine) => {
   const { x1: dl_x1, y1: dl_y1, x2: dl_x2, y2: dl_y2 } = drawnLine.data;
@@ -524,7 +625,7 @@ const handleCanvasClick = (event) => {
         if (distance({ x: clickX, y: clickY }, { x: data.x, y: data.y }) < data.radius + 5) { // Added +5 for a bit more hit area
           hit = true;
         }
-      } else if (drawing.type === 'line' || drawing.type === 'red-line') {
+      } else if (drawing.type === 'line') {
         // Use the pointToLineSegmentDistance for lines
         if (pointToLineSegmentDistance(clickX, clickY, data.x1, data.y1, data.x2, data.y2) < 5) { // 5 is tolerance
           hit = true;
@@ -545,35 +646,6 @@ const handleCanvasClick = (event) => {
       }
     }
     return; // Exit erase mode logic
-  }
-  if (props.mode === 'red-line') {
-    const mouseX = event.offsetX;
-    const mouseY = event.offsetY;
-    if (!isDrawing.value) {
-      // First click: set start point
-      startPoint.value = { x: mouseX, y: mouseY };
-      isDrawing.value = true;
-      // Show preview on next mousemove
-    } else {
-      // Second click: finalize line
-      const endPoint = { x: mouseX, y: mouseY };
-      const dx = endPoint.x - startPoint.value.x;
-      const dy = endPoint.y - startPoint.value.y;
-      const length = Math.sqrt(dx * dx + dy * dy);
-      if (length > MINSIZE) {
-        const finalDrawing = { type: 'red-line', data: { x1: startPoint.value.x, y1: startPoint.value.y, x2: endPoint.x, y2: endPoint.y }, color: 'red' };
-        emit('draw', finalDrawing);
-      }
-      isDrawing.value = false;
-      startPoint.value = null;
-      annCtx.value && annCtx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value);
-      if (props.drawings) {
-        props.drawings.forEach(existingDrawing => {
-          drawShape(annCtx.value, existingDrawing, -1);
-        });
-      }
-    }
-    return;
   }
 
   if (props.mode === 'edit') {
@@ -611,7 +683,6 @@ const handleCanvasClick = (event) => {
   }
 
   if (props.mode === 'erase') {
-    console.log("here");
     // ... (original erase logic)
     if (!props.drawings || props.drawings.length === 0) return;
     // Consider using getShapeAtPoint for more consistent hit detection if desired
@@ -622,7 +693,15 @@ const handleCanvasClick = (event) => {
         if (distance({x: clickX, y: clickY}, drawing.data) < drawing.data.radius + 5) hit = true;
       } else if (drawing.type === 'line') {
         if (pointToLineSegmentDistance(clickX, clickY, drawing.data.x1, drawing.data.y1, drawing.data.x2, drawing.data.y2) < 5) hit = true;
-      } else if (drawing.type === 'dot') {
+      } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
+        const points = data.points;
+        for (let j = 0; j < points.length - 1; j++) {
+          if (pointToLineSegmentDistance(clickX, clickY, points[j].x, points[j].y, points[j + 1].x, points[j + 1].y) < 5) {
+            hit = true;
+            break; // Stop checking segments if one is hit
+          }
+        }
+      }else if (drawing.type === 'dot') {
         if (distance({x: clickX, y: clickY}, drawing.data) < 5 + 2) hit = true; // 5 is dot radius
       }
       if (hit) {
@@ -641,7 +720,6 @@ const getCurrentShapeData = (x2, y2) => {
     const radius = Math.sqrt(dx * dx + dy * dy);
     return { x: startPoint.value.x, y: startPoint.value.y, radius };
   } else if (props.mode === 'line' && startPoint.value) {
-
     return { x1: startPoint.value.x, y1: startPoint.value.y, x2, y2 };
   }
   return {};
@@ -674,8 +752,8 @@ const drawShape = (context, drawing, index) => {
     context.arc(drawing.data.x, drawing.data.y, drawing.data.radius, 0, 2 * Math.PI);
     context.stroke();
     context.fill();
-  } else if (drawing.type === 'line' || drawing.type === 'red-line') {
-    // --- Begin red-line rendering ---
+  } else if (drawing.type === 'line' ) {
+    // --- Outer Line ---
     let colorOverride = drawing.color;
     const isRed = drawing.type === 'red-line' || colorOverride === 'red';
     const isBlue = colorOverride === 'blue';
@@ -701,6 +779,53 @@ const drawShape = (context, drawing, index) => {
     context.stroke();
     // --- End red-line rendering ---
 
+  } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
+    if (!drawing.data.points || drawing.data.points.length < 2) return;
+
+    const isHighlighted = drawing.color === 'blue';
+
+    // --- Determine Style Based on Type ---
+    let strokeColor = '#c58336'; // Default orange
+    let dashPattern = [];        // Default solid
+
+    if (drawing.type === 'zigzag-dotted') {
+      strokeColor = '#c58336';   // Orange
+      dashPattern = [3, 3];
+    } else if (drawing.type === 'zigzag-solid') {
+      strokeColor = '#635dff';   // indigo
+      dashPattern = [];          // Solid
+    } else if (drawing.type === 'zigzag-dash') {
+      strokeColor = '#6f6e2a';   // Same green as lines
+      dashPattern = [10, 3];
+    }
+
+    // Override color if hovered/selected for erase/edit
+    context.strokeStyle = isHighlighted ? 'blue' : strokeColor;
+    context.fillStyle = isHighlighted ? 'blue' : strokeColor;
+
+    // --- Draw the Line ---
+    context.lineWidth = 3;
+    context.setLineDash(isHighlighted ? [] : dashPattern); // Remove dash if highlighted for better visibility
+
+    context.beginPath();
+    context.moveTo(drawing.data.points[0].x, drawing.data.points[0].y);
+    for (let i = 1; i < drawing.data.points.length; i++) {
+      context.lineTo(drawing.data.points[i].x, drawing.data.points[i].y);
+    }
+    context.stroke();
+
+    // --- Draw the Anchor Dots ---
+    context.setLineDash([]);
+    const anchorRadius = 2;
+    drawing.data.points.forEach(point => {
+      context.beginPath();
+      context.arc(point.x, point.y, anchorRadius, 0, 2 * Math.PI);
+      context.fill();
+      // Use white stroke for anchors to make them pop against darker colors
+      context.strokeStyle = isHighlighted ? 'blue' : 'white';
+      context.lineWidth = 1;
+      context.stroke();
+    });
   } else if (drawing.type === 'dot') {
     const dotRadius = 5;
     context.fillStyle = '#29336c';
@@ -733,6 +858,20 @@ const drawShape = (context, drawing, index) => {
       context.fillRect(handleX - HANDLE_SIZE / 2, handleY - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
       context.strokeRect(handleX - HANDLE_SIZE / 2, handleY - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
 
+    } else if (drawing.type === 'zigzag-dotted' || drawing.type === 'zigzag-solid' || drawing.type === 'zigzag-dash') {
+      context.beginPath();
+      context.moveTo(drawing.data.points[0].x, drawing.data.points[0].y);
+      for (let i = 1; i < drawing.data.points.length; i++) {
+        context.lineTo(drawing.data.points[i].x, drawing.data.points[i].y);
+      }
+      context.stroke();
+
+      // Draw a handle for EVERY point
+      context.fillStyle = HANDLE_COLOR;
+      drawing.data.points.forEach(p => {
+        context.fillRect(p.x - HANDLE_SIZE / 2, p.y - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
+        context.strokeRect(p.x - HANDLE_SIZE / 2, p.y - HANDLE_SIZE / 2, HANDLE_SIZE, HANDLE_SIZE);
+      });
     } else if (drawing.type === 'line') {
       context.beginPath(); // Re-stroke line with selection color
       context.moveTo(drawing.data.x1, drawing.data.y1);
@@ -767,7 +906,7 @@ const redrawAnnotations = () => {
 };
 
 onMounted(() => {
-  // ... (original onMounted)
+  window.addEventListener('keydown', handleKeyDown)
   const bgCanvas = canvas__map.value;
   if (bgCanvas) {
     bgCtx.value = bgCanvas.getContext('2d');
@@ -777,6 +916,10 @@ onMounted(() => {
     annCtx.value = annCanvas.getContext('2d');
   }
   loadImage();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown);
 });
 
 watch(() => props.imageName, (newVal, oldVal) => {
@@ -794,7 +937,6 @@ watch(() => props.drawings, () => {
 watch(() => props.mode, (newMode) => {
   if (newMode !== 'edit') {
     selectedShapeIndex.value = -1; // Deselect when changing mode
-    isEditing.value = false;
     isEditing.value = false;
     editHandle.value = null;
   }
