@@ -246,7 +246,16 @@ const handleMouseDown = (event) => {
   isDrawing.value = true;
   startPoint.value = { x: mouseX, y: mouseY };
   currentDrawing.value = { type: props.mode, data: {} };
+
+  // Add validation calls for boulders (lines) and craters (circles) here
+  if (props.currStep === 4 && finalDrawing.type === 'line') {
+    validateBoulderDrawing(finalDrawing);
+  } else if (props.currStep === 5 && finalDrawing.type === 'circle') {
+    validateCraterDrawing(finalDrawing);
+  }
 };
+
+
 
 const handleMouseMove = (event) => {
   // Prevent any drawing or editing action during these steps
@@ -508,11 +517,11 @@ const handleMouseUp = (event) => {
     const dx_draw = endPoint.x - startPoint.value.x;
     const dy_draw = endPoint.y - startPoint.value.y;
     const length = Math.sqrt(dx_draw * dx_draw + dy_draw * dy_draw);
-    if (props.mode === 'line' && length <= MINSIZE) { // Corrected typo
+    if (props.mode === 'line' && length <= MINSIZE) {
       isValidDrawing = false;
       console.log('line too small');
     }
-    else if (props.mode === 'circle' && length <= 0.5 * MINSIZE) { // Corrected typo
+    else if (props.mode === 'circle' && length <= 0.5 * MINSIZE) {
       isValidDrawing = false;
       console.log('circle too small');
     }
@@ -531,6 +540,13 @@ const handleMouseUp = (event) => {
   isDrawing.value = false;
   startPoint.value = null;
   currentDrawing.value = null;
+
+  // Add validation calls for boulders (lines) and craters (circles) here
+  if (props.currStep === 4 && finalDrawing.type === 'line') {
+    validateBoulderDrawing(finalDrawing);
+  } else if (props.currStep === 5 && finalDrawing.type === 'circle') {
+    validateCraterDrawing(finalDrawing);
+  }
 };
 const validateBoulderDrawing = (drawnLine) => {
   const { x1: dl_x1, y1: dl_y1, x2: dl_x2, y2: dl_y2 } = drawnLine.data;
