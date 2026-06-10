@@ -361,8 +361,7 @@ const tutorialSteps = [
   {
     id: 7,
     title: "Check your work, then get mapping!",
-    //content: "We're showing you how we marked the image. How do your marks compare? You can repear this tutorial " +
-    content: "You can repeat this tutorial " +
+    content: "We're showing you how we marked the image. How do your marks compare? You can repeat this tutorial " +
         "as many times as you want until you are confident in your work! When you're ready, " +
         "there are discoveries waiting to be made as we work together!<br><br>",
     className: "step-7",
