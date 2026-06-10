@@ -180,7 +180,7 @@
                   type="radio"
                   :value="false"
                   v-model="showMarks"
-                  @change="setExamples(null)"
+                  @change="setExamples()"
               > off
             </div>
             <h4>Examples</h4>
@@ -326,7 +326,7 @@ const tutorialSteps = [
     id: 4,
     title: "Marking the flow's edge",
     content: "During an impact, rock can melt and flow like lava across the lunar surface. We want to map " +
-        "the boundary between the melt flow and the surrounding terrain whenever we see it. Just click where the flow" +
+        "the boundary between the melt flow and the surrounding terrain whenever we see it. Just click where the flow " +
         "near one edge of the image and follow it along to the other edge of the image. When you're done,  " +
         "hit [esc] or double click to end the line.",
     className: "step-4",
@@ -361,7 +361,8 @@ const tutorialSteps = [
   {
     id: 7,
     title: "Check your work, then get mapping!",
-    content: "We're showing you how we marked the image. How do your marks compare? You can repear this tutorial " +
+    //content: "We're showing you how we marked the image. How do your marks compare? You can repear this tutorial " +
+    content: "You can repeat this tutorial " +
         "as many times as you want until you are confident in your work! When you're ready, " +
         "there are discoveries waiting to be made as we work together!<br><br>",
     className: "step-7",
@@ -427,7 +428,7 @@ const endTutorial = async () => {
 // Set the button background
 const setMode = (newMode) => {
   // Set which steps allow which modes
-  if (currStep.value === 1 || currStep.value === 3 || currStep.value === 6 || currStep.value === 7 ) {
+  if (currStep.value === 1 || currStep.value === 3 || currStep.value === 7 ) {
     displayPatienceMessage();
     return;
   }
@@ -499,7 +500,7 @@ function setExamples(tool = currentTool.value) {
     for (let i = 1; i <= 3; i++) {
       exampleImages.value.push(prefix + `example-cracks-${i}${suffix}`);
     }
-  } else if (tool === 'zigzag-dashed') {
+  } else if (tool === 'zigzag-dash') {
     for (let i = 1; i <= 3; i++) {
       exampleImages.value.push(prefix + `example-ridge-${i}${suffix}`);
     }
@@ -602,6 +603,15 @@ watch(currStep, (newStep, oldStep) => {
       canvasMapRef.value.setDrawingMode(null); // Clear the drawing mode on the canvas as well
     }
   }
+
+  // Change the image to the premarked one as needed
+  if (newStep === 7) {
+    imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-TutorialImage-marked.png";
+  } else {
+    // Revert to the original clean image if they go back to earlier steps
+    imageUrl.value = "https://moon-mappers.s3.us-east-2.amazonaws.com/Tutorial/LunarMelt-Act2-TutorialImage.png";
+  }
+
 });
 
 </script>
