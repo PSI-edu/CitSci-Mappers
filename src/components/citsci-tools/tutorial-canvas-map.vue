@@ -975,9 +975,12 @@ const loadImage = () => {
     if (annotationCanvas.value) { // Check if annotationCanvas is mounted
       annotationCanvas.value.width = image.width;
       annotationCanvas.value.height = image.height;
+      annCtx.value = annotationCanvas.value.getContext('2d');
     }
     bgCtx.value.drawImage(image, 0, 0);
-    redrawAnnotations();
+    requestAnimationFrame(() => {
+      redrawAnnotations();
+    });
   };
 
   image.onerror = () => {
