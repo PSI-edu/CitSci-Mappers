@@ -11,9 +11,9 @@
       <NavBarDropdown
           label="Learn More"
           :items="[
-              { path: 'https://mappers.psi.edu/learn/', label: 'Knowledge Base' },
-              { path: 'https://mappers.psi.edu/learn/lunar-melt/', label: 'Explore the Moon'},
-              { path: 'https://mappers.psi.edu/learn/mars-mosiacs/', label: 'Explore Mars' },
+              { path: '/learn/', label: 'Knowledge Base' },
+              { path: '/learn/lunar-melt/', label: 'Explore the Moon'},
+              { path: '/learn/mars-mosiacs/', label: 'Explore Mars' },
           ]"
       />
     <template v-if="isAuthenticated">
