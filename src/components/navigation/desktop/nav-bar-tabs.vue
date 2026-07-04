@@ -8,7 +8,14 @@
               { path: '/do_science/mars-mosaic', label: 'Mars Mosaics' },
           ]"
     />
-    <NavBarTab path="https://mappers.psi.edu/learn" label="Learn more" external />
+      <NavBarDropdown
+          label="Learn More"
+          :items="[
+              { path: '/learn', label: 'Knowledge Base' },
+              { path: '/learn/lunar-melt/', label: 'Explore the Moon'},
+              { path: '/learn/mars-mosiacs/', label: 'Explore Mars' },
+          ]"
+      />
     <template v-if="isAuthenticated">
       <NavBarTab path="/profile" label="Profile" />
     </template>
