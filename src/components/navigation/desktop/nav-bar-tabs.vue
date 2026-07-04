@@ -11,7 +11,7 @@
       <NavBarDropdown
           label="Learn More"
           :items="[
-              { path: '/learn/', label: 'Knowledge Base' },
+              { path: 'https://mappers.psi.edu/learn/', label: 'Knowledge Base', external: true },
               { path: '/learn/lunar-melt/', label: 'Explore the Moon'},
               { path: '/learn/mars-mosiacs/', label: 'Explore Mars' },
           ]"
@@ -28,4 +28,5 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import NavBarDropdown from "@/components/navigation/desktop/nav-bar-dropdown.vue";
 
 const { isAuthenticated } = useAuth0();
+
 </script>

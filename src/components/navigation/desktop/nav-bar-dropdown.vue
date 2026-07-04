@@ -4,16 +4,28 @@
       {{ label }}
       <span class="dropdown-arrow">▼</span> </div>
     <div v-if="isOpen" class="nav-bar__dropdown-menu">
-      <router-link
-          v-for="item in items"
-          :key="item.path"
-          :to="item.path"
-          class="nav-bar__dropdown-item"
-          active-class="nav-bar__dropdown-item--active"
-          @click="closeDropdown"
-      >
-        {{ item.label }}
-      </router-link>
+      <template v-for="item in items" :key="item.path">
+        <a
+            v-if="item.external"
+            :href="item.path"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-bar__dropdown-item"
+            @click="closeDropdown"
+        >
+          {{ item.label }}
+        </a>
+
+        <router-link
+            v-else
+            :to="item.path"
+            class="nav-bar__dropdown-item"
+            active-class="nav-bar__dropdown-item--active"
+            @click="closeDropdown"
+        >
+          {{ item.label }}
+        </router-link>
+      </template>
     </div>
   </div>
 </template>
