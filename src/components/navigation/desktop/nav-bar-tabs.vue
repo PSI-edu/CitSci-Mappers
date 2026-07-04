@@ -12,8 +12,8 @@
           label="Learn More"
           :items="[
               { path: 'https://mappers.psi.edu/learn/', label: 'Knowledge Base', external: true },
-              { path: '/learn/lunar-melt/', label: 'Explore the Moon'},
-              { path: '/learn/mars-mosiacs/', label: 'Explore Mars' },
+              { path: 'https://mappers.psi.edu/learn/lunar-melt/', label: 'Explore the Moon', external: true },
+              { path: 'https://mappers.psi.edu/learn/mars-mosiacs/', label: 'Explore Mars', external: true },
           ]"
       />
     <template v-if="isAuthenticated">
