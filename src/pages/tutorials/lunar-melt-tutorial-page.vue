@@ -170,7 +170,7 @@
     </PageLayout>
   </template>
   <template v-else>
-    <PageLayout title=": Lunar Melt BETA">
+    <PageLayout title=": Lunar Melt">
       <div class="content-layout">
         <div id="citsci-main-panel">
           <div id="citsci-buttons-panel">

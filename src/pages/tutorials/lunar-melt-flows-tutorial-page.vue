@@ -1,7 +1,7 @@
 <template>
   <template v-if="isNoFingers">
     <div class="darken" v-if="currStep==1"></div>
-    <PageLayout title=": Lunar Flows BETA" >
+    <PageLayout title=": Lunar Flows" >
       <div v-if="!isAuthenticated && !isLoading" class="loginDiv">
         <img src="https://learn-wp.s3.us-east-2.amazonaws.com/learn/wp-content/uploads/2025/06/06200746/Moon-150x150.png" alt="Moon Logo"/>
         <h2>Please Log In</h2>
@@ -94,7 +94,7 @@
 
           </div>
           <div class="citsci-info-panel melt">
-            <h5>Activity 2: Flows <span style="color: #c58336;">BETA</span></h5>
+            <h5>Activity 2: Flows <span style="color: #c58336;"></span></h5>
             <h3>Fractures, Flows & Channels, Ridges</h3>
             <div class="label">
               <p>Task:</p>

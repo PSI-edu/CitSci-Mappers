@@ -114,7 +114,7 @@
   </PageLayout>
 </template>
 <template v-else>
-  <PageLayout title=": Lunar Melt BETA" >
+  <PageLayout title=": Lunar Melt" >
     <div class="content-layout">
           <p>Sorry, this tool is only available when using a pointer such as a mouse or stylus.</p>
     </div>
