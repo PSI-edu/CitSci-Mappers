@@ -118,7 +118,7 @@
             </div>
 
             <div style="float: right; width: 45%; padding-top:10px;">
-              <h4>{{ infoTitle }}</h4>
+              <h5>{{ infoTitle }}</h5>
               <p>{{ infoText }}</p>
               <p><em>Not all images have flow features!</em></p>
             </div>
