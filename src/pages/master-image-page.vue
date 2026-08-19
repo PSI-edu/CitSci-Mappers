@@ -39,6 +39,9 @@
       <div class="floating-modal">
         <button class="close-btn" @click="closeModal" aria-label="Close modal">&times;</button>
         <div class="modal-content">
+          <!-- File Name Label -->
+          <p v-if="tileFileName" class="tile-filename">{{ tileFileName }}</p>
+
           <span v-if="isTileLoading" class="status">Loading sub-tile image...</span>
           <!-- 450x450 Canvas for Sub-tile Image -->
           <canvas
@@ -69,6 +72,7 @@ const isProcessingImage = ref(false);
 // Modal & Sub-tile Canvas state
 const isModalOpen = ref(false);
 const isTileLoading = ref(false);
+const tileFileName = ref('');
 
 // --- Canvas Refs ---
 const imageCanvas = ref(null);
@@ -90,10 +94,8 @@ onMounted(async () => {
   }
 });
 
-// Helper: Transforms master URL to sub-tile URL
-// e.g., https://.../Lowell_Crater/M138222163LE_final.png -> https://.../Lowell_Crater/M138222163LE_final/M138222163LE_final_0-0.png
+// Helper: Transforms master URL to sub-tile URL and extracts filename
 const constructTileUrl = (mainUrl, x, y) => {
-  // Strip potential query params
   const cleanUrl = mainUrl.split('?')[0];
 
   const lastSlashIndex = cleanUrl.lastIndexOf('/');
@@ -107,7 +109,10 @@ const constructTileUrl = (mainUrl, x, y) => {
   const roundedX = Math.round(x);
   const roundedY = Math.round(y);
 
-  return `${path}/${filenameBase}/${filenameBase}_${roundedX}-${roundedY}${ext}`;
+  const tileName = `${filenameBase}_${roundedX}-${roundedY}${ext}`;
+  const fullTileUrl = `${path}/${filenameBase}/${tileName}`;
+
+  return { fullTileUrl, tileName };
 };
 
 // --- Event Handlers ---
@@ -152,7 +157,6 @@ const handleCanvasClick = (event) => {
   const isXInOverlap = checkInOverlap(originalX, imgWidth);
   const isYInOverlap = checkInOverlap(originalY, imgHeight);
 
-  // If clicked inside a valid non-overlapping box, determine block coordinates and open modal
   if (!isXInOverlap && !isYInOverlap) {
     const blockX = Math.floor(originalX / stride) * stride;
     const blockY = Math.floor(originalY / stride) * stride;
@@ -165,9 +169,9 @@ const openModalWithTile = async (x, y) => {
   isModalOpen.value = true;
   isTileLoading.value = true;
 
-  const tileUrl = constructTileUrl(imageUrl.value, x, y);
+  const { fullTileUrl, tileName } = constructTileUrl(imageUrl.value, x, y);
+  tileFileName.value = tileName;
 
-  // Wait for the modal DOM element and <canvas> ref to mount
   await nextTick();
 
   if (!tileCanvas.value) return;
@@ -184,14 +188,15 @@ const openModalWithTile = async (x, y) => {
 
   tileImg.onerror = () => {
     isTileLoading.value = false;
-    errorMessage.value = `Failed to load tile image: ${tileUrl}`;
+    errorMessage.value = `Failed to load tile image: ${fullTileUrl}`;
   };
 
-  tileImg.src = tileUrl;
+  tileImg.src = fullTileUrl;
 };
 
 const closeModal = () => {
   isModalOpen.value = false;
+  tileFileName.value = '';
 };
 
 // --- Draw Image to Main Canvas ---
@@ -296,16 +301,15 @@ watch(imageUrl, async () => {
   z-index: 9999;
 }
 
-/* Modal Container sized to comfortably host the 450x450 canvas */
 .floating-modal {
   position: relative;
   width: 500px;
-  height: 520px;
+  height: 540px;
   background-color: #1e40af;
   color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  padding: 35px 20px 20px;
+  padding: 30px 20px 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -336,6 +340,14 @@ watch(imageUrl, async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.tile-filename {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  word-break: break-all;
+  text-align: center;
 }
 
 .tile-canvas {
