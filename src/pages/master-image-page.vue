@@ -115,6 +115,19 @@ const constructTileUrl = (mainUrl, x, y) => {
   return { fullTileUrl, tileName };
 };
 
+// --- Fetch Marks Data ---
+const fetchMarksData = async (tileName) => {
+  try {
+    // GET request passing ?name=filename
+    const response = await apiClient.post(`${API_SERVER}/marks-get.php`, {
+      params: { name: tileName }
+    });
+    console.log(`Marks data for ${tileName}:`, response.data);
+  } catch (error) {
+    console.error(`Failed to fetch marks for ${tileName}:`, error);
+  }
+};
+
 // --- Event Handlers ---
 const handleSetChange = () => {
   errorMessage.value = '';
@@ -171,6 +184,9 @@ const openModalWithTile = async (x, y) => {
 
   const { fullTileUrl, tileName } = constructTileUrl(imageUrl.value, x, y);
   tileFileName.value = tileName;
+
+  // Execute API request for marks data and log to console
+  fetchMarksData(tileName);
 
   await nextTick();
 
