@@ -19,16 +19,27 @@
 
           <!-- Status Indicators -->
           <span v-if="isLoading" class="status">Loading list...</span>
-          <span v-if="isProcessingImage" class="status processing">Processing...</span>
-          <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-
-          <span v-if="isLoading" class="status">Loading...</span>
-          <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+          <span v-if="isProcessingImage" class="status processing"> Processing...</span>
+          <p v-if="errorMessage" class="error"> {{ errorMessage }}</p>
         </div>
 
         <!-- Canvas Container -->
         <div v-show="imageUrl" class="canvas-container">
-          <canvas ref="imageCanvas" class="responsive-canvas"></canvas>
+          <canvas
+              ref="imageCanvas"
+              class="responsive-canvas"
+              @click="handleCanvasClick"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating 500x500 Blue Modal -->
+    <div v-if="isModalOpen" class="floating-modal-overlay">
+      <div class="floating-modal">
+        <button class="close-btn" @click="closeModal" aria-label="Close modal">&times;</button>
+        <div class="modal-content">
+          <h2>Details</h2>
         </div>
       </div>
     </div>
@@ -47,6 +58,7 @@ const imageSets = ref([]);
 const selectedSetId = ref('');
 const imageUrl = ref('');
 const isProcessingImage = ref(false);
+const isModalOpen = ref(false);
 
 // --- Canvas Ref ---
 const imageCanvas = ref(null);
@@ -55,21 +67,21 @@ const imageCanvas = ref(null);
 const API_SERVER = import.meta.env.VITE_MAPPERS_API_SERVER; // Adjust to your PHP API base route
 
 onMounted(async () => {
+  isLoading.value = true;
   try {
     const response = await apiClient.post(`${API_SERVER}/masterimages-list.php`);
     imageSets.value = response.data;
-    console.log(response.data)
   } catch (error) {
     console.error('Failed to load image sets:', error);
+    errorMessage.value = 'Failed to load master images.';
+  } finally {
+    isLoading.value = false;
   }
-})
+});
 
 // --- Event Handlers ---
 const handleSetChange = () => {
-  // Reset previous error
   errorMessage.value = '';
-
-  // Find the matching item from the array loaded during onMounted
   const selectedItem = imageSets.value.find(set => set.id === selectedSetId.value);
 
   if (selectedItem && selectedItem.details) {
@@ -80,11 +92,18 @@ const handleSetChange = () => {
   }
 };
 
+const handleCanvasClick = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
 // --- Draw Image to Canvas ---
 const drawImageToCanvas = () => {
   if (!imageUrl.value || !imageCanvas.value) return;
 
-  // Signal that image loading & drawing processing has started
   isProcessingImage.value = true;
 
   const canvas = imageCanvas.value;
@@ -92,74 +111,53 @@ const drawImageToCanvas = () => {
   const img = new Image();
 
   img.onload = () => {
-    // 1. Calculate container scaling
     const containerWidth = canvas.parentElement.clientWidth;
-    const scale = containerWidth / img.width; // Scale ratio between canvas and original image
+    const scale = containerWidth / img.width;
 
-    // 2. Set Canvas dimensions based on scale
     canvas.width = containerWidth;
     canvas.height = img.height * scale;
 
-    // 3. Clear and draw base image
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    // 4. Block parameters (in original image pixels)
     const blockSize = 450;
     const overlapRatio = 0.10;
-    const stride = blockSize * (1 - overlapRatio); // 405px step
+    const stride = blockSize * (1 - overlapRatio);
 
-    // Configure stroke styling
     ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 2; // Adjust border thickness as needed
+    ctx.lineWidth = 2;
 
-    // Configure text styling
-    const fontSize = Math.max(12, Math.round(14 * scale)); // Scales font, minimum 12px
+    const fontSize = Math.max(12, Math.round(14 * scale));
     ctx.font = `bold ${fontSize}px sans-serif`;
     ctx.fillStyle = '#FFFFFF';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
 
-    // 5. Nested Loops: Y-axis outer, X-axis inner
     for (let y = 0; y < img.height; y += stride) {
       for (let x = 0; x < img.width; x += stride) {
-
-        // Scale block coordinates to match canvas dimensions
         const canvasX = x * scale;
         const canvasY = y * scale;
         const currentWidth = Math.min(blockSize, img.width - x);
         const currentHeight = Math.min(blockSize, img.height - y);
-        const canvasBlockWidth = Math.min(blockSize, img.width - x) * scale;
-        const canvasBlockHeight = Math.min(blockSize, img.height - y) * scale;
+        const canvasBlockWidth = currentWidth * scale;
+        const canvasBlockHeight = currentHeight * scale;
 
-        // Draw rectangle stroke (no fill)
         ctx.strokeRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
 
-        // Top center coordinate calculation for text positioning
         const textX = canvasX + (canvasBlockWidth / 2);
-        const textY = canvasY + (4 * scale); // 4px padding from top border
-
-        // Label string using original image pixel values
+        const textY = canvasY + (4 * scale);
         const labelText = `${Math.round(x)},${Math.round(y)}`;
 
-        // Optional text shadow for readability over light background areas
         ctx.shadowColor = 'black';
         ctx.shadowBlur = 4;
-
-        // Draw text label at top center of box
         ctx.fillText(labelText, textX, textY);
-
-        // Reset shadow so it doesn't leak into other operations
         ctx.shadowBlur = 0;
       }
     }
 
-    // Finished drawing: hide the Processing indicator
     isProcessingImage.value = false;
-
   };
 
-  // Handle potential broken image paths or loading failures
   img.onerror = () => {
     isProcessingImage.value = false;
     errorMessage.value = 'Failed to load selected image file.';
@@ -169,11 +167,10 @@ const drawImageToCanvas = () => {
 };
 
 // Watch for imageUrl changes and redraw
-watch (imageUrl, async () => {
- await nextTick();
- drawImageToCanvas();
+watch(imageUrl, async () => {
+  await nextTick();
+  drawImageToCanvas();
 });
-
 </script>
 
 <style scoped>
@@ -183,9 +180,59 @@ watch (imageUrl, async () => {
 }
 
 .responsive-canvas {
-   width: 100%;
-   height: auto;
-   display: block;
- }
-</style>
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+}
 
+/* Floating Modal Overlay */
+.floating-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Fixed 500px by 500px Blue Box */
+.floating-modal {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  background-color: #1e40af; /* Deep blue background */
+  color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #93c5fd;
+}
+
+.modal-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+</style>
