@@ -17,6 +17,11 @@
             </option>
           </select>
 
+          <!-- Status Indicators -->
+          <span v-if="isLoading" class="status">Loading list...</span>
+          <span v-if="isProcessingImage" class="status processing">Processing...</span>
+          <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
           <span v-if="isLoading" class="status">Loading...</span>
           <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
         </div>
@@ -41,6 +46,7 @@ const isLoading = ref(false);
 const imageSets = ref([]);
 const selectedSetId = ref('');
 const imageUrl = ref('');
+const isProcessingImage = ref(false);
 
 // --- Canvas Ref ---
 const imageCanvas = ref(null);
@@ -77,6 +83,9 @@ const handleSetChange = () => {
 // --- Draw Image to Canvas ---
 const drawImageToCanvas = () => {
   if (!imageUrl.value || !imageCanvas.value) return;
+
+  // Signal that image loading & drawing processing has started
+  isProcessingImage.value = true;
 
   const canvas = imageCanvas.value;
   const ctx = canvas.getContext('2d');
@@ -144,6 +153,16 @@ const drawImageToCanvas = () => {
         ctx.shadowBlur = 0;
       }
     }
+
+    // Finished drawing: hide the Processing indicator
+    isProcessingImage.value = false;
+
+  };
+
+  // Handle potential broken image paths or loading failures
+  img.onerror = () => {
+    isProcessingImage.value = false;
+    errorMessage.value = 'Failed to load selected image file.';
   };
 
   img.src = imageUrl.value;
