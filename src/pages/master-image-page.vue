@@ -104,6 +104,13 @@ const drawImageToCanvas = () => {
     ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 2; // Adjust border thickness as needed
 
+    // Configure text styling
+    const fontSize = Math.max(12, Math.round(14 * scale)); // Scales font, minimum 12px
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
     // 5. Nested Loops: Y-axis outer, X-axis inner
     for (let y = 0; y < img.height; y += stride) {
       for (let x = 0; x < img.width; x += stride) {
@@ -111,11 +118,30 @@ const drawImageToCanvas = () => {
         // Scale block coordinates to match canvas dimensions
         const canvasX = x * scale;
         const canvasY = y * scale;
+        const currentWidth = Math.min(blockSize, img.width - x);
+        const currentHeight = Math.min(blockSize, img.height - y);
         const canvasBlockWidth = Math.min(blockSize, img.width - x) * scale;
         const canvasBlockHeight = Math.min(blockSize, img.height - y) * scale;
 
         // Draw rectangle stroke (no fill)
         ctx.strokeRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
+
+        // Top center coordinate calculation for text positioning
+        const textX = canvasX + (canvasBlockWidth / 2);
+        const textY = canvasY + (4 * scale); // 4px padding from top border
+
+        // Label string using original image pixel values
+        const labelText = `${Math.round(x)},${Math.round(y)}`;
+
+        // Optional text shadow for readability over light background areas
+        ctx.shadowColor = 'black';
+        ctx.shadowBlur = 4;
+
+        // Draw text label at top center of box
+        ctx.fillText(labelText, textX, textY);
+
+        // Reset shadow so it doesn't leak into other operations
+        ctx.shadowBlur = 0;
       }
     }
   };
