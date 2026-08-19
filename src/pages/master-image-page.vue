@@ -1,238 +1,35 @@
-<template>
-  <PageLayout>
-    <div class="content-layout">
-      <h1 id="page-title" class="content__title">Data Review</h1>
-      <div class="content__body">
-        <div class="control-group">
-          <label for="masters">Which image do you want to view?</label>
-          <select
-              id="masters"
-              name="masters"
-              v-model="selectedSetId"
-              @change="handleSetChange"
-          >
-            <option value="" disabled>-- Select a master image --</option>
-            <option v-for="set in imageSets" :key="set.id" :value="set.id">
-              {{ set.name }}
-            </option>
-          </select>
+const handleCanvasClick = (event) => {
+if (!imageCanvas.value) return;
 
-          <!-- Status Indicators -->
-          <span v-if="isLoading" class="status">Loading list...</span>
-          <span v-if="isProcessingImage" class="status processing"> Processing...</span>
-          <p v-if="errorMessage" class="error"> {{ errorMessage }}</p>
-        </div>
+const canvas = imageCanvas.value;
+const rect = canvas.getBoundingClientRect();
 
-        <!-- Canvas Container -->
-        <div v-show="imageUrl" class="canvas-container">
-          <canvas
-              ref="imageCanvas"
-              class="responsive-canvas"
-              @click="handleCanvasClick"
-          ></canvas>
-        </div>
-      </div>
-    </div>
+// 1. Calculate click position on the canvas in pixels
+const clickX = event.clientX - rect.left;
+const clickY = event.clientY - rect.top;
 
-    <!-- Floating 500x500 Blue Modal -->
-    <div v-if="isModalOpen" class="floating-modal-overlay">
-      <div class="floating-modal">
-        <button class="close-btn" @click="closeModal" aria-label="Close modal">&times;</button>
-        <div class="modal-content">
-          <h2>Details</h2>
-        </div>
-      </div>
-    </div>
-  </PageLayout>
-</template>
+// 2. Convert canvas click coordinates to original image scale
+const scale = canvas.width / canvas.offsetWidth; // Handles CSS vs Canvas pixel scaling
+const containerWidth = canvas.width;
 
-<script setup>
-import { ref, onMounted, watch, nextTick } from 'vue';
-import apiClient from '@/api/axios';
-import PageLayout from "@/components/page-layout.vue";
+// Get original image dimensions ratio from canvas width
+// (We use canvas width / container scaling to reconstruct original image coords)
+const imgWidth = imageCanvas.value.dataset.imgWidth;
+const imageScale = containerWidth / imgWidth;
 
-// --- State Variables ---
-const errorMessage = ref('');
-const isLoading = ref(false);
-const imageSets = ref([]);
-const selectedSetId = ref('');
-const imageUrl = ref('');
-const isProcessingImage = ref(false);
-const isModalOpen = ref(false);
+const originalX = clickX * scale / imageScale;
+const originalY = clickY * scale / imageScale;
 
-// --- Canvas Ref ---
-const imageCanvas = ref(null);
+// 3. Block overlap dimensions
+const blockSize = 450;
+const stride = 405; // 450 * 0.9
 
-// --- API Endpoints ---
-const API_SERVER = import.meta.env.VITE_MAPPERS_API_SERVER; // Adjust to your PHP API base route
+// Check if X or Y falls within the 405px - 450px window of any tile
+const isXInOverlap = (originalX % stride) >= stride && (originalX % stride) < blockSize;
+const isYInOverlap = (originalY % stride) >= stride && (originalY % stride) < blockSize;
 
-onMounted(async () => {
-  isLoading.value = true;
-  try {
-    const response = await apiClient.post(`${API_SERVER}/masterimages-list.php`);
-    imageSets.value = response.data;
-  } catch (error) {
-    console.error('Failed to load image sets:', error);
-    errorMessage.value = 'Failed to load master images.';
-  } finally {
-    isLoading.value = false;
-  }
-});
-
-// --- Event Handlers ---
-const handleSetChange = () => {
-  errorMessage.value = '';
-  const selectedItem = imageSets.value.find(set => set.id === selectedSetId.value);
-
-  if (selectedItem && selectedItem.details) {
-    imageUrl.value = selectedItem.details;
-  } else {
-    imageUrl.value = '';
-    errorMessage.value = 'Image URL not found for this selection.';
-  }
+// Only open modal if click is completely OUTSIDE overlap regions
+if (!isXInOverlap && !isYInOverlap) {
+isModalOpen.value = true;
+}
 };
-
-const handleCanvasClick = () => {
-  isModalOpen.value = true;
-};
-
-const closeModal = () => {
-  isModalOpen.value = false;
-};
-
-// --- Draw Image to Canvas ---
-const drawImageToCanvas = () => {
-  if (!imageUrl.value || !imageCanvas.value) return;
-
-  isProcessingImage.value = true;
-
-  const canvas = imageCanvas.value;
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-
-  img.onload = () => {
-    const containerWidth = canvas.parentElement.clientWidth;
-    const scale = containerWidth / img.width;
-
-    canvas.width = containerWidth;
-    canvas.height = img.height * scale;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    const blockSize = 450;
-    const overlapRatio = 0.10;
-    const stride = blockSize * (1 - overlapRatio);
-
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 2;
-
-    const fontSize = Math.max(12, Math.round(14 * scale));
-    ctx.font = `bold ${fontSize}px sans-serif`;
-    ctx.fillStyle = '#FFFFFF';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    for (let y = 0; y < img.height; y += stride) {
-      for (let x = 0; x < img.width; x += stride) {
-        const canvasX = x * scale;
-        const canvasY = y * scale;
-        const currentWidth = Math.min(blockSize, img.width - x);
-        const currentHeight = Math.min(blockSize, img.height - y);
-        const canvasBlockWidth = currentWidth * scale;
-        const canvasBlockHeight = currentHeight * scale;
-
-        ctx.strokeRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
-
-        const textX = canvasX + (canvasBlockWidth / 2);
-        const textY = canvasY + (4 * scale);
-        const labelText = `${Math.round(x)},${Math.round(y)}`;
-
-        ctx.shadowColor = 'black';
-        ctx.shadowBlur = 4;
-        ctx.fillText(labelText, textX, textY);
-        ctx.shadowBlur = 0;
-      }
-    }
-
-    isProcessingImage.value = false;
-  };
-
-  img.onerror = () => {
-    isProcessingImage.value = false;
-    errorMessage.value = 'Failed to load selected image file.';
-  };
-
-  img.src = imageUrl.value;
-};
-
-// Watch for imageUrl changes and redraw
-watch(imageUrl, async () => {
-  await nextTick();
-  drawImageToCanvas();
-});
-</script>
-
-<style scoped>
-.canvas-container {
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.responsive-canvas {
-  width: 100%;
-  height: auto;
-  display: block;
-  cursor: pointer;
-}
-
-/* Floating Modal Overlay */
-.floating-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-/* Fixed 500px by 500px Blue Box */
-.floating-modal {
-  position: relative;
-  width: 500px;
-  height: 500px;
-  background-color: #1e40af; /* Deep blue background */
-  color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.close-btn {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  line-height: 1;
-}
-
-.close-btn:hover {
-  color: #93c5fd;
-}
-
-.modal-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-</style>
