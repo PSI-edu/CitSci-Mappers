@@ -23,7 +23,7 @@
           <p v-if="errorMessage" class="error"> {{ errorMessage }}</p>
         </div>
 
-        <!-- Canvas Container -->
+        <!-- Master Canvas Container -->
         <div v-show="imageUrl" class="canvas-container">
           <canvas
               ref="imageCanvas"
@@ -34,12 +34,19 @@
       </div>
     </div>
 
-    <!-- Floating 500x500 Blue Modal -->
+    <!-- Floating Blue Modal -->
     <div v-if="isModalOpen" class="floating-modal-overlay">
       <div class="floating-modal">
         <button class="close-btn" @click="closeModal" aria-label="Close modal">&times;</button>
         <div class="modal-content">
-          <h2>Details</h2>
+          <span v-if="isTileLoading" class="status">Loading sub-tile image...</span>
+          <!-- 450x450 Canvas for Sub-tile Image -->
+          <canvas
+              ref="tileCanvas"
+              width="450"
+              height="450"
+              class="tile-canvas"
+          ></canvas>
         </div>
       </div>
     </div>
@@ -58,13 +65,17 @@ const imageSets = ref([]);
 const selectedSetId = ref('');
 const imageUrl = ref('');
 const isProcessingImage = ref(false);
-const isModalOpen = ref(false);
 
-// --- Canvas Ref ---
+// Modal & Sub-tile Canvas state
+const isModalOpen = ref(false);
+const isTileLoading = ref(false);
+
+// --- Canvas Refs ---
 const imageCanvas = ref(null);
+const tileCanvas = ref(null);
 
 // --- API Endpoints ---
-const API_SERVER = import.meta.env.VITE_MAPPERS_API_SERVER; // Adjust to your PHP API base route
+const API_SERVER = import.meta.env.VITE_MAPPERS_API_SERVER;
 
 onMounted(async () => {
   isLoading.value = true;
@@ -78,6 +89,26 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
+// Helper: Transforms master URL to sub-tile URL
+// e.g., https://.../Lowell_Crater/M138222163LE_final.png -> https://.../Lowell_Crater/M138222163LE_final/M138222163LE_final_0-0.png
+const constructTileUrl = (mainUrl, x, y) => {
+  // Strip potential query params
+  const cleanUrl = mainUrl.split('?')[0];
+
+  const lastSlashIndex = cleanUrl.lastIndexOf('/');
+  const path = cleanUrl.substring(0, lastSlashIndex);
+  const filenameWithExt = cleanUrl.substring(lastSlashIndex + 1);
+
+  const lastDotIndex = filenameWithExt.lastIndexOf('.');
+  const filenameBase = filenameWithExt.substring(0, lastDotIndex);
+  const ext = filenameWithExt.substring(lastDotIndex);
+
+  const roundedX = Math.round(x);
+  const roundedY = Math.round(y);
+
+  return `${path}/${filenameBase}/${filenameBase}_${roundedX}-${roundedY}${ext}`;
+};
 
 // --- Event Handlers ---
 const handleSetChange = () => {
@@ -98,7 +129,6 @@ const handleCanvasClick = (event) => {
   const canvas = imageCanvas.value;
   const rect = canvas.getBoundingClientRect();
 
-  // 1. Convert click coordinates relative to original image size
   const imgWidth = Number(canvas.dataset.imgWidth);
   if (!imgWidth) return;
 
@@ -107,10 +137,9 @@ const handleCanvasClick = (event) => {
   const originalY = (event.clientY - rect.top) * scale;
 
   const blockSize = 450;
-  const stride = 405; // 10% overlap step (450 * 0.9)
+  const stride = 405;
   const imgHeight = (canvas.height / canvas.width) * imgWidth;
 
-  // Helper function: returns true if coordinate falls inside ANY tile's overlap strip
   const checkInOverlap = (coord, maxLimit) => {
     for (let start = 0; start < maxLimit; start += stride) {
       if (coord >= start + stride && coord < start + blockSize) {
@@ -123,17 +152,49 @@ const handleCanvasClick = (event) => {
   const isXInOverlap = checkInOverlap(originalX, imgWidth);
   const isYInOverlap = checkInOverlap(originalY, imgHeight);
 
-  // Only open modal if the click is OUTSIDE all overlap regions on both axes
+  // If clicked inside a valid non-overlapping box, determine block coordinates and open modal
   if (!isXInOverlap && !isYInOverlap) {
-    isModalOpen.value = true;
+    const blockX = Math.floor(originalX / stride) * stride;
+    const blockY = Math.floor(originalY / stride) * stride;
+
+    openModalWithTile(blockX, blockY);
   }
+};
+
+const openModalWithTile = async (x, y) => {
+  isModalOpen.value = true;
+  isTileLoading.value = true;
+
+  const tileUrl = constructTileUrl(imageUrl.value, x, y);
+
+  // Wait for the modal DOM element and <canvas> ref to mount
+  await nextTick();
+
+  if (!tileCanvas.value) return;
+
+  const canvas = tileCanvas.value;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const tileImg = new Image();
+  tileImg.onload = () => {
+    ctx.drawImage(tileImg, 0, 0, 450, 450);
+    isTileLoading.value = false;
+  };
+
+  tileImg.onerror = () => {
+    isTileLoading.value = false;
+    errorMessage.value = `Failed to load tile image: ${tileUrl}`;
+  };
+
+  tileImg.src = tileUrl;
 };
 
 const closeModal = () => {
   isModalOpen.value = false;
 };
 
-// --- Draw Image to Canvas ---
+// --- Draw Image to Main Canvas ---
 const drawImageToCanvas = () => {
   if (!imageUrl.value || !imageCanvas.value) return;
 
@@ -144,7 +205,6 @@ const drawImageToCanvas = () => {
   const img = new Image();
 
   img.onload = () => {
-    // Store original image width for click calculation
     canvas.dataset.imgWidth = img.width;
 
     const containerWidth = canvas.parentElement.clientWidth;
@@ -236,23 +296,26 @@ watch(imageUrl, async () => {
   z-index: 9999;
 }
 
-/* Fixed 500px by 500px Blue Box */
+/* Modal Container sized to comfortably host the 450x450 canvas */
 .floating-modal {
   position: relative;
   width: 500px;
-  height: 500px;
+  height: 520px;
   background-color: #1e40af;
   color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  padding: 20px;
+  padding: 35px 20px 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .close-btn {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: 8px;
+  right: 14px;
   background: transparent;
   border: none;
   color: #ffffff;
@@ -267,8 +330,18 @@ watch(imageUrl, async () => {
 }
 
 .modal-content {
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-canvas {
+  width: 450px;
+  height: 450px;
+  background-color: #1d4ed8;
+  border-radius: 4px;
 }
 </style>
