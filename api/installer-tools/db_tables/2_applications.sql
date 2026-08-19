@@ -12,5 +12,5 @@ CREATE TABLE `applications` (
     `scistarter_project_apikey` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
 PRIMARY KEY (`id`),
 UNIQUE KEY `applications_name_unique` (`name`),
-    KEY `applications_scistarter_project_id_index` (`scistarter_project_id`)
+    KEY `applications_scistarter_project_id_index` (`scistarter_project_apikey`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

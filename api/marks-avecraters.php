@@ -58,7 +58,6 @@ $stmt_shared = $conn->prepare($sql_shared);
 
 $Nimages=0;
 foreach($images as $image) {
-    //echo $Nimages." = image_id ".$image['id'];
     $Nimages++;
 
     // Setup that Image

@@ -111,7 +111,7 @@
 
 .nav-bar__dropdown-menu {
   position: absolute;
-  top: 35px; /* Position right below the toggle */
+  top: 55px; /* Position right below the toggle */
   left: 0;
   background-color: var(--blue);
   border: 1px solid var(--aluminium);
