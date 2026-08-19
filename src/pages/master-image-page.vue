@@ -98,26 +98,32 @@ const handleCanvasClick = (event) => {
   const canvas = imageCanvas.value;
   const rect = canvas.getBoundingClientRect();
 
-  // 1. Calculate click position on canvas element in relative CSS pixels
-  const clickX = event.clientX - rect.left;
-  const clickY = event.clientY - rect.top;
-
-  // 2. Convert click coordinates to original image pixels
+  // 1. Convert click coordinates relative to original image size
   const imgWidth = Number(canvas.dataset.imgWidth);
+  if (!imgWidth) return;
+
   const scale = imgWidth / rect.width;
+  const originalX = (event.clientX - rect.left) * scale;
+  const originalY = (event.clientY - rect.top) * scale;
 
-  const originalX = clickX * scale;
-  const originalY = clickY * scale;
-
-  // 3. Block overlap dimensions (450px block, 405px step = 45px overlap)
   const blockSize = 450;
-  const stride = 405;
+  const stride = 405; // 10% overlap step (450 * 0.9)
+  const imgHeight = (canvas.height / canvas.width) * imgWidth;
 
-  // Position falls in overlap if modulo falls within stride (405) and blockSize (450)
-  const isXInOverlap = (originalX % stride) >= stride && (originalX % stride) < blockSize;
-  const isYInOverlap = (originalY % stride) >= stride && (originalY % stride) < blockSize;
+  // Helper function: returns true if coordinate falls inside ANY tile's overlap strip
+  const checkInOverlap = (coord, maxLimit) => {
+    for (let start = 0; start < maxLimit; start += stride) {
+      if (coord >= start + stride && coord < start + blockSize) {
+        return true;
+      }
+    }
+    return false;
+  };
 
-  // Only trigger modal if click is in a non-overlapping zone
+  const isXInOverlap = checkInOverlap(originalX, imgWidth);
+  const isYInOverlap = checkInOverlap(originalY, imgHeight);
+
+  // Only open modal if the click is OUTSIDE all overlap regions on both axes
   if (!isXInOverlap && !isYInOverlap) {
     isModalOpen.value = true;
   }
@@ -138,7 +144,7 @@ const drawImageToCanvas = () => {
   const img = new Image();
 
   img.onload = () => {
-    // Store original image width for click math
+    // Store original image width for click calculation
     canvas.dataset.imgWidth = img.width;
 
     const containerWidth = canvas.parentElement.clientWidth;
