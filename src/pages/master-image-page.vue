@@ -153,7 +153,20 @@ const redrawTileCanvas = () => {
 
   if (!tileMarks.value || tileMarks.value.length === 0) return;
 
-  tileMarks.value.forEach((mark) => {
+  tileMarks.value.forEach((mark, index) => {
+    // --- Helper to parse mark details ---
+    let detailsObj = mark.details;
+    if (typeof detailsObj === 'string') {
+      try {
+        detailsObj = JSON.parse(detailsObj);
+      } catch (e) {
+        console.error(`[Mark ${index}] Failed to parse details JSON string:`, e);
+      }
+    }
+
+    // Check if the mark type is 'margin' either directly or inside details
+    const isMargin = mark.type === 'margin' || detailsObj?.type === 'margin';
+
     // 1. Render Craters if checked
     if (mark.type === 'crater') {
       if (showCraters.value) {
@@ -164,14 +177,11 @@ const redrawTileCanvas = () => {
         ctx.save();
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-
         ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
         ctx.fill();
-
         ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
         ctx.lineWidth = 2;
         ctx.stroke();
-
         ctx.restore();
       }
     }
@@ -185,14 +195,11 @@ const redrawTileCanvas = () => {
         ctx.save();
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-
         ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
         ctx.fill();
-
         ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 1;
         ctx.stroke();
-
         ctx.restore();
       }
     }
@@ -208,29 +215,24 @@ const redrawTileCanvas = () => {
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
-
         ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
         ctx.lineWidth = 2;
         ctx.stroke();
-
         ctx.restore();
       }
     }
     // 4. Render Margins (Segmented Red Lines)
-    else if (mark.type === 'margin') {
-      let detailsObj = mark.details;
+    else if (isMargin) {
+      console.log(`[DEBUG - Margin Detected at index ${index}]:`, {
+        outerType: mark.type,
+        detailsRaw: mark.details,
+        parsedDetails: detailsObj
+      });
 
-      // Parse JSON string if details is returned as a string
-      if (typeof detailsObj === 'string') {
-        try {
-          detailsObj = JSON.parse(detailsObj);
-        } catch (e) {
-          console.error('Failed to parse margin details JSON:', e);
-          return;
-        }
-      }
+      // Extract points from details.data.points OR directly from details.points
+      const points = detailsObj?.data?.points || detailsObj?.points;
 
-      const points = detailsObj?.data?.points;
+      console.log(`[DEBUG - Margin Points]:`, points);
 
       if (Array.isArray(points) && points.length > 1) {
         ctx.save();
@@ -244,13 +246,19 @@ const redrawTileCanvas = () => {
         ctx.strokeStyle = '#FF0000'; // Solid Red
         ctx.lineWidth = 2;
         ctx.stroke();
-
         ctx.restore();
+
+        console.log(`[DEBUG - Margin Draw Success]: Connected ${points.length} points.`);
+      } else {
+        console.warn(`[DEBUG - Margin Draw Failed]: Points array is invalid or has < 2 items.`, points);
       }
     }
-    // 5. Log details for any unhandled mark types
+    // 5. Unhandled Types
     else {
-      console.log(`Unknown mark type "${mark.type}" details:`, mark.details);
+      console.log(`[DEBUG - Unhandled Mark Type]:`, {
+        type: mark.type,
+        markObj: mark
+      });
     }
   });
 };
@@ -270,12 +278,11 @@ const fetchMarksData = async (tileName) => {
 
     doneStatusText.value = activeStatus.length > 0 ? activeStatus.join(', ') : '-';
 
-    // Store array of marks
     if (Array.isArray(data?.marks)) {
       tileMarks.value = data.marks;
+      console.log('[DEBUG - Fetched Marks Total]:', data.marks.length, data.marks);
     }
 
-    // Draw base tile and marks
     redrawTileCanvas();
   } catch (error) {
     console.error(`Failed to fetch marks for ${tileName}:`, error);
