@@ -93,9 +93,9 @@ const isTileLoading = ref(false);
 const tileFileName = ref('');
 const doneStatusText = ref('-');
 const tileMarks = ref([]);
-const currentTileImage = ref(null); // Cached image element for fast redraws
+const currentTileImage = ref(null);
 
-// Mark Visibility Checkbox Filters (Default to checked)
+// Mark Visibility Checkbox Filters
 const showCraters = ref(true);
 const showRocks = ref(true);
 const showBoulders = ref(true);
@@ -148,7 +148,6 @@ const redrawTileCanvas = () => {
   const canvas = tileCanvas.value;
   const ctx = canvas.getContext('2d');
 
-  // Redraw base image clean before layering marks
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(currentTileImage.value, 0, 0, 450, 450);
 
@@ -156,60 +155,70 @@ const redrawTileCanvas = () => {
 
   tileMarks.value.forEach((mark) => {
     // 1. Render Craters if checked
-    if (mark.type === 'crater' && showCraters.value) {
-      const centerX = Number(mark.x1);
-      const centerY = Number(mark.y1);
-      const radius = Number(mark.diameter) / 2;
+    if (mark.type === 'crater') {
+      if (showCraters.value) {
+        const centerX = Number(mark.x1);
+        const centerY = Number(mark.y1);
+        const radius = Number(mark.diameter) / 2;
 
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
 
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-      ctx.fill();
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+        ctx.fill();
 
-      ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+        ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-      ctx.restore();
+        ctx.restore();
+      }
     }
     // 2. Render Rocks if checked
-    else if (mark.type === 'rock' && showRocks.value) {
-      const centerX = Number(mark.x1);
-      const centerY = Number(mark.y1);
-      const radius = 5 / 2;
+    else if (mark.type === 'rock') {
+      if (showRocks.value) {
+        const centerX = Number(mark.x1);
+        const centerY = Number(mark.y1);
+        const radius = 5 / 2;
 
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
 
-      ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
-      ctx.fill();
+        ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
+        ctx.fill();
 
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 1;
-      ctx.stroke();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
-      ctx.restore();
+        ctx.restore();
+      }
     }
     // 3. Render Boulders if checked
-    else if (mark.type === 'boulder' && showBoulders.value) {
-      const startX = Number(mark.x1);
-      const startY = Number(mark.y1);
-      const endX = Number(mark.x2);
-      const endY = Number(mark.y2);
+    else if (mark.type === 'boulder') {
+      if (showBoulders.value) {
+        const startX = Number(mark.x1);
+        const startY = Number(mark.y1);
+        const endX = Number(mark.x2);
+        const endY = Number(mark.y2);
 
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
 
-      ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+        ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-      ctx.restore();
+        ctx.restore();
+      }
+    }
+    // 4. Log details for any unhandled mark types
+    else {
+      console.log(`Unknown mark type "${mark.type}" details:`, mark.details);
     }
   });
 };
@@ -312,7 +321,6 @@ const openModalWithTile = async (x, y) => {
     currentTileImage.value = tileImg;
     isTileLoading.value = false;
 
-    // Fetch marks AFTER tile image renders on screen
     fetchMarksData(tileName);
   };
 
@@ -331,7 +339,6 @@ const closeModal = () => {
   tileMarks.value = [];
   currentTileImage.value = null;
 
-  // Reset checkbox states back to default
   showCraters.value = true;
   showRocks.value = true;
   showBoulders.value = true;
@@ -488,7 +495,6 @@ watch(imageUrl, async () => {
   text-align: center;
 }
 
-/* Checkbox Toggle Bar Styles */
 .marks-filters {
   display: flex;
   gap: 16px;
