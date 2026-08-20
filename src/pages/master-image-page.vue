@@ -96,11 +96,13 @@ const errorMessage = ref('');
 const isLoading = ref(false);
 const imageSets = ref([]);
 const selectedSetId = ref('');
+const selectedSetName = ref('');
 const imageUrl = ref('');
 const isProcessingImage = ref(false);
 
-// Done status tiles map: "x,y" -> done status (0 or 1)
-const doneTilesMap = ref(new Map());
+// Done status tiles maps: "x,y" -> done status (0 or 1)
+const doneTilesMapApp3 = ref(new Map());
+const doneTilesMapApp4 = ref(new Map());
 
 // Modal & Sub-tile Canvas state
 const isModalOpen = ref(false);
@@ -129,7 +131,12 @@ onMounted(async () => {
   isLoading.value = true;
   try {
     const response = await apiClient.post(`${API_SERVER}/masterimages-list.php`);
-    imageSets.value = response.data;
+    if (Array.isArray(response.data)) {
+      imageSets.value = response.data;
+    } else {
+      console.warn('API returned non-array for image list:', response.data);
+      imageSets.value = [];
+    }
   } catch (error) {
     console.error('Failed to load image sets:', error);
     errorMessage.value = 'Failed to load master images.';
@@ -177,7 +184,7 @@ const redrawTileCanvas = () => {
       try {
         detailsObj = JSON.parse(detailsObj);
       } catch (e) {
-        // Ignored unparseable JSON quietly
+        // Ignored unparseable JSON
       }
     }
 
@@ -185,121 +192,89 @@ const redrawTileCanvas = () => {
     const isCrack = mark.type === 'crack' || detailsObj?.type === 'crack';
     const isWrinkle = mark.type === 'wrinkle' || detailsObj?.type === 'wrinkle';
 
-    // 1. Render Craters if checked
-    if (mark.type === 'crater') {
-      if (showCraters.value) {
-        const centerX = Number(mark.x1);
-        const centerY = Number(mark.y1);
-        const radius = Number(mark.diameter) / 2;
+    if (mark.type === 'crater' && showCraters.value) {
+      const centerX = Number(mark.x1);
+      const centerY = Number(mark.y1);
+      const radius = Number(mark.diameter) / 2;
 
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    } else if (mark.type === 'rock' && showRocks.value) {
+      const centerX = Number(mark.x1);
+      const centerY = Number(mark.y1);
+      const radius = 2.5;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
+      ctx.fill();
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    } else if (mark.type === 'boulder' && showBoulders.value) {
+      const startX = Number(mark.x1);
+      const startY = Number(mark.y1);
+      const endX = Number(mark.x2);
+      const endY = Number(mark.y2);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    } else if (isMargin && showMargins.value) {
+      const points = detailsObj?.data?.points || detailsObj?.points;
+      if (Array.isArray(points) && points.length > 1) {
         ctx.save();
         ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+        }
+        ctx.strokeStyle = '#FF0000';
         ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
       }
-    }
-    // 2. Render Rocks if checked
-    else if (mark.type === 'rock') {
-      if (showRocks.value) {
-        const centerX = Number(mark.x1);
-        const centerY = Number(mark.y1);
-        const radius = 5 / 2;
-
+    } else if (isCrack && showCracks.value) {
+      const points = detailsObj?.data?.points || detailsObj?.points;
+      if (Array.isArray(points) && points.length > 1) {
         ctx.save();
         ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
-        ctx.fill();
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-    // 3. Render Boulders if checked
-    else if (mark.type === 'boulder') {
-      if (showBoulders.value) {
-        const startX = Number(mark.x1);
-        const startY = Number(mark.y1);
-        const endX = Number(mark.x2);
-        const endY = Number(mark.y2);
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
+        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+        }
+        ctx.strokeStyle = '#0000FF';
         ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
       }
-    }
-    // 4. Render Margins (Segmented Red Lines) if checked
-    else if (isMargin) {
-      if (showMargins.value) {
-        const points = detailsObj?.data?.points || detailsObj?.points;
-
-        if (Array.isArray(points) && points.length > 1) {
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(Number(points[0].x), Number(points[0].y));
-
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(Number(points[i].x), Number(points[i].y));
-          }
-
-          ctx.strokeStyle = '#FF0000'; // Solid Red
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.restore();
+    } else if (isWrinkle && showWrinkles.value) {
+      const points = detailsObj?.data?.points || detailsObj?.points;
+      if (Array.isArray(points) && points.length > 1) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(Number(points[i].x), Number(points[i].y));
         }
-      }
-    }
-    // 5. Render Cracks (Segmented Blue Lines) if checked
-    else if (isCrack) {
-      if (showCracks.value) {
-        const points = detailsObj?.data?.points || detailsObj?.points;
-
-        if (Array.isArray(points) && points.length > 1) {
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(Number(points[0].x), Number(points[0].y));
-
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(Number(points[i].x), Number(points[i].y));
-          }
-
-          ctx.strokeStyle = '#0000FF'; // Solid Blue
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-    }
-    // 6. Render Wrinkles (Segmented Green Lines) if checked
-    else if (isWrinkle) {
-      if (showWrinkles.value) {
-        const points = detailsObj?.data?.points || detailsObj?.points;
-
-        if (Array.isArray(points) && points.length > 1) {
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(Number(points[0].x), Number(points[0].y));
-
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(Number(points[i].x), Number(points[i].y));
-          }
-
-          ctx.strokeStyle = '#00FF00'; // Solid Green
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.restore();
-        }
+        ctx.strokeStyle = '#00FF00';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
       }
     }
   });
@@ -314,13 +289,11 @@ const fetchMarksData = async (tileName) => {
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
 
+    if (typeof data !== 'object') return;
+
     const activeStatus = [];
-    if (data?.features == 1 || data?.features === true) {
-      activeStatus.push('features');
-    }
-    if (data?.flows == 1 || data?.flows === true) {
-      activeStatus.push('flows');
-    }
+    if (data?.features == 1 || data?.features === true) activeStatus.push('features');
+    if (data?.flows == 1 || data?.flows === true) activeStatus.push('flows');
 
     doneStatusText.value = activeStatus.length > 0 ? activeStatus.join(', ') : '-';
 
@@ -335,27 +308,35 @@ const fetchMarksData = async (tileName) => {
   }
 };
 
-// --- Fetch Done Image Data ---
+// Helper to construct coordinate map from API response array
+const parseTileDataToMap = (data) => {
+  const map = new Map();
+  if (Array.isArray(data)) {
+    data.forEach(tile => {
+      const roundX = Math.round(Number(tile.x));
+      const roundY = Math.round(Number(tile.y));
+      map.set(`${roundX},${roundY}`, tile.done);
+    });
+  }
+  return map;
+};
+
+// --- Fetch Done Image Data (App ID 3 & App ID 4) ---
 const fetchDoneImageData = async (imageName) => {
   try {
-    const response = await apiClient.post(`${API_SERVER}/image-list-done.php`, {
-      name: imageName,
-      application_id: 3
-    });
+    const [resApp3, resApp4] = await Promise.all([
+      apiClient.post(`${API_SERVER}/image-list-done.php`, {
+        name: imageName,
+        application_id: 3
+      }),
+      apiClient.post(`${API_SERVER}/image-list-done.php`, {
+        name: imageName,
+        application_id: 4
+      })
+    ]);
 
-    console.log('image-list-done response:', response.data);
-
-    const map = new Map();
-    if (Array.isArray(response.data)) {
-      response.data.forEach(tile => {
-        const roundX = Math.round(Number(tile.x));
-        const roundY = Math.round(Number(tile.y));
-        map.set(`${roundX},${roundY}`, tile.done);
-      });
-    }
-
-    doneTilesMap.value = map;
-    drawImageToCanvas();
+    doneTilesMapApp3.value = parseTileDataToMap(resApp3.data);
+    doneTilesMapApp4.value = parseTileDataToMap(resApp4.data);
   } catch (error) {
     console.error(`Failed to fetch done image data for ${imageName}:`, error);
   }
@@ -364,13 +345,16 @@ const fetchDoneImageData = async (imageName) => {
 // --- Event Handlers ---
 const handleSetChange = () => {
   errorMessage.value = '';
-  doneTilesMap.value = new Map();
+  doneTilesMapApp3.value = new Map();
+  doneTilesMapApp4.value = new Map();
+
   const selectedItem = imageSets.value.find(set => set.id === selectedSetId.value);
 
   if (selectedItem && selectedItem.details) {
+    selectedSetName.value = selectedItem.name;
     imageUrl.value = selectedItem.details;
-    fetchDoneImageData(selectedItem.name);
   } else {
+    selectedSetName.value = '';
     imageUrl.value = '';
     errorMessage.value = 'Image URL not found for this selection.';
   }
@@ -505,11 +489,18 @@ const drawImageToCanvas = () => {
 
         const roundX = Math.round(x);
         const roundY = Math.round(y);
-        const doneStatus = doneTilesMap.value.get(`${roundX},${roundY}`);
+        const key = `${roundX},${roundY}`;
 
-        // Highlight completed tiles in 20% transparent yellow
-        if (doneStatus == 1 || doneStatus === true) {
+        const app3Done = doneTilesMapApp3.value.get(key);
+        const app4Done = doneTilesMapApp4.value.get(key);
+
+        if (app3Done == 1 || app3Done === true) {
           ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
+          ctx.fillRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
+        }
+
+        if (app4Done == 1 || app4Done === true) {
+          ctx.fillStyle = 'rgba(0, 0, 255, 0.2)';
           ctx.fillRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
         }
 
@@ -538,10 +529,13 @@ const drawImageToCanvas = () => {
   img.src = imageUrl.value;
 };
 
-// Watch for imageUrl changes and redraw
-watch(imageUrl, async () => {
-  await nextTick();
-  drawImageToCanvas();
+// Watch for imageUrl changes: Fetch status data FIRST, then wait for DOM update before drawing canvas
+watch(imageUrl, async (newUrl) => {
+  if (newUrl && selectedSetName.value) {
+    await fetchDoneImageData(selectedSetName.value);
+    await nextTick();
+    drawImageToCanvas();
+  }
 });
 </script>
 
