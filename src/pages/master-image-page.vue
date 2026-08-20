@@ -165,6 +165,7 @@ const redrawTileCanvas = () => {
 
     const isMargin = mark.type === 'margin' || detailsObj?.type === 'margin';
     const isCrack = mark.type === 'crack' || detailsObj?.type === 'crack';
+    const isWrinkle = mark.type === 'wrinkle' || detailsObj?.type === 'wrinkle';
 
     // 1. Render Craters if checked
     if (mark.type === 'crater') {
@@ -258,6 +259,25 @@ const redrawTileCanvas = () => {
         ctx.restore();
       }
     }
+    // 6. Render Wrinkles (Segmented Green Lines)
+    else if (isWrinkle) {
+      const points = detailsObj?.data?.points || detailsObj?.points;
+
+      if (Array.isArray(points) && points.length > 1) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+        }
+
+        ctx.strokeStyle = '#00FF00'; // Solid Green
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
   });
 };
 
@@ -269,8 +289,6 @@ const fetchMarksData = async (tileName) => {
   try {
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
-
-    console.log('Received marks data:', data);
 
     const activeStatus = [];
     if (data?.features == 1 || data?.features === true) {
