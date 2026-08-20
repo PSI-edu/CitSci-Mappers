@@ -153,18 +153,16 @@ const redrawTileCanvas = () => {
 
   if (!tileMarks.value || tileMarks.value.length === 0) return;
 
-  tileMarks.value.forEach((mark, index) => {
-    // --- Helper to parse mark details ---
+  tileMarks.value.forEach((mark) => {
     let detailsObj = mark.details;
     if (typeof detailsObj === 'string') {
       try {
         detailsObj = JSON.parse(detailsObj);
       } catch (e) {
-        console.error(`[Mark ${index}] Failed to parse details JSON string:`, e);
+        // Ignored unparseable JSON quietly
       }
     }
 
-    // Check if the mark type is 'margin' either directly or inside details
     const isMargin = mark.type === 'margin' || detailsObj?.type === 'margin';
 
     // 1. Render Craters if checked
@@ -223,16 +221,7 @@ const redrawTileCanvas = () => {
     }
     // 4. Render Margins (Segmented Red Lines)
     else if (isMargin) {
-      console.log(`[DEBUG - Margin Detected at index ${index}]:`, {
-        outerType: mark.type,
-        detailsRaw: mark.details,
-        parsedDetails: detailsObj
-      });
-
-      // Extract points from details.data.points OR directly from details.points
       const points = detailsObj?.data?.points || detailsObj?.points;
-
-      console.log(`[DEBUG - Margin Points]:`, points);
 
       if (Array.isArray(points) && points.length > 1) {
         ctx.save();
@@ -247,18 +236,7 @@ const redrawTileCanvas = () => {
         ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
-
-        console.log(`[DEBUG - Margin Draw Success]: Connected ${points.length} points.`);
-      } else {
-        console.warn(`[DEBUG - Margin Draw Failed]: Points array is invalid or has < 2 items.`, points);
       }
-    }
-    // 5. Unhandled Types
-    else {
-      console.log(`[DEBUG - Unhandled Mark Type]:`, {
-        type: mark.type,
-        markObj: mark
-      });
     }
   });
 };
@@ -280,7 +258,6 @@ const fetchMarksData = async (tileName) => {
 
     if (Array.isArray(data?.marks)) {
       tileMarks.value = data.marks;
-      console.log('[DEBUG - Fetched Marks Total]:', data.marks.length, data.marks);
     }
 
     redrawTileCanvas();
