@@ -120,7 +120,7 @@ const fetchMarksData = async (tileName) => {
   try {
     // GET request passing ?name=filename
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, {
-      params: { name: tileName }
+      name: tileName
     });
     console.log(`Marks data for ${tileName}:`, response.data);
   } catch (error) {
