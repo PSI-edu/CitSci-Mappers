@@ -166,7 +166,6 @@ const drawMarksOnTileCanvas = () => {
 
       ctx.restore();
     } else if (mark.type === 'boulder') {
-      console.log(mark);
       const startX = Number(mark.x1);
       const startY = Number(mark.y1);
       const endX = Number(mark.x2);
@@ -195,6 +194,7 @@ const fetchMarksData = async (tileName) => {
   try {
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
+    console.log('Received marks data:', data);
 
     const activeStatus = [];
     if (data?.features === 1 || data?.features === true) activeStatus.push('features');
