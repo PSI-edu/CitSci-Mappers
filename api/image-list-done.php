@@ -26,14 +26,16 @@ $data = json_decode($jsonData, true);
 
 if ($data !== null && $data['application_id'] !== null && isset($data['application_id']) && $data['name'] !== null && isset($data['name'])) {
     $app_id = clean_inputs($data["application_id"]);
-    $name   = clean_inputs($data["name"])+"%";
+    $name   = clean_inputs($data["name"]);
+
+    $name = $name."%";
 
     // open database connection
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 
 // SQL queries to get the master images and then the images
     $sql  = "SELECT id FROM image_sets WHERE  name like ? AND application_id = ? LIMIT 1";
-    $sql2 = "SELECT id, name, x, y, done FROM images WHERE image_sets_id = ? ";
+    $sql2 = "SELECT id, name, x, y, done FROM images WHERE image_set_id = ? ";
 
 // Prepare the statement to prevent SQL injection
     $stmt = $conn->prepare($sql);
