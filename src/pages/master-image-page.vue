@@ -166,6 +166,7 @@ const drawMarksOnTileCanvas = () => {
 
       ctx.restore();
     } else if (mark.type === 'boulder') {
+      console.log(mark);
       const startX = Number(mark.x1);
       const startY = Number(mark.y1);
       const endX = Number(mark.x2);
