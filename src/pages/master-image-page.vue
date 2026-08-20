@@ -44,6 +44,22 @@
             {{ tileFileName }} | Done: {{ doneStatusText }}
           </p>
 
+          <!-- Toggle Filters for Marks -->
+          <div class="marks-filters">
+            <label class="filter-item">
+              <input type="checkbox" v-model="showCraters" @change="redrawTileCanvas" />
+              craters
+            </label>
+            <label class="filter-item">
+              <input type="checkbox" v-model="showRocks" @change="redrawTileCanvas" />
+              rocks
+            </label>
+            <label class="filter-item">
+              <input type="checkbox" v-model="showBoulders" @change="redrawTileCanvas" />
+              boulders
+            </label>
+          </div>
+
           <span v-if="isTileLoading" class="status">Loading sub-tile image...</span>
           <!-- 450x450 Canvas for Sub-tile Image -->
           <canvas
@@ -76,7 +92,13 @@ const isModalOpen = ref(false);
 const isTileLoading = ref(false);
 const tileFileName = ref('');
 const doneStatusText = ref('-');
-const tileMarks = ref([]); // Stores marks array for current tile
+const tileMarks = ref([]);
+const currentTileImage = ref(null); // Cached image element for fast redraws
+
+// Mark Visibility Checkbox Filters (Default to checked)
+const showCraters = ref(true);
+const showRocks = ref(true);
+const showBoulders = ref(true);
 
 // --- Canvas Refs ---
 const imageCanvas = ref(null);
@@ -119,15 +141,22 @@ const constructTileUrl = (mainUrl, x, y) => {
   return { fullTileUrl, tileName };
 };
 
-// --- Draw Marks on Sub-Tile Canvas ---
-const drawMarksOnTileCanvas = () => {
-  if (!tileCanvas.value || !tileMarks.value || tileMarks.value.length === 0) return;
+// --- Draw Base Image + Marks on Sub-Tile Canvas ---
+const redrawTileCanvas = () => {
+  if (!tileCanvas.value || !currentTileImage.value) return;
 
   const canvas = tileCanvas.value;
   const ctx = canvas.getContext('2d');
 
+  // Redraw base image clean before layering marks
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(currentTileImage.value, 0, 0, 450, 450);
+
+  if (!tileMarks.value || tileMarks.value.length === 0) return;
+
   tileMarks.value.forEach((mark) => {
-    if (mark.type === 'crater') {
+    // 1. Render Craters if checked
+    if (mark.type === 'crater' && showCraters.value) {
       const centerX = Number(mark.x1);
       const centerY = Number(mark.y1);
       const radius = Number(mark.diameter) / 2;
@@ -136,36 +165,36 @@ const drawMarksOnTileCanvas = () => {
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
 
-      // Semi-transparent red fill (50% opacity)
       ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
       ctx.fill();
 
-      // Red border outline
       ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
       ctx.lineWidth = 2;
       ctx.stroke();
 
       ctx.restore();
-    } else if (mark.type === 'rock') {
+    }
+    // 2. Render Rocks if checked
+    else if (mark.type === 'rock' && showRocks.value) {
       const centerX = Number(mark.x1);
       const centerY = Number(mark.y1);
-      const radius = 5 / 2; // Fixed 5px diameter -> 2.5px radius
+      const radius = 5 / 2;
 
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
 
-      // 10% opacity blue interior
       ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
       ctx.fill();
 
-      // Solid white border
       ctx.strokeStyle = '#FFFFFF';
       ctx.lineWidth = 1;
       ctx.stroke();
 
       ctx.restore();
-    } else if (mark.type === 'boulder') {
+    }
+    // 3. Render Boulders if checked
+    else if (mark.type === 'boulder' && showBoulders.value) {
       const startX = Number(mark.x1);
       const startY = Number(mark.y1);
       const endX = Number(mark.x2);
@@ -176,7 +205,6 @@ const drawMarksOnTileCanvas = () => {
       ctx.moveTo(startX, startY);
       ctx.lineTo(endX, endY);
 
-      // 10% opacity green line
       ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -194,7 +222,6 @@ const fetchMarksData = async (tileName) => {
   try {
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
-    console.log('Received marks data:', data);
 
     const activeStatus = [];
     if (data?.features === 1 || data?.features === true) activeStatus.push('features');
@@ -207,8 +234,8 @@ const fetchMarksData = async (tileName) => {
       tileMarks.value = data.marks;
     }
 
-    // Draw marks onto the tile canvas after fetching completes
-    drawMarksOnTileCanvas();
+    // Draw base tile and marks
+    redrawTileCanvas();
   } catch (error) {
     console.error(`Failed to fetch marks for ${tileName}:`, error);
     doneStatusText.value = '-';
@@ -282,7 +309,7 @@ const openModalWithTile = async (x, y) => {
 
   const tileImg = new Image();
   tileImg.onload = () => {
-    ctx.drawImage(tileImg, 0, 0, 450, 450);
+    currentTileImage.value = tileImg;
     isTileLoading.value = false;
 
     // Fetch marks AFTER tile image renders on screen
@@ -302,6 +329,12 @@ const closeModal = () => {
   tileFileName.value = '';
   doneStatusText.value = '-';
   tileMarks.value = [];
+  currentTileImage.value = null;
+
+  // Reset checkbox states back to default
+  showCraters.value = true;
+  showRocks.value = true;
+  showBoulders.value = true;
 };
 
 // --- Draw Image to Main Canvas ---
@@ -409,7 +442,7 @@ watch(imageUrl, async () => {
 .floating-modal {
   position: relative;
   width: 500px;
-  height: 540px;
+  height: 560px;
   background-color: #1e40af;
   color: #ffffff;
   border-radius: 8px;
@@ -450,9 +483,32 @@ watch(imageUrl, async () => {
 .tile-filename {
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   word-break: break-all;
   text-align: center;
+}
+
+/* Checkbox Toggle Bar Styles */
+.marks-filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-item input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #3b82f6;
 }
 
 .tile-canvas {
