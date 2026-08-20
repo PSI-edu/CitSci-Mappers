@@ -25,6 +25,8 @@ require_once("auth-check.php");
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
+print_r($data);
+
 if ($data !== null && $data['name'] !== null && isset($data['name'])) {
     $id = clean_inputs($data["name"]);
 
@@ -63,7 +65,7 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
     end_apicall($conn);
 
 } else {
-    echo "Email address not set";
+    echo "Name not set";
 }
 
 ?>
