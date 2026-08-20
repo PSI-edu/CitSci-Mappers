@@ -25,7 +25,7 @@ $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
 if ($data !== null && $data['app_id'] !== null && isset($data['app_id']) && $data['name'] !== null && isset($data['name'])) {
-    $app_id = clean_inputs($data["app_id"]);
+    $app_id = clean_inputs($data["application_id"]);
     $name   = clean_inputs($data["name"])+"%";
 
     // open database connection
@@ -69,7 +69,7 @@ if ($data !== null && $data['app_id'] !== null && isset($data['app_id']) && $dat
     end_apicall($conn);
 
 } else {
-    echo "Name misset: ";
+    echo "Name mis-set: ";
     print_r($data);
 }
 
