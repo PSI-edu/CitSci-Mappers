@@ -39,8 +39,10 @@
       <div class="floating-modal">
         <button class="close-btn" @click="closeModal" aria-label="Close modal">&times;</button>
         <div class="modal-content">
-          <!-- File Name Label -->
-          <p v-if="tileFileName" class="tile-filename">{{ tileFileName }}</p>
+          <!-- File Name & Done Status Label -->
+          <p v-if="tileFileName" class="tile-filename">
+            {{ tileFileName }} | Done: {{ doneStatusText }}
+          </p>
 
           <span v-if="isTileLoading" class="status">Loading sub-tile image...</span>
           <!-- 450x450 Canvas for Sub-tile Image -->
@@ -73,6 +75,7 @@ const isProcessingImage = ref(false);
 const isModalOpen = ref(false);
 const isTileLoading = ref(false);
 const tileFileName = ref('');
+const doneStatusText = ref('-');
 
 // --- Canvas Refs ---
 const imageCanvas = ref(null);
@@ -117,14 +120,22 @@ const constructTileUrl = (mainUrl, x, y) => {
 
 // --- Fetch Marks Data ---
 const fetchMarksData = async (tileName) => {
+  doneStatusText.value = '...';
   try {
-    // GET request passing ?name=filename
-    const response = await apiClient.post(`${API_SERVER}/marks-get.php`, {
-      name: tileName
-    });
-    console.log(`Marks data for ${tileName}:`, response.data);
+    // Send POST payload matching PHP json_decode($jsonData, true)
+    const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
+    const data = response.data;
+    console.log(`Marks data for ${tileName}:`, data);
+
+    // Compute 'Done' label based on features / flows boolean flags
+    const activeStatus = [];
+    if (data?.features === 1 || data?.features === true) activeStatus.push('features');
+    if (data?.flows === 1 || data?.flows === true) activeStatus.push('flows');
+
+    doneStatusText.value = activeStatus.length > 0 ? activeStatus.join(', ') : '-';
   } catch (error) {
     console.error(`Failed to fetch marks for ${tileName}:`, error);
+    doneStatusText.value = '-';
   }
 };
 
@@ -185,7 +196,7 @@ const openModalWithTile = async (x, y) => {
   const { fullTileUrl, tileName } = constructTileUrl(imageUrl.value, x, y);
   tileFileName.value = tileName;
 
-  // Execute API request for marks data and log to console
+  // Execute POST API call to fetch features/flows flags
   fetchMarksData(tileName);
 
   await nextTick();
@@ -213,6 +224,7 @@ const openModalWithTile = async (x, y) => {
 const closeModal = () => {
   isModalOpen.value = false;
   tileFileName.value = '';
+  doneStatusText.value = '-';
 };
 
 // --- Draw Image to Main Canvas ---
