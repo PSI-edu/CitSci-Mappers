@@ -20,12 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // Validate the JWT token
 require_once("auth-check.php");
 
-
 // Get the data
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
-
-print_r($data);
 
 if ($data !== null && $data['name'] !== null && isset($data['name'])) {
     $name = clean_inputs($data["name"]);
@@ -33,29 +30,48 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
     // open database connection
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 
-// SQL query to get the user ID
-    $sql = "SELECT id,app_id,done FROM images WHERE name = ?";
+// SQL query to get the images
+    $sql = "SELECT id,application_id,done FROM images WHERE name = ?";
+    $sql2 = "SELECT type, x1, y1, x2, y2, diameter,CAST(details AS CHAR) as details 
+            FROM marks WHERE image_id = ? or image_id = ?";
 
 // Prepare the statement to prevent SQL injection
     $stmt = $conn->prepare($sql);
+    $stmt2 = $conn->prepare($sql2);
 
     if ($stmt === false) {
         die("Error preparing statement: " . $conn->error);
     }
 
-// Bind the parameter
+// Process the query
     $stmt->bind_param("s", $name); // "s" indicates a string
-
-// Execute the query
     $stmt->execute();
-
-// Get the result
     $result = $stmt->get_result();
 
 // Check if a row was found
     if ($result->num_rows > 0) {
         // Fetch the rows and return JSON
-        echo $JSON = json_encode($result->fetch_all(MYSQLI_ASSOC));
+        $arr = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Get all the related marks
+        $image_id_0 = $arr[0]['id'];
+        $image_id_1 = $arr[1]['id'];
+        echo $image_id;
+        $stmt2->bind_param("ii", $image_id_0, $image_id_1);
+        $stmt2->execute();
+        $result = $stmt2->get_result();
+
+        // Check if marks found
+        if ($result->num_rows > 0) {
+            $markArr = $result->fetch_all(MYSQLI_ASSOC);
+        }
+
+        $finalArr['features'] = $arr[0]['done'];
+        $finalArr['flows']    = $arr[1]['done'];
+        $finalArr['marks']    = $markArr;
+
+        echo $JSON = json_encode($finalArr);
+
     } else {
         echo "image $name not found.";
     }
@@ -69,3 +85,5 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
 }
 
 ?>
+
+
