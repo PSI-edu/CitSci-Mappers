@@ -216,7 +216,39 @@ const redrawTileCanvas = () => {
         ctx.restore();
       }
     }
-    // 4. Log details for any unhandled mark types
+    // 4. Render Margins (Segmented Red Lines)
+    else if (mark.type === 'margin') {
+      let detailsObj = mark.details;
+
+      // Parse JSON string if details is returned as a string
+      if (typeof detailsObj === 'string') {
+        try {
+          detailsObj = JSON.parse(detailsObj);
+        } catch (e) {
+          console.error('Failed to parse margin details JSON:', e);
+          return;
+        }
+      }
+
+      const points = detailsObj?.data?.points;
+
+      if (Array.isArray(points) && points.length > 1) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+        }
+
+        ctx.strokeStyle = '#FF0000'; // Solid Red
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+    // 5. Log details for any unhandled mark types
     else {
       console.log(`Unknown mark type "${mark.type}" details:`, mark.details);
     }
