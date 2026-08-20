@@ -96,6 +96,7 @@
     const isLoading = ref(false);
     const imageSets = ref([]);
     const selectedSetId = ref('');
+    const selectedSetName = ref('');
     const imageUrl = ref('');
     const isProcessingImage = ref(false);
 
@@ -368,8 +369,6 @@
 
             doneTilesMapApp3.value = parseTileDataToMap(resApp3.data);
             doneTilesMapApp4.value = parseTileDataToMap(resApp4.data);
-
-            drawImageToCanvas();
         } catch (error) {
             console.error(`Failed to fetch done image data for ${imageName}:`, error);
         }
@@ -383,9 +382,10 @@
         const selectedItem = imageSets.value.find(set => set.id === selectedSetId.value);
 
         if (selectedItem && selectedItem.details) {
+            selectedSetName.value = selectedItem.name;
             imageUrl.value = selectedItem.details;
-            fetchDoneImageData(selectedItem.name);
         } else {
+            selectedSetName.value = '';
             imageUrl.value = '';
             errorMessage.value = 'Image URL not found for this selection.';
         }
@@ -562,10 +562,13 @@
         img.src = imageUrl.value;
     };
 
-    // Watch for imageUrl changes and redraw
-    watch(imageUrl, async () => {
-        await nextTick();
-        drawImageToCanvas();
+    // Watch for imageUrl changes: Fetch status data FIRST, then draw
+    watch(imageUrl, async (newUrl) => {
+        if (newUrl && selectedSetName.value) {
+            await fetchDoneImageData(selectedSetName.value);
+            await nextTick();
+            drawImageToCanvas();
+        }
     });
 </script>
 
