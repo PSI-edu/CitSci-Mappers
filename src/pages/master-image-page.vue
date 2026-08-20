@@ -332,6 +332,19 @@ const fetchMarksData = async (tileName) => {
   }
 };
 
+// --- Fetch Done Image Data ---
+const fetchDoneImageData = async (imageName) => {
+  try {
+    const response = await apiClient.post(`${API_SERVER}/image-list-done.php`, {
+      name: imageName,
+      application_id: 3
+    });
+    console.log('image-list-done response:', response.data);
+  } catch (error) {
+    console.error(`Failed to fetch done image data for ${imageName}:`, error);
+  }
+};
+
 // --- Event Handlers ---
 const handleSetChange = () => {
   errorMessage.value = '';
@@ -339,6 +352,7 @@ const handleSetChange = () => {
 
   if (selectedItem && selectedItem.details) {
     imageUrl.value = selectedItem.details;
+    fetchDoneImageData(selectedItem.name);
   } else {
     imageUrl.value = '';
     errorMessage.value = 'Image URL not found for this selection.';
