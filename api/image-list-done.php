@@ -26,7 +26,7 @@ $data = json_decode($jsonData, true);
 
 if ($data !== null && $data['app_id'] !== null && isset($data['app_id']) && $data['name'] !== null && isset($data['name'])) {
     $app_id = clean_inputs($data["app_id"]);
-    $name   = clean_inputs($data["name"]);
+    $name   = clean_inputs($data["name"])+"%";
 
     // open database connection
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
@@ -69,7 +69,8 @@ if ($data !== null && $data['app_id'] !== null && isset($data['app_id']) && $dat
     end_apicall($conn);
 
 } else {
-    echo "Name not set";
+    echo "Name misset: ";
+    print_r($data);
 }
 
 ?>
