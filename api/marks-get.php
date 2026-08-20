@@ -62,8 +62,6 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
         }
 
         // Get all the related marks
-        print_r($arr);
-
         $stmt2->bind_param("ii", $image_id_0, $image_id_1);
         $stmt2->execute();
         $result = $stmt2->get_result();
