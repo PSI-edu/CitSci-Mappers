@@ -50,8 +50,15 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
 
 // Check if a row was found
     if ($result->num_rows > 0) {
+
+        $finalArr['features'] = 0;
+        $finalArr['flows']    = 0;
+
         // Fetch the rows and return JSON
         $arr = $result->fetch_all(MYSQLI_ASSOC);
+        foreach ($arr as $row) {
+            print_r($row);
+        }
 
         // Get all the related marks
         print_r($arr);
