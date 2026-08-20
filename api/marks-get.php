@@ -72,9 +72,6 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
         if ($result->num_rows > 0) {
             $markArr = $result->fetch_all(MYSQLI_ASSOC);
         }
-
-        $finalArr['features'] = $arr[0]['done'];
-        $finalArr['flows']    = $arr[1]['done'];
         $finalArr['marks']    = $markArr;
 
         echo $JSON = json_encode($finalArr);
