@@ -57,7 +57,8 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
         // Fetch the rows and return JSON
         $arr = $result->fetch_all(MYSQLI_ASSOC);
         foreach ($arr as $row) {
-            print_r($row);
+            if ($row['application_id'] == 3 && $row['done'] == 1) { $finalArr['features'] = 1; }
+            if ($row['application_id'] == 4 && $row['done'] == 1) { $finalArr['flows'] = 1; }
         }
 
         // Get all the related marks
