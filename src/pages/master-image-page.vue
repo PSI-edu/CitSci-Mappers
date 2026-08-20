@@ -58,6 +58,18 @@
               <input type="checkbox" v-model="showBoulders" @change="redrawTileCanvas" />
               boulders
             </label>
+            <label class="filter-item">
+              <input type="checkbox" v-model="showMargins" @change="redrawTileCanvas" />
+              margins
+            </label>
+            <label class="filter-item">
+              <input type="checkbox" v-model="showWrinkles" @change="redrawTileCanvas" />
+              wrinkles
+            </label>
+            <label class="filter-item">
+              <input type="checkbox" v-model="showCracks" @change="redrawTileCanvas" />
+              cracks
+            </label>
           </div>
 
           <span v-if="isTileLoading" class="status">Loading sub-tile image...</span>
@@ -99,6 +111,9 @@ const currentTileImage = ref(null);
 const showCraters = ref(true);
 const showRocks = ref(true);
 const showBoulders = ref(true);
+const showMargins = ref(true);
+const showWrinkles = ref(true);
+const showCracks = ref(true);
 
 // --- Canvas Refs ---
 const imageCanvas = ref(null);
@@ -221,61 +236,67 @@ const redrawTileCanvas = () => {
         ctx.restore();
       }
     }
-    // 4. Render Margins (Segmented Red Lines)
+    // 4. Render Margins (Segmented Red Lines) if checked
     else if (isMargin) {
-      const points = detailsObj?.data?.points || detailsObj?.points;
+      if (showMargins.value) {
+        const points = detailsObj?.data?.points || detailsObj?.points;
 
-      if (Array.isArray(points) && points.length > 1) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+        if (Array.isArray(points) && points.length > 1) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(Number(points[0].x), Number(points[0].y));
 
-        for (let i = 1; i < points.length; i++) {
-          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(Number(points[i].x), Number(points[i].y));
+          }
+
+          ctx.strokeStyle = '#FF0000'; // Solid Red
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
         }
-
-        ctx.strokeStyle = '#FF0000'; // Solid Red
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.restore();
       }
     }
-    // 5. Render Cracks (Segmented Blue Lines)
+    // 5. Render Cracks (Segmented Blue Lines) if checked
     else if (isCrack) {
-      const points = detailsObj?.data?.points || detailsObj?.points;
+      if (showCracks.value) {
+        const points = detailsObj?.data?.points || detailsObj?.points;
 
-      if (Array.isArray(points) && points.length > 1) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+        if (Array.isArray(points) && points.length > 1) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(Number(points[0].x), Number(points[0].y));
 
-        for (let i = 1; i < points.length; i++) {
-          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(Number(points[i].x), Number(points[i].y));
+          }
+
+          ctx.strokeStyle = '#0000FF'; // Solid Blue
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
         }
-
-        ctx.strokeStyle = '#0000FF'; // Solid Blue
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.restore();
       }
     }
-    // 6. Render Wrinkles (Segmented Green Lines)
+    // 6. Render Wrinkles (Segmented Green Lines) if checked
     else if (isWrinkle) {
-      const points = detailsObj?.data?.points || detailsObj?.points;
+      if (showWrinkles.value) {
+        const points = detailsObj?.data?.points || detailsObj?.points;
 
-      if (Array.isArray(points) && points.length > 1) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+        if (Array.isArray(points) && points.length > 1) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(Number(points[0].x), Number(points[0].y));
 
-        for (let i = 1; i < points.length; i++) {
-          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(Number(points[i].x), Number(points[i].y));
+          }
+
+          ctx.strokeStyle = '#00FF00'; // Solid Green
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
         }
-
-        ctx.strokeStyle = '#00FF00'; // Solid Green
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.restore();
       }
     }
   });
@@ -402,6 +423,9 @@ const closeModal = () => {
   showCraters.value = true;
   showRocks.value = true;
   showBoulders.value = true;
+  showMargins.value = true;
+  showWrinkles.value = true;
+  showCracks.value = true;
 };
 
 // --- Draw Image to Main Canvas ---
@@ -508,7 +532,7 @@ watch(imageUrl, async () => {
 
 .floating-modal {
   position: relative;
-  width: 500px;
+  width: 540px;
   height: 560px;
   background-color: #1e40af;
   color: #ffffff;
@@ -557,7 +581,9 @@ watch(imageUrl, async () => {
 
 .marks-filters {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
   margin-bottom: 10px;
   align-items: center;
 }
