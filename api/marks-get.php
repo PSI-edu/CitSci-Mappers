@@ -54,9 +54,16 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
         $arr = $result->fetch_all(MYSQLI_ASSOC);
 
         // Get all the related marks
-        $image_id_0 = $arr[0]['id'];
-        $image_id_1 = $arr[1]['id'];
-        echo $image_id;
+        $image_id_0 = 0;
+        $image_id_1 = 0;
+
+        foreach ($arr as $row) {
+            if ($row['application_id'] == 3 && $row['done'] == 1) {
+                $image_id_0 = 1;
+            } else if ($row['application_id'] == 4 && $row['done'] == 1) {
+                $image_id_1 = 1;
+            }
+        }
         $stmt2->bind_param("ii", $image_id_0, $image_id_1);
         $stmt2->execute();
         $result = $stmt2->get_result();
