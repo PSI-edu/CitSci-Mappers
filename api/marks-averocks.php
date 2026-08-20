@@ -1,6 +1,4 @@
 <?php
-// marks-averocks.php
-<?php
 
 // Basic setup
 require_once ("helper-functions.php");
@@ -35,7 +33,7 @@ $sql = "SELECT id, x1, y1, user_id, confirmed
         ORDER BY x1, y1;";
 $stmt = $conn->prepare($sql);
 
-$maxDiff = 10;
+$maxDiff = 5;
 
 $sql_shared = "INSERT INTO shared_marks 
               (image_id, application_id, x1, y1, confidence, type, details)
@@ -55,7 +53,7 @@ foreach ($images as $image) {
         foreach ($marks as $matchThis) {
             if (!in_array($matchThis['id'], $confirmed)) {
 
-                // Match rocks within 10 pixels
+                // Match rocks within 5 pixels
                 $matched = findRockMatch($marks, $matchThis, $maxDiff);
                 $N = count($matched);
 

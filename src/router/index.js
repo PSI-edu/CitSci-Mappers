@@ -19,6 +19,7 @@ const LunarMeltFlowsPage = () => import("@/pages/do_science/lunar-melt-flows-pag
 const LunarMeltFlowsTutorialPage = () => import("@/pages/tutorials/lunar-melt-flows-tutorial-page.vue");
 const TestProjectPage = () => import("@/pages/do_science/test-project-page.vue")
 const MasterImagePage = () => import("@/pages/master-image-page.vue");
+const MasterImageAvePage = () => import("@/pages/master-image-ave-page.vue");
 const ScienceDashboardPage = () => import("@/pages/dashboards/science-dashboard-page.vue");
 
 const routes = [
@@ -116,6 +117,12 @@ const routes = [
     path: "/master-image",
     name: "master-image",
     component: MasterImagePage,
+    beforeEnter: authGuard,
+  },
+  {
+    path: "/master-image-ave",
+    name: "master-image-ave",
+    component: MasterImageAvePage,
     beforeEnter: authGuard,
   },
   {
