@@ -76,6 +76,7 @@ const isModalOpen = ref(false);
 const isTileLoading = ref(false);
 const tileFileName = ref('');
 const doneStatusText = ref('-');
+const tileMarks = ref([]); // Stores marks array for current tile
 
 // --- Canvas Refs ---
 const imageCanvas = ref(null);
@@ -118,21 +119,59 @@ const constructTileUrl = (mainUrl, x, y) => {
   return { fullTileUrl, tileName };
 };
 
+// --- Draw Marks on Sub-Tile Canvas ---
+const drawMarksOnTileCanvas = () => {
+  if (!tileCanvas.value || !tileMarks.value || tileMarks.value.length === 0) return;
+
+  const canvas = tileCanvas.value;
+  const ctx = canvas.getContext('2d');
+
+  tileMarks.value.forEach((mark) => {
+    if (mark.type === 'crater') {
+      const centerX = Number(mark.x1);
+      const centerY = Number(mark.y1);
+      const radius = Number(mark.diameter) / 2;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+
+      // Semi-transparent red fill (50% opacity)
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+      ctx.fill();
+
+      // Red border outline for visual clarity
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+  });
+};
+
 // --- Fetch Marks Data ---
 const fetchMarksData = async (tileName) => {
   doneStatusText.value = '...';
+  tileMarks.value = [];
+
   try {
-    // Send POST payload matching PHP json_decode($jsonData, true)
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
-    console.log(`Marks data for ${tileName}:`, data);
 
-    // Compute 'Done' label based on features / flows boolean flags
     const activeStatus = [];
     if (data?.features === 1 || data?.features === true) activeStatus.push('features');
     if (data?.flows === 1 || data?.flows === true) activeStatus.push('flows');
 
     doneStatusText.value = activeStatus.length > 0 ? activeStatus.join(', ') : '-';
+
+    // Store array of marks
+    if (Array.isArray(data?.marks)) {
+      tileMarks.value = data.marks;
+    }
+
+    // Draw marks onto the tile canvas after fetching completes
+    drawMarksOnTileCanvas();
   } catch (error) {
     console.error(`Failed to fetch marks for ${tileName}:`, error);
     doneStatusText.value = '-';
@@ -196,9 +235,6 @@ const openModalWithTile = async (x, y) => {
   const { fullTileUrl, tileName } = constructTileUrl(imageUrl.value, x, y);
   tileFileName.value = tileName;
 
-  // Execute POST API call to fetch features/flows flags
-  fetchMarksData(tileName);
-
   await nextTick();
 
   if (!tileCanvas.value) return;
@@ -211,6 +247,9 @@ const openModalWithTile = async (x, y) => {
   tileImg.onload = () => {
     ctx.drawImage(tileImg, 0, 0, 450, 450);
     isTileLoading.value = false;
+
+    // Fetch marks AFTER tile image renders on screen
+    fetchMarksData(tileName);
   };
 
   tileImg.onerror = () => {
@@ -225,6 +264,7 @@ const closeModal = () => {
   isModalOpen.value = false;
   tileFileName.value = '';
   doneStatusText.value = '-';
+  tileMarks.value = [];
 };
 
 // --- Draw Image to Main Canvas ---
