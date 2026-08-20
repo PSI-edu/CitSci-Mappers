@@ -250,6 +250,8 @@ const fetchMarksData = async (tileName) => {
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
 
+    console.log('Received marks data:', data);
+
     const activeStatus = [];
     if (data?.features === 1 || data?.features === true) activeStatus.push('features');
     if (data?.flows === 1 || data?.flows === true) activeStatus.push('flows');
