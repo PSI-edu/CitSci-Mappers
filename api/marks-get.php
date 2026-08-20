@@ -28,7 +28,7 @@ $data = json_decode($jsonData, true);
 print_r($data);
 
 if ($data !== null && $data['name'] !== null && isset($data['name'])) {
-    $id = clean_inputs($data["name"]);
+    $name = clean_inputs($data["name"]);
 
     // open database connection
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
@@ -57,7 +57,7 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
         // Fetch the rows and return JSON
         echo $JSON = json_encode($result->fetch_all(MYSQLI_ASSOC));
     } else {
-        echo "User not found.";
+        echo "image $name not found.";
     }
 
 // Close the statement and connection
