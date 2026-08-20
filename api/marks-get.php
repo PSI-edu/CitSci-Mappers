@@ -52,14 +52,11 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
 
 // Check if a row was found
     if ($result->num_rows > 0) {
-        // Fetch the rows
-        $images =  $result->fetch_all(MYSQLI_ASSOC);
+        // Fetch the rows and return JSON
+        echo $JSON = json_encode($result->fetch_all(MYSQLI_ASSOC));
     } else {
         echo "image $name not found.";
-        die();
     }
-
-    print_r($images);
 
 // Close the statement and connection
     $stmt->close();
