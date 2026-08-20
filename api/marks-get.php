@@ -54,8 +54,7 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
         $arr = $result->fetch_all(MYSQLI_ASSOC);
 
         // Get all the related marks
-        $image_id_0 = $arr[0]['id'];
-        $image_id_1 = $arr[1]['id'];
+        print_r($arr);
 
         $stmt2->bind_param("ii", $image_id_0, $image_id_1);
         $stmt2->execute();
