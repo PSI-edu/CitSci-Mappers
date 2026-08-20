@@ -164,6 +164,7 @@ const redrawTileCanvas = () => {
     }
 
     const isMargin = mark.type === 'margin' || detailsObj?.type === 'margin';
+    const isCrack = mark.type === 'crack' || detailsObj?.type === 'crack';
 
     // 1. Render Craters if checked
     if (mark.type === 'crater') {
@@ -238,6 +239,25 @@ const redrawTileCanvas = () => {
         ctx.restore();
       }
     }
+    // 5. Render Cracks (Segmented Blue Lines)
+    else if (isCrack) {
+      const points = detailsObj?.data?.points || detailsObj?.points;
+
+      if (Array.isArray(points) && points.length > 1) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(Number(points[0].x), Number(points[0].y));
+
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(Number(points[i].x), Number(points[i].y));
+        }
+
+        ctx.strokeStyle = '#0000FF'; // Solid Blue
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
   });
 };
 
@@ -250,11 +270,13 @@ const fetchMarksData = async (tileName) => {
     const response = await apiClient.post(`${API_SERVER}/marks-get.php`, { name: tileName });
     const data = response.data;
 
-    console.log('Received marks data:', data);
-
     const activeStatus = [];
-    if (data?.features === 1 || data?.features === true) activeStatus.push('features');
-    if (data?.flows === 1 || data?.flows === true) activeStatus.push('flows');
+    if (data?.features == 1 || data?.features === true) {
+      activeStatus.push('features');
+    }
+    if (data?.flows == 1 || data?.flows === true) {
+      activeStatus.push('flows');
+    }
 
     doneStatusText.value = activeStatus.length > 0 ? activeStatus.join(', ') : '-';
 
