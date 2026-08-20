@@ -165,6 +165,23 @@ const drawMarksOnTileCanvas = () => {
       ctx.stroke();
 
       ctx.restore();
+    } else if (mark.type === 'boulder') {
+      const startX = Number(mark.x1);
+      const startY = Number(mark.y1);
+      const endX = Number(mark.x2);
+      const endY = Number(mark.y2);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+
+      // 10% opacity green line
+      ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.restore();
     }
   });
 };
