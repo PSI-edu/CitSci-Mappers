@@ -335,8 +335,10 @@
                 })
             ]);
 
-            doneTilesMapApp3.value = parseTileDataToMap(resApp3.data);
-            doneTilesMapApp4.value = parseTileDataToMap(resApp4.data);
+
+
+            //doneTilesMapApp3.value = parseTileDataToMap(resApp3.data);
+            //doneTilesMapApp4.value = parseTileDataToMap(resApp4.data);
         } catch (error) {
             console.error(`Failed to fetch done image data for ${imageName}:`, error);
         }
