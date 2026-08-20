@@ -61,6 +61,9 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
             if ($row['application_id'] == 4 && $row['done'] == 1) { $finalArr['flows'] = 1; }
         }
 
+        $image_id_0 = $arr[0]['id'];
+        $image_id_1 = $arr[1]['id'];
+
         // Get all the related marks
         $stmt2->bind_param("ii", $image_id_0, $image_id_1);
         $stmt2->execute();
