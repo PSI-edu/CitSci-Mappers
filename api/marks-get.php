@@ -34,7 +34,7 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name, $db_port);
 
 // SQL query to get the user ID
-    $sql = "SELECT id,done FROM images WHERE name = ?";
+    $sql = "SELECT id,app_id,done FROM images WHERE name = ?";
 
 // Prepare the statement to prevent SQL injection
     $stmt = $conn->prepare($sql);
@@ -54,11 +54,14 @@ if ($data !== null && $data['name'] !== null && isset($data['name'])) {
 
 // Check if a row was found
     if ($result->num_rows > 0) {
-        // Fetch the rows and return JSON
-        echo $JSON = json_encode($result->fetch_all(MYSQLI_ASSOC));
+        // Fetch the rows
+        $images =  $result->fetch_all(MYSQLI_ASSOC);
     } else {
         echo "image $name not found.";
+        die();
     }
+
+    print_r($images);
 
 // Close the statement and connection
     $stmt->close();
