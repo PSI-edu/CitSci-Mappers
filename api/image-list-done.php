@@ -24,7 +24,7 @@ require_once("auth-check.php");
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);
 
-if ($data !== null && $data['app_id'] !== null && isset($data['app_id']) && $data['name'] !== null && isset($data['name'])) {
+if ($data !== null && $data['application_id'] !== null && isset($data['application_id']) && $data['name'] !== null && isset($data['name'])) {
     $app_id = clean_inputs($data["application_id"]);
     $name   = clean_inputs($data["name"])+"%";
 
