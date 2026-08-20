@@ -140,9 +140,28 @@ const drawMarksOnTileCanvas = () => {
       ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
       ctx.fill();
 
-      // Red border outline for visual clarity
+      // Red border outline
       ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
       ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.restore();
+    } else if (mark.type === 'rock') {
+      const centerX = Number(mark.x1);
+      const centerY = Number(mark.y1);
+      const radius = 5 / 2; // Fixed 5px diameter -> 2.5px radius
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+
+      // 10% opacity blue interior
+      ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
+      ctx.fill();
+
+      // Solid white border
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 1;
       ctx.stroke();
 
       ctx.restore();
