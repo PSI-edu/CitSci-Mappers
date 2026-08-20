@@ -99,6 +99,9 @@ const selectedSetId = ref('');
 const imageUrl = ref('');
 const isProcessingImage = ref(false);
 
+// Done status tiles map: "x,y" -> done status (0 or 1)
+const doneTilesMap = ref(new Map());
+
 // Modal & Sub-tile Canvas state
 const isModalOpen = ref(false);
 const isTileLoading = ref(false);
@@ -339,7 +342,20 @@ const fetchDoneImageData = async (imageName) => {
       name: imageName,
       application_id: 3
     });
+
     console.log('image-list-done response:', response.data);
+
+    const map = new Map();
+    if (Array.isArray(response.data)) {
+      response.data.forEach(tile => {
+        const roundX = Math.round(Number(tile.x));
+        const roundY = Math.round(Number(tile.y));
+        map.set(`${roundX},${roundY}`, tile.done);
+      });
+    }
+
+    doneTilesMap.value = map;
+    drawImageToCanvas();
   } catch (error) {
     console.error(`Failed to fetch done image data for ${imageName}:`, error);
   }
@@ -348,6 +364,7 @@ const fetchDoneImageData = async (imageName) => {
 // --- Event Handlers ---
 const handleSetChange = () => {
   errorMessage.value = '';
+  doneTilesMap.value = new Map();
   const selectedItem = imageSets.value.find(set => set.id === selectedSetId.value);
 
   if (selectedItem && selectedItem.details) {
@@ -486,12 +503,23 @@ const drawImageToCanvas = () => {
         const canvasBlockWidth = currentWidth * scale;
         const canvasBlockHeight = currentHeight * scale;
 
+        const roundX = Math.round(x);
+        const roundY = Math.round(y);
+        const doneStatus = doneTilesMap.value.get(`${roundX},${roundY}`);
+
+        // Highlight completed tiles in 20% transparent yellow
+        if (doneStatus == 1 || doneStatus === true) {
+          ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
+          ctx.fillRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
+        }
+
         ctx.strokeRect(canvasX, canvasY, canvasBlockWidth, canvasBlockHeight);
 
         const textX = canvasX + (canvasBlockWidth / 2);
         const textY = canvasY + (4 * scale);
-        const labelText = `${Math.round(x)},${Math.round(y)}`;
+        const labelText = `${roundX},${roundY}`;
 
+        ctx.fillStyle = '#FFFFFF';
         ctx.shadowColor = 'black';
         ctx.shadowBlur = 4;
         ctx.fillText(labelText, textX, textY);
