@@ -123,7 +123,7 @@ if ($data !== null &&
             FROM image_users iu
             WHERE iu.user_id = ?
         )
-        ORDER BY i.id ASC
+        ORDER BY i.priority, i.id ASC
         LIMIT 1";
 
         $stmt = $conn->prepare($sql);
